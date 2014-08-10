@@ -1,0 +1,118 @@
+<html>
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+
+</head>
+
+<body>
+
+<?php
+	$issId = 0;
+?>
+
+<h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
+
+<?php
+	// Connect to database
+	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());
+	
+	// Get all issues	
+	$p1name = "pfarrow";
+	//$sql = sprintf("SELECT * FROM `pubissues` WHERE `user` LIKE \'%s\' AND `type` = 2", $p1name);
+	$sql = "SELECT * FROM `pubissues` WHERE `user`=\"pfarrow\" AND `type`=2";
+	$result = mysql_query($sql);
+			
+	// Select first 4 issues
+	$issNum = 0;
+	$issIds = array(0,1,2,3);
+        $issStatements = array("a","Question 2","c","d");
+	while(($row = mysql_fetch_array( $result )) && ($issNum < 4))
+	{
+		// Retrieve data
+		$issIds[$issNum] = $row['index'];
+		$issStatements[$issNum] = $row['statement'];		
+		$issNum = $issNum + 1;
+		
+	}	
+	
+?>
+
+
+<div class="center">
+
+	<table class="question">
+		<tr>
+			<td class="question">
+				<h3><?php echo $issStatements[0]; ?></h3><br>		
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Support" class="supportButton">
+				</form>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Oppose" class="opposeButton">
+				</form>
+			</td>
+			<td class="question">
+				<h3><?php echo $issStatements[1]; ?></h3><br>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Support" class="supportButton">
+				</form>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Oppose" class="opposeButton">
+				</form>
+			</td>		
+		</tr>
+		<tr>
+			<td class="question">
+				<h3><?php echo $issStatements[2] ?></h3><br>	
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Support" class="supportButton">
+				</form>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Oppose" class="opposeButton">
+				</form>
+			</td>
+			<td class="question">
+				<h3><?php echo $issStatements[3] ?></h3><br>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Support" class="supportButton">
+				</form>
+				<form method="post" class="inline">
+					<input type="hidden" name="polA" value="polA">
+					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+					<input type="submit" value="Oppose" class="opposeButton">
+				</form>
+			</td>		
+		</tr>
+	</table>
+</div>
+
+ver 05 - July 25, 2014
+
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+/* ver 08 - 7.17.2014 */
+
+* {  }
+
+p.err {
+	color:red;
+}
+
+img.headHall {
+	width:25px;
+	height:25px;
+}
+
+p.dbg {
+	color:#D6D6D6;
+        display: none;
+}
+
+h1 {
+    font-family: "Georgia", Times, serif;
+    font-size: 70px;
+    background-color: #CC403D;
+    color: #fff;
+    border-top: solid;
+    border-bottom: solid;
+    border-width: 20px;
+    border-color: #0066ff;
+    text-align: center;
+    padding-bottom: 12px;
+        
+}
+
+h3 {
+    font-family: "Georgia", Times, serif;
+    font-size: 16px;    
+    color: #80CC99;
+}
+
+.supp {
+	background-color: #80CC99;
+    border-radius: 8px;
+    vertical-align: middle;
+        
+        
+        
+}
+
+.supportButton {
+    vertical-align: middle;
+                
+}
+        
+td {
+    vertical-align: middle;
+                
+}
+        
+form, input {
+    vertical-align: middle;
+    margin: 1; 
+    padding: 2;
+               
+}
+        
+.opp {
+	background-color: #CC8080;
+    border-radius: 10px;       
+        
+}
+
+.neut {
+	
+}
+
+.tagCol {
+	text-align:center;        
+                
+}
+
+.issRow {
+    border-style: solid;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 7px;
+	box-shadow: 10px 10px 5px #888888;
+	border-collapse:separate;
+    border-spacing:10px 15px;
+    padding: 10px;
+	margin: 5px;       
+        
+}
+
+
+.issue {
+        max-width:1000px;
+        
+}
+
+.issHead {
+    width:80px;
+    border-radius: 10px;
+    color:white;
+	text-align: center;
+
+}
+        
+.profIss {
+       /* max-width:900px;
+		border-style: solid;
+		border-width: 1px;
+		border-radius: 6px;
+		box-shadow: 10px 10px 5px #888888;*/
+		
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
+}
+
+table.question {
+	min-width: 400px;
+	max-width: 900px;
+	border-collapse:separate;
+    border-spacing:25px;
+	/*cellspacing="10" cellpadding="10"*/		
+}
+
+td.question {
+	padding: 30px;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 7px;
+	box-shadow: 7px 7px 4px #888888;	
+}
+
+form.inline {
+	display: inline-block;
+	margin: 5px;
+}
+
+div.inline {
+	text-align: justify;
+}

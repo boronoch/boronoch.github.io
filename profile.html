@@ -1,0 +1,172 @@
+<html>
+
+<head>
+
+<style>
+.editIButton {
+	background-color:#1975FF;
+	color: white;
+}
+
+.profIss {
+	max-width:800px;
+
+}
+
+td.head {
+	background-color:#CC403D;
+}
+
+</style>
+
+</head>
+
+<body>
+ver 07 - June 27, 2014
+
+<h1>Profile</h1>
+
+<?php
+
+	// Read inputs "user" and "pass" from index.html, if they exist
+	$userIn = $_POST["user"];
+	$passIn = $_POST["pass"];
+	
+	// Read input "uname" from any other page (besides index.html), if it exists
+	$uname = $_POST["uname"];
+	
+	// Connect to database
+	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());
+			
+
+	if ( $uname )
+	{
+		$good = 1;
+	}
+	else
+	{
+		// Check credentials
+			
+		// Query database for username "userIn"
+		$query3 = sprintf("SELECT * FROM userdata WHERE `user`=\"%s\"", $userIn);
+		$result = mysql_query($query3);
+		
+		// See if the username "userIn" exists in the database and if the password is correct
+		$good = 0;
+		if ($result)
+		{
+			while($row = mysql_fetch_array( $result ))
+			{
+				if (strcmp($passIn , $row['pass']) == 0)
+				{
+					$good = 1;
+					$uname = $userIn;
+				}
+			
+			}		
+		}
+		else
+		{
+			echo "user name not found -- account does not exist for ";
+			echo $userIn;
+			echo "<br>";
+		}
+		
+	}
+	
+	
+	if ($good)
+	{
+	
+	
+		// Get all issues		
+		$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\"", $uname);
+		$result = mysql_query($query1);	
+
+		// Get user data
+		$userQuery = sprintf("SELECT * FROM userdata WHERE `user`=\"%s\"", $uname);
+		$userResult= mysql_query($userQuery);	
+		$userRow = mysql_fetch_array( $userResult ); 
+	
+	
+	
+?>
+
+<table>
+	<tr><td>
+
+			<table style = "display: inline-block;" frame="border">
+				<tr><td>Placeholder: user image</td></tr>				
+				<tr><td>
+					<?php
+						echo "</td></tr><tr><td>";
+						echo $userRow['First'] . " " . $userRow['Last'];
+						echo "<br>";
+						echo $userRow['City'] . ", " . $userRow['State'];					
+					?>
+				</td></tr>
+			</table>
+		</td>
+		<td>
+			<table cellpadding="10" cellspacing="10" style = "display: inline-block;" class="profIss">
+				<tr><td>Issues</td>
+					<td></td>
+					<td align="right">
+						<form action="editIssues.php" method="post">
+							<input type="hidden" name="editIssues" value="<?php echo $uname; ?>">
+							<input type="submit" value="Edit Issues" class="editIButton">
+						</form>
+					</td>
+				</tr>
+			
+				<?php
+					$issNum = 0;
+					while(($row = mysql_fetch_array( $result )) && ($issNum < 3))
+					{
+						$issNum = $issNum+1;
+						echo "<tr><td bgcolor=\"#CC403D\">" . $row['issue'] . "</td>";
+						echo "<td colspan=\"2\">" . $row['statement'] . "</td>";
+						echo "</tr>";
+		
+					}
+		
+				?>
+
+			</table>
+
+			<br><br>
+
+			<table cellpadding="10" cellspacing="10" frame="border" >
+				<tr><td align="center" colspan="3">Your Government</td></tr>
+	
+				<tr><td bgcolor="#CC403D">Governor</td>
+					<td bgcolor="#CC403D">
+					<form action="explore.html" method="post">
+						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+						<input type="hidden" name="exprof" value="pfarrow">
+						<input type="submit" value="State Senator" class="polButton">
+					</form>
+					</td>
+					<td bgcolor="#CC403D">State Representative</td>
+				</tr>
+			</table>
+	
+		</td>
+	</tr>
+</table>
+	
+<?php
+
+	}
+	else
+	{
+		?>Placeholder for redirect to "incorrect.html"<?php
+	}
+	
+?>
+			
+
+</body>
+
+</html>
