@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 30 - August 21, 2014
+ver 31 - August 21, 2014
 
 <?php
 
@@ -282,10 +282,11 @@ ver 30 - August 21, 2014
 <?php
 
 // Loop through each issue category 
-for ($k=0; k<count($issCats); k++) {
+for ($k=0; $k<count($issCats); $k++) {
 	
 	// Read issues in category
-	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \'%s\' AND `type` = 2;", $pname, $issCats(k));
+	echo "<br>" . $issCats[$k] . "<br>";
+	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \"%s\" AND `type` = 2;", $pname, $issCats[$k]);
 	$result = mysql_query($query1);
 	
 	// If there are any statements for this issue, continue
