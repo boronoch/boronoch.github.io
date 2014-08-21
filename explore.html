@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 29 - July 17, 2014
+ver 30 - August 21, 2014
 
 <?php
 
@@ -252,7 +252,7 @@ ver 29 - July 17, 2014
 										</td>						
 									</tr>
 								</table>
-                                                        </td></tr>
+                            </td></tr>
 							<tr><td class="hiddenInput">
 								<p id="comment"></p>   <!-- Need to tag this with an index and pass the index to the function -->
 							</td></tr>
@@ -270,13 +270,58 @@ ver 29 - July 17, 2014
 	</table>
 	
 <?php
+	// Added in version 30
+	
+	// Define issue categories
+	$issCats = array("State Budget","Taxes","Education","Infrastructure","Social Issues");
+	
+?>
+<table class="profIss">	
+	<tr>
+		<td>
+<?php
+
+// Loop through each issue category 
+for ($k=0; k<count($issCats); k++) {
+	
+	// Read issues in category
+	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \'%s\' AND `type` = 2;", $pname, $issCats(k));
+	$result = mysql_query($query1);
+	
+	// If there are any statements for this issue, continue
+	if ($result) {
+	
+		?>
+			<table class="issRow">
+		<?php
+	
+		$issNum = 0;
+		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  {
+		
+			
+			
+		}
+		
+		?>
+			</table>
+		<?php
+	}
+}
+	
+?>
+
+		</td>
+	</tr>
+</table>
+	
+<?php
 		
 	}
 	else
 	{
 		// "$uname" does not exist
 		?>
-			<p class="err">An error occurred. Error code wlvjqwlj</p>			
+			<p class="err">An error occurred. $uname does not exist. Error code wlvjqwlj</p>			
 		
 		<?php
 			echo "uname = " . $uname;
