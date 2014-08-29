@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 33 - August 28, 2014
+ver 34 - August 29, 2014
 
 <?php
 
@@ -302,15 +302,84 @@ for ($k=0; $k<count($issCats); $k++) {
 		<?php
 	
 		$issNum = 1;
-		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  {
-		?>
-				<tr><td class="issue2"><?php echo $row['statement']; ?> </td></tr>
+		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  
+		{
+			?>
+				<tr>
+					<td class="issue2"><?php echo $row['statement']; ?></td>
+			<?php
+			$issId = $row['index'];
+			$searchText = "a" . $issId . "z";
+			$supMatch = strpos($supRow['support'], $searchText);
+			$oppMatch = strpos($supRow['oppose'], $searchText);	
+											
+			// See if the user supports or opposes this issue
+
+			if ($supMatch )
+			{ 
+				?>
+					<td class="supp">
+						<form method="post">
+						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+						<input type="hidden" name="remSupport" value="a<?php echo $issId; ?>z">
+						<input type="submit" value="Support" class="supportButton">
+					</form>
+					</td>
+				<?php 
+			}
+			else
+			{ 
+				?>
+					<td class="neut">
+					<form method="post">
+						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+						<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+						<input type="submit" value="Support" class="supportButton">
+					</form>
+					</td>
+				<?php 
+			}
 				
-		<?php
-			$issNum = $issNum+1;
+			if ($oppMatch and !$supMatch)
+			{
+				?>
+					<td class="opp">
+						<form method="post">
+						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+						<input type="hidden" name="remOppose" value="a<?php echo $issId; ?>z">
+						<input type="submit" value="Oppose" class="opposeButton">
+						</form>
+					</td>
+				<?php
+			}
+			else
+			{
+				?>
+					<td class="neut">
+						<form method="post">
+							<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+							<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="submit" value="Oppose" class="opposeButton">
+						</form>
+					</td>
+				<?php
+			}
+				?>	
+				
+					<td class="comm">
+						<p id="commbutt"><button onclick="showInput()">Comment</button></p>							
+					</td>
+				</tr>					
+				
+			<?php
+				$issNum = $issNum+1;
 		}
-		
 		?>
+				
 			</table>
 		</td>
 	</tr></table></td></tr>
