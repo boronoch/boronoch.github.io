@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 32 - August 28, 2014
+ver 33 - August 28, 2014
 
 <?php
 
@@ -283,7 +283,6 @@ ver 32 - August 28, 2014
 for ($k=0; $k<count($issCats); $k++) {
 	
 	// Read issues in category
-	echo "<tr><td>" . $issCats[$k] . "</td></tr>";
 	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \"%s\" AND `type` = 2;", $pname, $issCats[$k]);
 	$result = mysql_query($query1);
 	$row = mysql_fetch_array( $result );
@@ -294,10 +293,10 @@ for ($k=0; $k<count($issCats); $k++) {
 	
 ?>
 			
-	<tr class="issRow2">
+	<tr><td><table class="issRow2"><tr>
 		<td class="issHead2"><?php echo $row['issue'];?></td>
 		<td class="issCol2">
-			<table>
+			<table class="issRow3">
 				<tr><td class="issue2"><?php echo $row['statement']; ?> </td></tr>
 			
 		<?php
@@ -314,7 +313,7 @@ for ($k=0; $k<count($issCats); $k++) {
 		?>
 			</table>
 		</td>
-	</tr>
+	</tr></table></td></tr>
 		<?php
 	}
 	else

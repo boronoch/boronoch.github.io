@@ -1,4 +1,4 @@
-/* ver 09 - 8.28.2014 */
+/* ver 11 - 8.28.2014 */
 
 * {  }
 
@@ -92,25 +92,44 @@ form, input {
 
 .issRow2 {
 	border-style: solid;
+	border-width: 1px;
+	border-radius: 7px;
+	box-shadow: 10px 10px 5px #888888;
+	border-collapse:separate;
+    border-spacing:10px 15px;
+    padding: 5px;
+	margin: 5px;       
 
 
 }
 
+.issRow3 {
+	
+	
+}
+
 .issCol2 {
-    border-style: solid;
+   /* border-style: solid;
 	border-width: 1px;
 	border-radius: 7px;
 	box-shadow: 10px 10px 5px #888888;
 	border-collapse:separate;
     border-spacing:10px 15px;
     padding: 10px;
-	margin: 5px;       
+	margin: 5px;      */  
         
 }
 
 
 .issue {
         max-width:1000px;
+		
+        
+}
+
+.issue2 {
+        max-width:1000px;
+		padding: 10px;
         
 }
 
