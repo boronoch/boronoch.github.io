@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 31 - August 21, 2014
+ver 32 - August 28, 2014
 
 <?php
 
@@ -276,43 +276,56 @@ ver 31 - August 21, 2014
 	$issCats = array("State Budget","Taxes","Education","Infrastructure","Social Issues");
 	
 ?>
-<table class="profIss">	
-	<tr>
-		<td>
+<table class="profIss2">	
 <?php
 
 // Loop through each issue category 
 for ($k=0; $k<count($issCats); $k++) {
 	
 	// Read issues in category
-	echo "<br>" . $issCats[$k] . "<br>";
+	echo "<tr><td>" . $issCats[$k] . "</td></tr>";
 	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \"%s\" AND `type` = 2;", $pname, $issCats[$k]);
 	$result = mysql_query($query1);
+	$row = mysql_fetch_array( $result );
 	
 	// If there are any statements for this issue, continue
-	if ($result) {
+	if ($row) {
+		
 	
-		?>
-			<table class="issRow">
+?>
+			
+	<tr class="issRow2">
+		<td class="issHead2"><?php echo $row['issue'];?></td>
+		<td class="issCol2">
+			<table>
+				<tr><td class="issue2"><?php echo $row['statement']; ?> </td></tr>
+			
 		<?php
 	
-		$issNum = 0;
+		$issNum = 1;
 		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  {
-		
-			
-			
+		?>
+				<tr><td class="issue2"><?php echo $row['statement']; ?> </td></tr>
+				
+		<?php
+			$issNum = $issNum+1;
 		}
 		
 		?>
 			</table>
+		</td>
+	</tr>
 		<?php
 	}
+	else
+	{
+		?><tr><td>not $row</td></tr><?php
+	}
+	
 }
 	
 ?>
 
-		</td>
-	</tr>
 </table>
 	
 <?php

@@ -1,4 +1,4 @@
-/* ver 08 - 7.17.2014 */
+/* ver 09 - 8.28.2014 */
 
 * {  }
 
@@ -90,6 +90,24 @@ form, input {
         
 }
 
+.issRow2 {
+	border-style: solid;
+
+
+}
+
+.issCol2 {
+    border-style: solid;
+	border-width: 1px;
+	border-radius: 7px;
+	box-shadow: 10px 10px 5px #888888;
+	border-collapse:separate;
+    border-spacing:10px 15px;
+    padding: 10px;
+	margin: 5px;       
+        
+}
+
 
 .issue {
         max-width:1000px;
@@ -101,6 +119,16 @@ form, input {
     border-radius: 10px;
     color:white;
 	text-align: center;
+	background-color: #CC403D;
+
+}
+
+.issHead2 {
+    width:80px;
+    border-radius: 10px;
+    color:white;
+	text-align: center;
+	background-color: #CC403D;
 
 }
         
@@ -111,6 +139,12 @@ form, input {
 		border-radius: 6px;
 		box-shadow: 10px 10px 5px #888888;*/
 		
+}
+
+.profIss2 {
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
 }
 
 .center {
