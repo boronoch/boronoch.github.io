@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 34 - August 29, 2014
+ver 35 - August 29, 2014
 
 <?php
 
@@ -292,7 +292,12 @@ for ($k=0; $k<count($issCats); $k++) {
 		
 	
 ?>
-			
+	
+	<script type="text/javascript">
+		var test2 = "for loop k=<?php echo $k; ?>";
+		console.log(test2);
+	</script>
+	
 	<tr><td><table class="issRow2"><tr>
 		<td class="issHead2"><?php echo $row['issue'];?></td>
 		<td class="issCol2">
@@ -304,7 +309,14 @@ for ($k=0; $k<count($issCats); $k++) {
 		$issNum = 1;
 		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  
 		{
-			?>
+
+			?>	
+				
+				<script type="text/javascript">
+					var test1 = "<?php echo $issNum; ?>";
+					console.log(test1);
+				</script>
+				
 				<tr>
 					<td class="issue2"><?php echo $row['statement']; ?></td>
 			<?php
