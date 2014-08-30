@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 36 - August 29, 2014
+ver 38 - August 29, 2014
 
 <?php
 
@@ -135,274 +135,166 @@ ver 36 - August 29, 2014
 		?><p class="dbg"><?php
 		echo "support = " . $supRow['support'] . "<br>";
 		echo "oppose = " . $supRow['oppose'];			
+		
+		// Define issue categories
+		$issCats = array("State Budget","Taxes","Education","Infrastructure","Social Issues");
+	
 		?>
 		</p>
                 
                 <h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
 
 		<table>
-			<tr><td>
+			<tr>
+				<td>
 
-			<table style = "display: inline-block;" frame="border">
-				<tr><td>Placeholder: user image</td></tr>				
-				<tr><td>
-				</td></tr>
-				<tr><td>
-					<?php						
-						echo $userRow['First'] . " " . $userRow['Last'];
-						echo "<br>";
-						echo $userRow['City'] . ", " . $userRow['State'];					
-					?>
-				</td></tr>
-			</table>
-			</td>
-			<td>
-				<table cellspacing="10" cellpadding="10" style = "display: inline-block;" class="profIss">
-					<tr><td>Issues</td>
-						<td></td>
-						<td></td>
-					</tr>
-				
-					<?php
-						$issNum = 0;
-						while(($row = mysql_fetch_array( $result )) && ($issNum < 3))
-						{
-							// Retrieve data
-							$issNum = $issNum+1;  	?>
-							<tr><td>
-								<table class="issRow">
-									<tr>
-										<td class="issHead" bgcolor="#CC403D"><?php echo $row['issue']; ?> </td>
-										<td class="issue" colspan="2"><?php echo $row['statement']; ?> </td>
-										<?php
-										$issId = $row['index'];
-										$searchText = "a" . $issId . "z";
-										$supMatch = strpos($supRow['support'], $searchText);
-										$oppMatch = strpos($supRow['oppose'], $searchText);	
-										
-										// See if the user supports or opposes this issue
-										?>
-										
-										<td>
-											<table class="tagCol">
-												<tr>
-													<?php
-														if ($supMatch )
-														{ 
-															?>
-																<td class="supp">
-																	<form method="post">
-																	<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-																	<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-																	<input type="hidden" name="remSupport" value="a<?php echo $issId; ?>z">
-																	<input type="submit" value="Support" class="supportButton">
-																</form>
-																</td>
-															<?php 
-														}
-														else
-														{ 
-															?>
-																<td class="neut">
-																<form method="post">
-																	<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-																	<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-																	<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
-																	<input type="submit" value="Support" class="supportButton">
-																</form>
-																</td>
-															<?php 
-														}
-													?>
-												</tr>
-												<tr>
-													<?php
-														if ($oppMatch and !$supMatch)
-														{
-															?>
-																<td class="opp">
-																	<form method="post">
-																	<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-																	<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-																	<input type="hidden" name="remOppose" value="a<?php echo $issId; ?>z">
-																	<input type="submit" value="Oppose" class="opposeButton">
-																														</form>
-																</td>
-															<?php
-														}
-														else
-														{
-															?>
-																<td class="neut">
-																	<form method="post">
-																		<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-																		<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-																		<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
-																		<input type="submit" value="Oppose" class="opposeButton">
-																	</form>
-																</td>
-															<?php
-														}
-													?>
-												</tr>
-												<tr><td class="comm">
-													<p id="commbutt"><button onclick="showInput()">Comment</button></p>							
-												</td></tr>								
-											</table>																					
-										</td>						
-									</tr>
-								</table>
-                            </td></tr>
-							<tr><td class="hiddenInput">
-								<p id="comment"></p>   <!-- Need to tag this with an index and pass the index to the function -->
-							</td></tr>
+					<table style = "display: inline-block;" frame="border">
+						<tr><td>Placeholder: user image</td></tr>				
+						<tr><td>
+						</td></tr>
+						<tr><td>
+							<?php						
+								echo $userRow['First'] . " " . $userRow['Last'];
+								echo "<br>";
+								echo $userRow['City'] . ", " . $userRow['State'];					
+							?>
+						</td></tr>
+					</table>
+				</td>
+				<td>
+					<table class="profIss2">	
+						<?php
+
+						// Loop through each issue category 
+						for ($k=0; $k<count($issCats); $k++) {
+						
+							// Read issues in category
+							$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \"%s\" AND `type` = 2;", $pname, $issCats[$k]);
+							$result = mysql_query($query1);
+							$row = mysql_fetch_array( $result );
+							
+							// If there are any statements for this issue, continue
+							if ($row) {
+							
+						
+						?>
+						
+						<script type="text/javascript">
+							var test2 = "for loop k=<?php echo $k; ?>";
+							console.log(test2);
+						</script>
+						
+						<tr><td><table class="issRow2"><tr>
+							<td class="issHead2"><?php echo $row['issue'];?></td>
+							<td class="issCol2">
+								<table class="issRow3">				
+								
 							<?php
-			
+						
+							$issNum = 1;
+							while(($row) && ($issNum < 5))  
+							{
+
+								?>	
+									
+									<script type="text/javascript">
+										var test1 = "<?php echo $issNum; ?>";
+										console.log(test1);
+									</script>
+									
+									<tr>
+										<td class="issue2"><?php echo $row['statement']; ?></td>
+								<?php
+								$issId = $row['index'];
+								$searchText = "a" . $issId . "z";
+								$supMatch = strpos($supRow['support'], $searchText);
+								$oppMatch = strpos($supRow['oppose'], $searchText);	
+																
+								// See if the user supports or opposes this issue
+
+								if ($supMatch )
+								{ 
+									?>
+										<td class="supp">
+											<form method="post">
+											<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+											<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+											<input type="hidden" name="remSupport" value="a<?php echo $issId; ?>z">
+											<input type="submit" value="Support" class="supportButton">
+										</form>
+										</td>
+									<?php 
+								}
+								else
+								{ 
+									?>
+										<td class="neut">
+										<form method="post">
+											<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+											<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+											<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+											<input type="submit" value="Support" class="supportButton">
+										</form>
+										</td>
+									<?php 
+								}
+									
+								if ($oppMatch and !$supMatch)
+								{
+									?>
+										<td class="opp">
+											<form method="post">
+											<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+											<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+											<input type="hidden" name="remOppose" value="a<?php echo $issId; ?>z">
+											<input type="submit" value="Oppose" class="opposeButton">
+											</form>
+										</td>
+									<?php
+								}
+								else
+								{
+									?>
+										<td class="neut">
+											<form method="post">
+												<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
+												<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
+												<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+												<input type="submit" value="Oppose" class="opposeButton">
+											</form>
+										</td>
+									<?php
+								}
+									?>	
+									
+										<td class="comm">
+											<p id="commbutt"><button onclick="showInput()">Comment</button></p>							
+										</td>
+									</tr>					
+									
+								<?php
+									$issNum = $issNum+1;
+									
+									$row = mysql_fetch_array( $result );
+							}
+							?>
+									
+								</table>
+							</td>
+						</tr></table></td></tr>
+							<?php
 						}
-			
+					}
+						
 					?>
 
-				</table>
+					</table>
+				</td>
+			</tr>
+		</table>
+	
 
-				<br><br>		
-		
-			</td></tr>
-	</table>
-	
-<?php
-	// Added in version 30
-	
-	// Define issue categories
-	$issCats = array("State Budget","Taxes","Education","Infrastructure","Social Issues");
-	
-?>
-<table class="profIss2">	
-<?php
 
-// Loop through each issue category 
-for ($k=0; $k<count($issCats); $k++) {
-	
-	// Read issues in category
-	$query1 = sprintf("SELECT * FROM `pubissues` WHERE `user`=\"%s\" AND `issue` LIKE \"%s\" AND `type` = 2;", $pname, $issCats[$k]);
-	$result = mysql_query($query1);
-	$row = mysql_fetch_array( $result );
-	
-	// If there are any statements for this issue, continue
-	if ($row) {
-		
-	
-?>
-	
-	<script type="text/javascript">
-		var test2 = "for loop k=<?php echo $k; ?>";
-		console.log(test2);
-	</script>
-	
-	<tr><td><table class="issRow2"><tr>
-		<td class="issHead2"><?php echo $row['issue'];?></td>
-		<td class="issCol2">
-			<table class="issRow3">				
-			
-		<?php
-	
-		$issNum = 1;
-		while(($row) && ($issNum < 5))  
-		{
-
-			?>	
-				
-				<script type="text/javascript">
-					var test1 = "<?php echo $issNum; ?>";
-					console.log(test1);
-				</script>
-				
-				<tr>
-					<td class="issue2"><?php echo $row['statement']; ?></td>
-			<?php
-			$issId = $row['index'];
-			$searchText = "a" . $issId . "z";
-			$supMatch = strpos($supRow['support'], $searchText);
-			$oppMatch = strpos($supRow['oppose'], $searchText);	
-											
-			// See if the user supports or opposes this issue
-
-			if ($supMatch )
-			{ 
-				?>
-					<td class="supp">
-						<form method="post">
-						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-						<input type="hidden" name="remSupport" value="a<?php echo $issId; ?>z">
-						<input type="submit" value="Support" class="supportButton">
-					</form>
-					</td>
-				<?php 
-			}
-			else
-			{ 
-				?>
-					<td class="neut">
-					<form method="post">
-						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-						<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
-						<input type="submit" value="Support" class="supportButton">
-					</form>
-					</td>
-				<?php 
-			}
-				
-			if ($oppMatch and !$supMatch)
-			{
-				?>
-					<td class="opp">
-						<form method="post">
-						<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-						<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-						<input type="hidden" name="remOppose" value="a<?php echo $issId; ?>z">
-						<input type="submit" value="Oppose" class="opposeButton">
-						</form>
-					</td>
-				<?php
-			}
-			else
-			{
-				?>
-					<td class="neut">
-						<form method="post">
-							<input type="hidden" name="exuser" value="<?php echo $uname; ?>">
-							<input type="hidden" name="exprof" value="<?php echo $pname; ?>">
-							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
-							<input type="submit" value="Oppose" class="opposeButton">
-						</form>
-					</td>
-				<?php
-			}
-				?>	
-				
-					<td class="comm">
-						<p id="commbutt"><button onclick="showInput()">Comment</button></p>							
-					</td>
-				</tr>					
-				
-			<?php
-				$issNum = $issNum+1;
-				
-				$row = mysql_fetch_array( $result );
-		}
-		?>
-				
-			</table>
-		</td>
-	</tr></table></td></tr>
-		<?php
-	}
-}
-	
-?>
-
-</table>
 	
 <?php
 		

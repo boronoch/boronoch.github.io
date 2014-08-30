@@ -11,7 +11,7 @@ p.dbg {
 </head>
 <body>
 
-Ver 09 - June 27, 2014<br>
+Ver 10 - August 29, 2014<br>
 <br>
 
 <?php
@@ -46,8 +46,8 @@ $newState = $_POST["issState"];
 
 if ($newIssue)
 {
-	$insertStr = sprintf("INSERT INTO pubissues(user, issue, statement)
-	VALUES('%s','%s','%s');", $uname, $newIssue, $newState);
+	$insertStr = sprintf("INSERT INTO pubissues(user, issue, statement, type)
+	VALUES('%s','%s','%s','2');", $uname, $newIssue, $newState);
 	
 	//echo "<br>";
 	//echo $insertStr;
