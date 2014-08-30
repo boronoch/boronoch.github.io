@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 35 - August 29, 2014
+ver 36 - August 29, 2014
 
 <?php
 
@@ -301,13 +301,12 @@ for ($k=0; $k<count($issCats); $k++) {
 	<tr><td><table class="issRow2"><tr>
 		<td class="issHead2"><?php echo $row['issue'];?></td>
 		<td class="issCol2">
-			<table class="issRow3">
-				<tr><td class="issue2"><?php echo $row['statement']; ?> </td></tr>
+			<table class="issRow3">				
 			
 		<?php
 	
 		$issNum = 1;
-		while(($row = mysql_fetch_array( $result )) && ($issNum < 5))  
+		while(($row) && ($issNum < 5))  
 		{
 
 			?>	
@@ -389,6 +388,8 @@ for ($k=0; $k<count($issCats); $k++) {
 				
 			<?php
 				$issNum = $issNum+1;
+				
+				$row = mysql_fetch_array( $result );
 		}
 		?>
 				
@@ -397,11 +398,6 @@ for ($k=0; $k<count($issCats); $k++) {
 	</tr></table></td></tr>
 		<?php
 	}
-	else
-	{
-		?><tr><td>not $row</td></tr><?php
-	}
-	
 }
 	
 ?>
