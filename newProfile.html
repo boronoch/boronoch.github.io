@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>New Profile - Town Hall</title>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+
+<body>
+
+ver 02 - August 31, 2014
+<br>
+<h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
+
+<?php
+	// Receive user-name
+	$uname = $_POST["user"];
+	$passw = $_POST["pass"];
+	
+	// Connect to the database
+	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());
+	
+	if ( $uname )
+	{
+	
+		// See if the user name already exists in the database
+		$query3 = sprintf("SELECT * FROM userdata WHERE `user`=\"%s\"", $uname);
+		$result = mysql_query($query3);
+		$row = mysql_fetch_array( $result );
+		
+		if ($row)
+		{
+			?>
+			
+			<p class="err">Sorry, this username is already in use. Please try another. </p>
+			
+			<?php
+		}
+		else
+		{			
+			// Display a form for more information
+			?>
+			
+			<p> Welcome! I should put something here...</p>
+			<p>
+				<form method="post" action="createUser.php">
+					<table>
+						<tr><td><label>User Name:</label></td>
+						<td><input type="text" name="uname" size="24" value="<?php echo $uname; ?>"></td></tr>
+						<tr><td><label for="Password">Password:</label></td>
+						<td><input type="text" name="passw" size="24" value="<?php echo $passw; ?>"></td></tr>
+						<tr><td><label for="First">First Name:</label></td>
+						<td><input type="text" name="firstN" size="24"></td></tr>
+						<tr><td><label for="Last">Last Name:</label></td>
+						<td><input type="text" name="lastN" size="24"></td></tr>
+						<tr><td><label for="Street">Street Address:</label></td>
+						<td><input type="text" name="street" size="24"></td></tr>
+						<tr><td><label for="City">City:</label></td>
+						<td><input type="text" name="city" size="24"></td></tr>
+						<tr><td><label for="State">State:</label></td>
+						<td><input type="text" name="state" size="24"></td></tr>
+						<tr><td><label for="Zip">Zip Code:</label></td>
+						<td><input type="text" name="zip" size="24"></td></tr>					
+					
+						<tr><td></td><td><input type="submit" value="Submit"></td></tr>
+					</table>						
+				</form>
+			</p>
+			
+			<?php
+		}
+			
+	
+	}
+	else
+	{
+		?>
+		
+		<p class="err"> An error has occurred. Your username was not received from the previous page. (Error code nP9174589) </p>
+		
+		<?php
+	}
+?>
+
+</body>
+
+</html>

@@ -10,7 +10,7 @@ Explore Profiles
 
 <body>
 
-ver 38 - August 29, 2014
+ver 39 - August 30, 2014
 
 <?php
 
@@ -293,7 +293,10 @@ ver 38 - August 29, 2014
 			</tr>
 		</table>
 	
-
+		<form action="profile.html" method="post">
+			<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+			<input type="submit" value="Return to Profile">
+		</form>
 
 	
 <?php
