@@ -20,16 +20,20 @@
 	mysql_select_db("1544017_users") or die(mysql_error());
 	
 	// Get all issues	
-	$p1name = "pfarrow";
+	$p1name = "jsensenbrenner";
 	//$sql = sprintf("SELECT * FROM `pubissues` WHERE `user` LIKE \'%s\' AND `type` = 2", $p1name);
-	$sql = "SELECT * FROM `pubissues` WHERE `user`=\"pfarrow\" AND `type`=2";
+	$sql = "SELECT * FROM `pubissues` WHERE `user`=\"jsensenbrenner\" AND `type`=2";
 	$result = mysql_query($sql);
+	
+	$p2name = "crockwood";
+	$sql2 = "SELECT * FROM `pubissues` WHERE `user`=\"" . $p2name . "\" AND `type`=2";
+	$result2 = mysql_query($sql2);
 			
 	// Select first 4 issues
 	$issNum = 0;
 	$issIds = array(0,1,2,3);
-        $issStatements = array("a","Question 2","c","d");
-	while(($row = mysql_fetch_array( $result )) && ($issNum < 4))
+    $issStatements = array("a","Question 2","c","d");
+	while(($row = mysql_fetch_array( $result )) && ($issNum < 2))
 	{
 		// Retrieve data
 		$issIds[$issNum] = $row['index'];
@@ -37,6 +41,15 @@
 		$issNum = $issNum + 1;
 		
 	}	
+	
+	while(($row = mysql_fetch_array( $result2 )) && ($issNum < 4))
+	{
+		// Retrieve data
+		$issIds[$issNum] = $row['index'];
+		$issStatements[$issNum] = $row['statement'];		
+		$issNum = $issNum + 1;
+		
+	}
 	
 ?>
 
@@ -111,7 +124,7 @@
 	</table>
 </div>
 
-ver 05 - July 25, 2014
+ver 06 - September 21, 2014
 
 </body>
 
