@@ -27,9 +27,9 @@ ver 03 - October 26, 2014
 	
 	// Get Election Data
 	$uState = $userRow['State'];
-	$federalQuery = sprintf("SELECT * FROM elections WHERE `State`=\"%s\"", $uState);
+	$federalQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
 	$federalQResult = mysql_query($federalQuery);
-	$stateQuery = sprintf("SELECT * FROM elections WHERE `State`=\"%s\"", $uState);
+	$stateQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
 	$stateQResult = mysql_query($stateQuery);
 	
 ?>
