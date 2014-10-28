@@ -1,4 +1,4 @@
-/* ver 12 - 8.29.2014 */
+/* ver 13 - 10.26.2014 */
 
 * {  }
 
@@ -181,6 +181,14 @@ table.question {
 	/*cellspacing="10" cellpadding="10"*/		
 }
 
+table.userData {
+	/* removed from in-line style: 
+	style = "display: inline-block;" frame="border"
+	*/
+
+
+}
+
 td.question {
 	padding: 30px;
 	border-style: solid;
@@ -197,3 +205,18 @@ form.inline {
 div.inline {
 	text-align: justify;
 }
+
+td.sectionTitle {
+	color: white;
+	text-align: left;
+	border-style: solid;
+	border-width: 2px;
+	background-color: #0066ff;
+	border-color: #2B33A2;
+	box-shadow: 7px 7px 4px #888888;
+	padding: 5px;
+	margin: 5px;
+	
+}
+	
+	

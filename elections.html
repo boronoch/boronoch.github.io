@@ -1,0 +1,96 @@
+<html>
+	
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+<title>
+Elections
+</title>
+
+</head>
+
+<body>
+
+ver 03 - October 26, 2014
+
+<h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
+
+<?php
+	// Connect to database
+	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());
+	
+	// Get user data
+	$uname = $_POST["uname"];
+	$userQuery = sprintf("SELECT * FROM userdata WHERE `user`=\"%s\"", $uname);
+	$userResult= mysql_query($userQuery);	
+	$userRow = mysql_fetch_array( $userResult );
+	
+	// Get Election Data
+	$uState = $userRow['State'];
+	$federalQuery = sprintf("SELECT * FROM elections WHERE `State`=\"%s\"", $uState);
+	$federalQResult = mysql_query($federalQuery);
+	$stateQuery = sprintf("SELECT * FROM elections WHERE `State`=\"%s\"", $uState);
+	$stateQResult = mysql_query($stateQuery);
+	
+?>
+
+<table> <!-- Table A: Outer framework.  -->
+	<tr><td>  <!-- TA.R1 = Includes all content;  TA.R1.C1 = User data column  -->
+
+			<table class="userData"> <!-- Table B: User Data. Includes a photo and disrict info -->
+				<tr><td>Placeholder: user image</td></tr>	<!-- TB.R1.C1 = photo;  -->			
+				<tr><td> <!-- TB.R2.C1 = user's district info -->
+					<?php
+						echo "</td></tr><tr><td>";
+						echo $userRow['First'] . " " . $userRow['Last'];
+						echo "<br>";
+						echo $userRow['City'] . ", " . $userRow['State'];					
+					?>
+				</td></tr> <!-- TB.R2.C1 = user's district info -->
+			</table> <!-- Table B: User Data. Includes a photo and disrict info -->
+		</td> <!-- TA.R1.C1 -->
+		
+		<td>  <!-- TA.R1.C2 = contains the second column of the outer framework: all election info  -->
+			<table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+				<tr><td class="sectionTitle">Federal</td></tr> <!-- TC.R1 Federal Heading -->
+					
+				<?php 
+					while($fRow = mysql_fetch_array( $federalQResult ))
+					{
+					?>
+						<tr><td> <!-- TC.R1a Entries in Federal section -->
+							<table class="issRow2"> <!-- TD1 Entries in Federal Section -->
+								<tr>
+									<td> <!-- Incumbant Party Candidate -->
+										<a href="placeholder.jpg"><br>
+										<?php echo $fRow['IncPartyCand']; ?>											
+									</td>
+									<td> <!-- Election Details -->
+										<?php echo $fRow['Seat']; ?><br>
+										<?php echo $fRow['State'] . "'s " . $fRow['District'] . " District";?>
+									</td>											
+									<td> <!-- Major Party Challenger -->
+										<a href="placeholder.jpg"><br>
+										<?php echo $fRow['ChalPartyCand']; ?>
+									</td>										
+								</tr>
+							</table> <!-- TD1 Entries in Federal Section -->
+						</td></tr> <!-- TC.R1a -->
+					<?php
+					}						
+				?>
+				
+				<tr><td class="sectionTitle">State</td></tr> <!-- TC.R2 State Heading -->
+				
+				<tr><td class="sectionTitle">Local</td></tr> <!-- TC.R3 Local Heading -->				
+				
+			</table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+		</td> <!-- TA.R1.C2 = contains the second column of the outer framework: all election info  -->
+		
+		
+	</tr> <!-- TA.R1 = all content in the outer framework -->		
+</table>  <!-- Table A: Outer framework.  -->
+
+</body>
+
+</html>

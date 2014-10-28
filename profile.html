@@ -22,7 +22,7 @@ td.head {
 </head>
 
 <body>
-ver 07 - June 27, 2014
+ver 08 - October 28, 2014
 
 <h1>Profile</h1>
 
@@ -97,7 +97,7 @@ ver 07 - June 27, 2014
 	<tr><td>
 
 			<table style = "display: inline-block;" frame="border">
-				<tr><td>Placeholder: user image</td></tr>				
+				<tr><td><img src="placeholder.jpg"></td></tr>				
 				<tr><td>
 					<?php
 						echo "</td></tr><tr><td>";
@@ -150,6 +150,12 @@ ver 07 - June 27, 2014
 					</td>
 					<td bgcolor="#CC403D">State Representative</td>
 				</tr>
+				<tr><td>
+					<form action="elections.html" method="post">
+						<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+						<input type="submit" value="Elections" class="editIButton">
+					</form>
+				</td></tr>
 			</table>
 	
 		</td>
