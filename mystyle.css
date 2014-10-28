@@ -218,5 +218,11 @@ td.sectionTitle {
 	margin: 5px;
 	
 }
+
+td.electText {
+	padding-left: 30px;
+	padding-right: 30px;
+	text-align: center;
+}
 	
 	
