@@ -23,10 +23,101 @@
 	echo $p1name . "<br>";
 	echo $p2name . "<br>";
 	
+	// Receive new support or oppose button clicks, if any
+	$newSupport = $_POST["addSupport"];
+	$newOppose = $_POST["addOppose"];
+	$remSupport = $_POST["remSupport"];
+	$remOppose = $_POST["remOppose"];
+	
 	
 	// Connect to database
 	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
-	mysql_select_db("1544017_users") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());	
+	
+	// Process $newSupport and $newOppose, if they exist. 
+	// Should only ever have one or the other with current design
+	if ($newSupport)
+	{
+					?><p class="dbg">New Support. </p> <?php
+					?><p class="dbg">Need to add <?php echo $newSupport . " to the support list.</p>";
+		// Get user's support data
+		$sQ1 = sprintf("SELECT `support` FROM support WHERE `user`=\"%s\"", $uname);
+		$sR1 = mysql_query($sQ1);
+		$sRow1 = mysql_fetch_array( $sR1 );
+		?><p class="dbg">Current Support = <?php echo $sRow1['support'] . "</p>";
+		$sR2 = $sRow1['support'] . $newSupport;
+		?><p class="dbg">New Support = <?php echo $sR2 . "</p>";
+		$s3 = sprintf("UPDATE `support` SET `support`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
+		$result3 = mysql_query($s3) or die(mysql_error());
+		?><p class="dbg">Also need to remove <?php echo $newSupport . " from the oppose list.</p>";
+		$oQ1 = sprintf("SELECT `oppose` FROM support WHERE `user`=\"%s\"", $uname);
+		$oR1 = mysql_query($oQ1);
+		$oRow1 = mysql_fetch_array( $oR1 );
+		?><p class="dbg">Current Oppose = <?php echo $oRow1['oppose'] . "</p>";								
+		$o2 = str_replace($newSupport, "", $oRow1['oppose']);
+		?><p class="dbg">New String = <?php echo $o2 . "</p>";
+		$o3 = sprintf("UPDATE `support` SET `oppose`=\"%s\" WHERE `user`=\"%s\"", $o2, $uname);
+		?><p class="dbg">mysql_query = <?php echo $o3 . "</p>";
+		$ro3 = mysql_query($o3) or die(mysql_error());
+	}
+	elseif ($newOppose)
+	{
+		?><p class="dbg">New Oppose. </p> <?php
+					?><p class="dbg">Need to add <?php echo $newOppose . " to the oppose list.</p>";
+		$sQ1 = sprintf("SELECT `oppose` FROM support WHERE `user`=\"%s\"", $uname);
+		$sR1 = mysql_query($sQ1);
+		$sRow1 = mysql_fetch_array( $sR1 );
+		?><p class="dbg">Current Oppose = <?php echo $sRow1['oppose'] . "</p>";
+		$sR2 = $sRow1['oppose'] . $newOppose;
+		?><p class="dbg">New Oppose = <?php echo $sR2 . "</p>";
+		$s3 = sprintf("UPDATE `support` SET `oppose`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
+		$result3 = mysql_query($s3) or die(mysql_error());
+		?><p class="dbg">Also need to remove <?php echo $newOppose . " from the support list.</p>";
+		$oQ1 = sprintf("SELECT `support` FROM support WHERE `user`=\"%s\"", $uname);
+		$oR1 = mysql_query($oQ1);
+		$oRow1 = mysql_fetch_array( $oR1 );
+		?><p class="dbg">Current Support = <?php echo $oRow1['support'] . "</p>";						
+		$o2 = str_replace($newOppose, "", $oRow1['support']);
+		?><p class="dbg">New String = <?php echo $o2 . "</p>";
+		$o3 = sprintf("UPDATE `support` SET `support`=\"%s\" WHERE `user`=\"%s\"", $o2, $uname);
+		?><p class="dbg">mysql_query = <?php echo $o3 . "</p>";
+		$ro3 = mysql_query($o3) or die(mysql_error());
+	}
+	elseif ($remSupport)
+	{
+		?><p class="dbg">Remove Support. </p> <?php
+					?><p class="dbg">Need to remove <?php echo $remSupport . " from the support list.</p>";
+		$sQ1 = sprintf("SELECT `support` FROM support WHERE `user`=\"%s\"", $uname);
+		$sR1 = mysql_query($sQ1);
+		$sRow1 = mysql_fetch_array( $sR1 );
+		?><p class="dbg">Current Support = <?php echo $sRow1['support'] . "</p>";
+		$sR2 = str_replace($remSupport, "", $sRow1['support']);
+		?><p class="dbg">New String = <?php echo $sR2 . "</p>";
+		?><p class="dbg">Next step here is to push the new string into the database using UPDATE. <?php
+		$s3 = sprintf("UPDATE `support` SET `support`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
+		$result3 = mysql_query($s3) or die(mysql_error());
+		?><p class="dbg">DONE. <?php
+		
+	}
+	elseif ($remOppose)
+	{
+		?><p class="dbg">Remove Oppose. </p> <?php
+					?><p class="dbg">Need to remove <?php echo $remOppose . " from the oppose list.</p>";
+		$sQ1 = sprintf("SELECT `oppose` FROM support WHERE `user`=\"%s\"", $uname);
+		$sR1 = mysql_query($sQ1);
+		$sRow1 = mysql_fetch_array( $sR1 );
+		?><p class="dbg">Current Oppose = <?php echo $sRow1['oppose'] . "</p>";
+		$sR2 = str_replace($remOppose, "", $sRow1['oppose']);
+		?><p class="dbg">New String = <?php echo $sR2 . "</p>";
+		?><p class="dbg">Next step here is to push the new string into the database using UPDATE. <?php
+		$s3 = sprintf("UPDATE `support` SET `oppose`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
+		$result3 = mysql_query($s3) or die(mysql_error());
+		?><p class="dbg">DONE. <?php
+	}
+	else
+	{
+		?><p class="dbg">Welcome. No buttons clicked.</p><?php
+	}
 	
 	// Get all issues	
 	//$p1name = "jsensenbrenner";
@@ -39,6 +130,11 @@
 	$sql2 = "SELECT * FROM `pubissues` WHERE `user`=\"" . $p2name . "\" AND `type`=2";
 	$result2 = mysql_query($sql2);
 	echo $p2name . "<br>";
+	
+	// Get user's support/oppose data
+	$supQuery = sprintf("SELECT * FROM support WHERE `user`=\"%s\"", $uname);
+	$supResult = mysql_query($supQuery);
+	$supRow = mysql_fetch_array( $supResult );
 			
 	// Select first 4 issues
 	$issNum = 0;
@@ -70,46 +166,96 @@
 	<table class="question">
 		<tr>
 			<td class="question">
-				<h3><?php echo $issStatements[0]; ?></h3><br>		
-				<form method="post" class="inline">
-					<input type="hidden" name="polA" value="polA">
-					<input type="hidden" name="polB" value="polB">
-					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
-					<input type="submit" value="Support" class="supportButton">
-				</form>
-				<form method="post" class="inline">
-					<input type="hidden" name="polA" value="polA">
-					<input type="hidden" name="polB" value="polB">
-					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
-					<input type="submit" value="Oppose" class="opposeButton">
-				</form>
+				<h3><?php echo $issStatements[0]; ?></h3><br>
+				
+				<?php
+					$searchText = "a" . $issIds[0] . "z";
+					$supMatch = strpos($supRow['support'], $searchText);
+					$oppMatch = strpos($supRow['oppose'], $searchText);
+					
+					if ($supMatch)
+					{
+						?><form method="post" class="inline supp"><?php
+					}
+					else
+					{
+						?><form method="post" class="inline neut"><?php
+					}
+				?>
+							<input type="hidden" name="polA" value="polA">
+							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+							<input type="submit" value="Support" class="supportButton">
+						</form>
+				<?php
+					if ($oppMatch)
+					{
+						?><form method="post" class="inline opp"><?php
+					}
+					else
+					{
+						?><form method="post" class="inline neut"><?php
+					}
+				?>
+							<input type="hidden" name="polA" value="polA">
+							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="submit" value="Oppose" class="opposeButton">
+						</form>
 			</td>
 			<td class="question">
 				<h3><?php echo $issStatements[1]; ?></h3><br>
-				<form method="post" class="inline">
-					<input type="hidden" name="polA" value="polA">
-					<input type="hidden" name="polB" value="polB">
-					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
-					<input type="submit" value="Support" class="supportButton">
-				</form>
-				<form method="post" class="inline">
-					<input type="hidden" name="polA" value="polA">
-					<input type="hidden" name="polB" value="polB">
-					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
-					<input type="submit" value="Oppose" class="opposeButton">
-				</form>
+				<?php
+					$searchText = "a" . $issIds[1] . "z";
+					$supMatch = strpos($supRow['support'], $searchText);
+					$oppMatch = strpos($supRow['oppose'], $searchText);
+					
+					if ($supMatch)
+					{
+						?><form method="post" class="inline supp"><?php
+					}
+					else
+					{
+						?><form method="post" class="inline neut"><?php
+					}
+				?>
+							<input type="hidden" name="polA" value="polA">
+							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+							<input type="submit" value="Support" class="supportButton">
+						</form>
+				<?php
+					if ($oppMatch)
+					{
+						?><form method="post" class="inline opp"><?php
+					}
+					else
+					{
+						?><form method="post" class="inline neut"><?php
+					}
+				?>
+							<input type="hidden" name="polA" value="polA">
+							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="submit" value="Oppose" class="opposeButton">
+						</form>
 			</td>		
 		</tr>
 		<tr>
 			<td class="question">
 				<h3><?php echo $issStatements[2] ?></h3><br>	
-				<form method="post" class="inline">
+				<?php
+					$searchText = "a" . $issIds[2] . "z";
+					$supMatch = strpos($supRow['support'], $searchText);
+					$oppMatch = strpos($supRow['oppose'], $searchText);
+				?>
+				<form method="post" class="inline <?php if ($supMatch) { echo "supp";} else { echo "neut"; }?>"
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
-				<form method="post" class="inline">
+				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>"
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
@@ -118,13 +264,18 @@
 			</td>
 			<td class="question">
 				<h3><?php echo $issStatements[3] ?></h3><br>
-				<form method="post" class="inline">
+				<?php
+					$searchText = "a" . $issIds[3] . "z";
+					$supMatch = strpos($supRow['support'], $searchText);
+					$oppMatch = strpos($supRow['oppose'], $searchText);
+				?>
+				<form method="post" class="inline <?php if ($supMatch) { echo "supp";} else { echo "neut"; }?>">
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
-				<form method="post" class="inline">
+				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>">
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
@@ -140,7 +291,7 @@
 	</form>
 </div>
 
-ver 09 - November 28, 2014
+ver 12 - December 4, 2014
 
 </body>
 
