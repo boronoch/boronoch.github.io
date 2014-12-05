@@ -16,6 +16,12 @@
 
 <?php
 	// Receive input from elections.html
+	$uname = $_POST["uname"];
+	$p1name = $_POST["elecCand1"];
+	$p2name = $_POST["elecCand2"];
+	echo $uname . "<br>";
+	echo $p1name . "<br>";
+	echo $p2name . "<br>";
 	
 	
 	// Connect to database
@@ -23,14 +29,16 @@
 	mysql_select_db("1544017_users") or die(mysql_error());
 	
 	// Get all issues	
-	$p1name = "jsensenbrenner";
+	//$p1name = "jsensenbrenner";
 	//$sql = sprintf("SELECT * FROM `pubissues` WHERE `user` LIKE \'%s\' AND `type` = 2", $p1name);
 	$sql = "SELECT * FROM `pubissues` WHERE `user`=\"jsensenbrenner\" AND `type`=2";
 	$result = mysql_query($sql);
+	echo $p1name . "<br>";
 	
-	$p2name = "crockwood";
+	//$p2name = "crockwood";
 	$sql2 = "SELECT * FROM `pubissues` WHERE `user`=\"" . $p2name . "\" AND `type`=2";
 	$result2 = mysql_query($sql2);
+	echo $p2name . "<br>";
 			
 	// Select first 4 issues
 	$issNum = 0;
@@ -125,9 +133,14 @@
 			</td>		
 		</tr>
 	</table>
+	
+	<form action="profile.html" method="post">
+		<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+		<input type="submit" value="Return to Profile">
+	</form>
 </div>
 
-ver 06 - September 21, 2014
+ver 09 - November 28, 2014
 
 </body>
 

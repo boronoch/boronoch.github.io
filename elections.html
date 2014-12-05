@@ -10,7 +10,7 @@ Elections
 
 <body>
 
-ver 03 - October 26, 2014
+ver 05 - November 28, 2014
 
 <h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
 
@@ -27,14 +27,17 @@ ver 03 - October 26, 2014
 	
 	// Get Election Data
 	$uState = $userRow['State'];
-	$federalQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
+	//$federalQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
+	$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Category` LIKE \"Federal\" AND `StateCode` LIKE \"%s\" LIMIT 0, 30 ", $uState);
+	//$federalQuery = "SELECT * FROM elections WHERE `Category` LIKE \"Federal\" AND `StateCode` LIKE \"WI\"";
 	$federalQResult = mysql_query($federalQuery);
-	$stateQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
+	//$stateQuery = sprintf("SELECT * FROM elections WHERE `StateCode`=\"%s\"", $uState);
+	$stateQuery = sprintf("SELECT * FROM `elections` WHERE `Category` LIKE \"State\" AND `StateCode` LIKE \"%s\" LIMIT 0, 30 ", $uState);
 	$stateQResult = mysql_query($stateQuery);
 	
 ?>
 
-<table> <!-- Table A: Outer framework.  -->
+<table class="outerTable"> <!-- Table A: Outer framework.  -->
 	<tr><td>  <!-- TA.R1 = Includes all content;  TA.R1.C1 = User data column  -->
 
 			<table class="userData"> <!-- Table B: User Data. Includes a photo and disrict info -->
@@ -51,7 +54,7 @@ ver 03 - October 26, 2014
 		</td> <!-- TA.R1.C1 -->
 		
 		<td>  <!-- TA.R1.C2 = contains the second column of the outer framework: all election info  -->
-			<table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+			<table class="blueBarsTable"> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
 				<tr><td class="sectionTitle">Federal</td></tr> <!-- TC.R1 Federal Heading -->
 					
 				<?php 
@@ -59,28 +62,74 @@ ver 03 - October 26, 2014
 					{
 					?>
 						<tr><td> <!-- TC.R1a Entries in Federal section -->
-							<table class="issRow2"> <!-- TD1 Entries in Federal Section -->
-								<tr>
-									<td> <!-- Incumbant Party Candidate -->
-										<img src="placeholder.jpg"><br>
-										<?php echo $fRow['IncPartyCand']; ?>											
-									</td>
-									<td class="electText"> <!-- Election Details -->
-										<?php echo $fRow['Seat']; ?><br>
-										<?php echo $fRow['State'] . "'s " . $fRow['District'] . " District";?>
-									</td>											
-									<td> <!-- Major Party Challenger -->
-										<img src="placeholder.jpg"><br>
-										<?php echo $fRow['ChalPartyCand']; ?>
-									</td>										
-								</tr>
-							</table> <!-- TD1 Entries in Federal Section -->
+							<form method="post" action="compare.html" id="form1">
+								<input type="hidden" name="elecCand1" value="<?php echo $fRow['IncPartyCand']; ?>" />
+								<input type="hidden" name="elecCand2" value="<?php echo $fRow['ChalPartyCand']; ?>" />
+								<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+								<a href="compare.html" onclick="document.getElementById('form1').submit(); return false;">
+									<table class="electionEntries"> <!-- TD1 Entries in Federal Section -->
+										<tr>
+											<td class="Cand"> <!-- Incumbant Party Candidate -->
+												<img src="placeholder.jpg"><br>
+												<?php echo $fRow['IncPartyCand']; ?>											
+											</td>
+											<td class="electText"> <!-- Election Details -->
+												<?php echo $fRow['Seat']; ?><br>
+												<?php
+													echo $fRow['State'];
+													if ($fRow['District'] > 0)
+													{
+														echo "'s " . $fRow['District'] . " District";
+													}
+												?>
+											</td>											
+											<td class="Cand"> <!-- Major Party Challenger -->
+												<img src="placeholder.jpg"><br>
+												<?php echo $fRow['ChalPartyCand']; ?>
+											</td>										
+										</tr>
+									</table> <!-- TD1 Entries in Federal Section -->
+								</a>
+							</form>
 						</td></tr> <!-- TC.R1a -->
 					<?php
 					}						
 				?>
 				
 				<tr><td class="sectionTitle">State</td></tr> <!-- TC.R2 State Heading -->
+				
+				<?php 
+				
+					while($sRow = mysql_fetch_array( $stateQResult ))
+					{
+					?>
+						<tr><td> <!-- TC.R3a Entries in State section -->
+							<table class="electionEntries"> <!-- TD1 Entries in State Section -->
+								<tr>
+									<td class="Cand"> <!-- Incumbant Party Candidate -->
+										<img src="placeholder.jpg"><br>
+										<?php echo $sRow['IncPartyCand']; ?>											
+									</td>
+									<td class="electText"> <!-- Election Details -->
+										<?php echo $sRow['Seat']; ?><br>
+										<?php
+											echo $sRow['State'];
+											if ($sRow['District'] > 0)
+											{
+												echo "'s " . $sRow['District'] . " District";
+											}
+										?>
+									</td>											
+									<td class="Cand"> <!-- Major Party Challenger -->
+										<img src="placeholder.jpg"><br>
+										<?php echo $sRow['ChalPartyCand']; ?>
+									</td>										
+								</tr>
+							</table> <!-- TD1 Entries in State Section -->
+						</td></tr> <!-- TC.R3a -->
+					<?php
+					}						
+				?>
 				
 				<tr><td class="sectionTitle">Local</td></tr> <!-- TC.R3 Local Heading -->				
 				
