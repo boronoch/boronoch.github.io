@@ -28,7 +28,17 @@
 	$newOppose = $_POST["addOppose"];
 	$remSupport = $_POST["remSupport"];
 	$remOppose = $_POST["remOppose"];
-	
+?>
+<script>
+	console.log("$uname = <?php echo $uname; ?>");
+	console.log("$p1name = <?php echo $p1name; ?>");
+	console.log("$p2name = <?php echo $p2name; ?>");
+	console.log("$newSupport: "); console.log("<?php echo $newSupport; ?>");
+	console.log("$newOppose: "); console.log("<?php echo $newOppose; ?>");
+	console.log("$remSupport: "); console.log("<?php echo $remSupport; ?>");
+	console.log("$remOppose: "); console.log("<?php echo $remOppose; ?>");
+</script>
+<?php
 	
 	// Connect to database
 	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
@@ -38,26 +48,31 @@
 	// Should only ever have one or the other with current design
 	if ($newSupport)
 	{
-					?><p class="dbg">New Support. </p> <?php
-					?><p class="dbg">Need to add <?php echo $newSupport . " to the support list.</p>";
+		?>
+		<script>
+			console.log("New Support.");
+			console.log("Need to add <?php echo $newSupport; ?> to the support list.");
+		</script>
+		<?php
+		
 		// Get user's support data
 		$sQ1 = sprintf("SELECT `support` FROM support WHERE `user`=\"%s\"", $uname);
 		$sR1 = mysql_query($sQ1);
 		$sRow1 = mysql_fetch_array( $sR1 );
-		?><p class="dbg">Current Support = <?php echo $sRow1['support'] . "</p>";
+		?><script>console.log('Current Support = <?php echo $sRow1['support'];?>');</script><?php
 		$sR2 = $sRow1['support'] . $newSupport;
-		?><p class="dbg">New Support = <?php echo $sR2 . "</p>";
+		?><script>console.log("New Support = <?php echo $sR2;?>");</script><?php
 		$s3 = sprintf("UPDATE `support` SET `support`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
 		$result3 = mysql_query($s3) or die(mysql_error());
-		?><p class="dbg">Also need to remove <?php echo $newSupport . " from the oppose list.</p>";
+		?><script>console.log("Also need to remove <?php echo $newSupport;?> from the oppose list.");</script><?php
 		$oQ1 = sprintf("SELECT `oppose` FROM support WHERE `user`=\"%s\"", $uname);
 		$oR1 = mysql_query($oQ1);
 		$oRow1 = mysql_fetch_array( $oR1 );
-		?><p class="dbg">Current Oppose = <?php echo $oRow1['oppose'] . "</p>";								
+		?><script>console.log('Current Oppose = <?php echo $oRow1;?>.');</script><?php
 		$o2 = str_replace($newSupport, "", $oRow1['oppose']);
-		?><p class="dbg">New String = <?php echo $o2 . "</p>";
+		?><script>console.log('New String =  <?php echo $o2;?>.');</script><?php
 		$o3 = sprintf("UPDATE `support` SET `oppose`=\"%s\" WHERE `user`=\"%s\"", $o2, $uname);
-		?><p class="dbg">mysql_query = <?php echo $o3 . "</p>";
+		?><script>console.log('mysql_query = <?php echo $o3;?>.');</script><?php
 		$ro3 = mysql_query($o3) or die(mysql_error());
 	}
 	elseif ($newOppose)
@@ -184,6 +199,9 @@
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 							<input type="submit" value="Support" class="supportButton">
 						</form>
@@ -199,6 +217,9 @@
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
@@ -221,6 +242,9 @@
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 							<input type="submit" value="Support" class="supportButton">
 						</form>
@@ -236,6 +260,9 @@
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
@@ -252,12 +279,18 @@
 				<form method="post" class="inline <?php if ($supMatch) { echo "supp";} else { echo "neut"; }?>"
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>"
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
@@ -272,12 +305,18 @@
 				<form method="post" class="inline <?php if ($supMatch) { echo "supp";} else { echo "neut"; }?>">
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+					<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+					<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>">
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
+					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+					<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
+					<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
 					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
@@ -291,7 +330,7 @@
 	</form>
 </div>
 
-ver 12 - December 4, 2014
+ver 20 - December 7, 2014
 
 </body>
 
