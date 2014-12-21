@@ -76,14 +76,19 @@
 	{
 		?><p class="dbg">New Oppose. </p> <?php
 					?><p class="dbg">Need to add <?php echo $newOppose . " to the oppose list.</p>";
+		// Get the user's oppose string
 		$sQ1 = sprintf("SELECT `oppose` FROM support WHERE `user`=\"%s\"", $uname);
 		$sR1 = mysql_query($sQ1);
 		$sRow1 = mysql_fetch_array( $sR1 );
 		?><p class="dbg">Current Oppose = <?php echo $sRow1['oppose'] . "</p>";
+		
+		// Add the new string to it
 		$sR2 = $sRow1['oppose'] . $newOppose;
 		?><p class="dbg">New Oppose = <?php echo $sR2 . "</p>";
 		$s3 = sprintf("UPDATE `support` SET `oppose`=\"%s\" WHERE `user`=\"%s\"", $sR2, $uname);
 		$result3 = mysql_query($s3) or die(mysql_error());
+		
+		// Remove the new string from the support list
 		?><p class="dbg">Also need to remove <?php echo $newOppose . " from the support list.</p>";
 		$oQ1 = sprintf("SELECT `support` FROM support WHERE `user`=\"%s\"", $uname);
 		$oR1 = mysql_query($oQ1);
@@ -135,13 +140,11 @@
 	//$p1name = "jsensenbrenner";
 	//$sql = sprintf("SELECT * FROM `pubissues` WHERE `user` LIKE \'%s\' AND `type` = 2", $p1name);
 	$sql = "SELECT * FROM `pubissues` WHERE `user`=\"jsensenbrenner\" AND `type`=2";
-	$result = mysql_query($sql);
-	echo $p1name . "<br>";
+	$result = mysql_query($sql);	
 	
 	//$p2name = "crockwood";
 	$sql2 = "SELECT * FROM `pubissues` WHERE `user`=\"" . $p2name . "\" AND `type`=2";
-	$result2 = mysql_query($sql2);
-	echo $p2name . "<br>";
+	$result2 = mysql_query($sql2);	
 	
 	// Get user's support/oppose data
 	$supQuery = sprintf("SELECT * FROM support WHERE `user`=\"%s\"", $uname);
@@ -220,19 +223,22 @@
 				<?php
 					if ($oppMatch)
 					{
-						?><form method="post" class="inline opp"><?php
+						?>	<form method="post" class="inline opp">
+							<input type="hidden" name="remOppose" value="a<?php echo $issIds[0]; ?>z">
+						<?php
 					}
 					else
 					{
-						?><form method="post" class="inline neut"><?php
+						?>  <form method="post" class="inline neut">
+							<input type="hidden" name="addOppose" value="a<?php echo $issIds[0]; ?>z">
+						<?php
 					}
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addOppose" value="a<?php echo $issIds[0]; ?>z">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">							
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
 			</td>
@@ -246,29 +252,36 @@
 					
 					if ($supMatch)
 					{
-						?><form method="post" class="inline supp"><?php
+						?>	<form method="post" class="inline supp">
+							<input type="hidden" name="remSupport" value="a<?php echo $issIds[1]; ?>z">
+						<?php
 					}
 					else
 					{
-						?><form method="post" class="inline neut"><?php
+						?>	<form method="post" class="inline neut">
+							<input type="hidden" name="addSupport" value="a<?php echo $issIds[1]; ?>z">
+						<?php
 					}
 				?>
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addSupport" value="a<?php echo $issIds[1]; ?>z">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">							
 							<input type="submit" value="Support" class="supportButton">
 						</form>
 				<?php
 					if ($oppMatch)
 					{
-						?><form method="post" class="inline opp"><?php
+						?>	<form method="post" class="inline opp">
+							<input type="hidden" name="remOppose" value="a<?php echo $issIds[1]; ?>z">
+						<?php
 					}
 					else
 					{
-						?><form method="post" class="inline neut"><?php
+						?>	<form method="post" class="inline neut">
+							<input type="hidden" name="addOppose" value="a<?php echo $issIds[1]; ?>z">
+						<?php
 					}
 				?>
 							<input type="hidden" name="polA" value="polA">
@@ -276,7 +289,6 @@
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
 							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addOppose" value="a<?php echo $issIds[1]; ?>z">
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
 			</td>		
@@ -295,7 +307,7 @@
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
 							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addSupport" value="a<?php echo $issIds[2]; ?>z">
+					<input type="hidden" name="<?php if ($supMatch) { echo "rem";} else { echo "add"; }?>Support" value="a<?php echo $issIds[2]; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>"
@@ -304,7 +316,7 @@
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
 							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addOppose" value="a<?php echo $issIds[2]; ?>z">
+					<input type="hidden" name="<?php if ($supMatch) { echo "rem";} else { echo "add"; }?>Oppose" value="a<?php echo $issIds[2]; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
 			</td>
@@ -321,7 +333,7 @@
 					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 					<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
 					<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addSupport" value="a<?php echo $issIds[3]; ?>z">
+					<input type="hidden" name="<?php if ($supMatch) { echo "rem";} else { echo "add"; }?>Support" value="a<?php echo $issIds[3]; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>">
@@ -330,7 +342,7 @@
 					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
 					<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
 					<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addOppose" value="a<?php echo $issIds[3]; ?>z">
+					<input type="hidden" name="<?php if ($supMatch) { echo "rem";} else { echo "add"; }?>Oppose" value="a<?php echo $issIds[3]; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
 			</td>		
@@ -342,8 +354,8 @@
 		<input type="submit" value="Return to Profile">
 	</form>
 </div>
-
-ver 21 - December 21, 2014
+<br><br><br>
+ver 22 - December 21, 2014
 
 </body>
 
