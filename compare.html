@@ -19,9 +19,6 @@
 	$uname = $_POST["uname"];
 	$p1name = $_POST["elecCand1"];
 	$p2name = $_POST["elecCand2"];
-	echo $uname . "<br>";
-	echo $p1name . "<br>";
-	echo $p2name . "<br>";
 	
 	// Receive new support or oppose button clicks, if any
 	$newSupport = $_POST["addSupport"];
@@ -150,6 +147,8 @@
 	$supQuery = sprintf("SELECT * FROM support WHERE `user`=\"%s\"", $uname);
 	$supResult = mysql_query($supQuery);
 	$supRow = mysql_fetch_array( $supResult );
+	?><script>console.log('Get Support = <?php echo $supRow['support'];?>');</script><?php
+	?><script>console.log('Get Oppose = <?php echo $supRow['oppose'];?>');</script><?php
 			
 	// Select first 4 issues
 	$issNum = 0;
@@ -159,7 +158,9 @@
 	{
 		// Retrieve data
 		$issIds[$issNum] = $row['index'];
-		$issStatements[$issNum] = $row['statement'];		
+		$issStatements[$issNum] = $row['statement'];	
+		?><script>console.log('row index = <?php echo $row['index'];?>');
+		console.log('issIds[<?php echo $issNum;?>] = <?php echo $issIds[$issNum];?>');</script><?php
 		$issNum = $issNum + 1;
 		
 	}	
@@ -169,6 +170,8 @@
 		// Retrieve data
 		$issIds[$issNum] = $row['index'];
 		$issStatements[$issNum] = $row['statement'];		
+		?><script>console.log('row index = <?php echo $row['index'];?>');
+		console.log('issIds[<?php echo $issNum;?>] = <?php echo $issIds[$issNum];?>');</script><?php
 		$issNum = $issNum + 1;
 		
 	}
@@ -187,22 +190,31 @@
 					$searchText = "a" . $issIds[0] . "z";
 					$supMatch = strpos($supRow['support'], $searchText);
 					$oppMatch = strpos($supRow['oppose'], $searchText);
+					?><script>
+						console.log('searchText = <?php echo $searchText; ?>');
+						console.log('support row = <?php echo $supRow['support'];?>');
+						console.log('Block 0: supMatch=<?php echo $supMatch;?>, and oppMatch=<?php echo $oppMatch;?>');
+					</script><?php
 					
 					if ($supMatch)
 					{
-						?><form method="post" class="inline supp"><?php
+						?>	<form method="post" class="inline supp">
+							<input type="hidden" name="remSupport" value="a<?php echo $issIds[0]; ?>z">
+						<?php
 					}
 					else
 					{
-						?><form method="post" class="inline neut"><?php
+						?>	<form method="post" class="inline neut">
+							<input type="hidden" name="addSupport" value="a<?php echo $issIds[0]; ?>z">
+						<?php
+						
 					}
 				?>
-							<input type="hidden" name="polA" value="polA">
-							<input type="hidden" name="polB" value="polB">
+							<input type="hidden" name="polA" value="polA"> <!-- what is this used for? -->
+							<input type="hidden" name="polB" value="polB"> <!-- what is this used for? -->
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">							
 							<input type="submit" value="Support" class="supportButton">
 						</form>
 				<?php
@@ -218,9 +230,9 @@
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+							<input type="hidden" name="addOppose" value="a<?php echo $issIds[0]; ?>z">
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
 			</td>
@@ -230,6 +242,7 @@
 					$searchText = "a" . $issIds[1] . "z";
 					$supMatch = strpos($supRow['support'], $searchText);
 					$oppMatch = strpos($supRow['oppose'], $searchText);
+					?><script>console.log('Block 1: supMatch=<?php echo $supMatch;?>, and oppMatch=<?php echo $oppMatch;?>');</script><?php
 					
 					if ($supMatch)
 					{
@@ -243,9 +256,9 @@
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+							<input type="hidden" name="addSupport" value="a<?php echo $issIds[1]; ?>z">
 							<input type="submit" value="Support" class="supportButton">
 						</form>
 				<?php
@@ -261,9 +274,9 @@
 							<input type="hidden" name="polA" value="polA">
 							<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-							<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+							<input type="hidden" name="addOppose" value="a<?php echo $issIds[1]; ?>z">
 							<input type="submit" value="Oppose" class="opposeButton">
 						</form>
 			</td>		
@@ -280,18 +293,18 @@
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+					<input type="hidden" name="addSupport" value="a<?php echo $issIds[2]; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>"
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 							<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-							<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-							<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+							<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+							<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+					<input type="hidden" name="addOppose" value="a<?php echo $issIds[2]; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
 			</td>
@@ -306,18 +319,18 @@
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-					<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-					<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addSupport" value="a<?php echo $issId; ?>z">
+					<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+					<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+					<input type="hidden" name="addSupport" value="a<?php echo $issIds[3]; ?>z">
 					<input type="submit" value="Support" class="supportButton">
 				</form>
 				<form method="post" class="inline <?php if ($oppMatch) { echo "opp";} else { echo "neut"; }?>">
 					<input type="hidden" name="polA" value="polA">
 					<input type="hidden" name="polB" value="polB">
 					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
-					<input type="hidden" name="p1name" value="<?php echo $p1name; ?>">
-					<input type="hidden" name="p2name" value="<?php echo $p2name; ?>">
-					<input type="hidden" name="addOppose" value="a<?php echo $issId; ?>z">
+					<input type="hidden" name="elecCand1" value="<?php echo $p1name; ?>">
+					<input type="hidden" name="elecCand2" value="<?php echo $p2name; ?>">
+					<input type="hidden" name="addOppose" value="a<?php echo $issIds[3]; ?>z">
 					<input type="submit" value="Oppose" class="opposeButton">
 				</form>
 			</td>		
@@ -330,7 +343,7 @@
 	</form>
 </div>
 
-ver 20 - December 7, 2014
+ver 21 - December 21, 2014
 
 </body>
 
