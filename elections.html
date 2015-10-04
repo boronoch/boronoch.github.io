@@ -10,7 +10,7 @@ Elections
 
 <body>
 
-ver 05 - November 28, 2014
+ver 06 - February 23, 2015
 
 <h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
 
@@ -66,6 +66,7 @@ ver 05 - November 28, 2014
 								<input type="hidden" name="elecCand1" value="<?php echo $fRow['IncPartyCand']; ?>" />
 								<input type="hidden" name="elecCand2" value="<?php echo $fRow['ChalPartyCand']; ?>" />
 								<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+								<input type="hidden" name="elecIdx" value="<?php echo $fRow['Index']; ?>" />
 								<a href="compare.html" onclick="document.getElementById('form1').submit(); return false;">
 									<table class="electionEntries"> <!-- TD1 Entries in Federal Section -->
 										<tr>

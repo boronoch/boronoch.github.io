@@ -1,0 +1,78 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+<body>
+
+<?php
+
+	// Receive input from elections.html
+	$uname = $_POST["uname"];
+	$p1name = $_POST["p1name"];
+	$p2name = $_POST["p2name"];
+
+?>
+
+<script>
+	console.log("uname = <?php echo $uname;?>");	
+	console.log("p1name = <?php echo $p1name;?>");
+	console.log("p2name = <?php echo $p2name;?>");	
+</script>
+
+<script>
+	console.log("v06 - Jan 31, 2015");			
+</script>
+
+<h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
+
+<!-- Navigation bar -->
+<ul class="navbar">
+	<li class="navbar"><form action="profile.html" method="post">
+		<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+		<input type="submit" class="navbar" value="Return to Profile">
+		</form></li>
+	<li class="navbar"><form action="compare.html" method="post">
+		<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+		<input type="submit" class="navbar" value="View more Statements">
+		</form></li>
+	<li class="navbar"><form action="elections.html" method="post">
+		<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+		<input type="submit" class="navbar" value="See other elections">
+		</form></li>
+</ul>
+
+<!-- Election Candidates -->
+<?php 
+	$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Category` LIKE \"Federal\" AND `StateCode` LIKE \"%s\" LIMIT 0, 30 ", $uState);
+	$federalQResult = mysql_query($federalQuery);
+	while($fRow = mysql_fetch_array( $federalQResult ))
+	{
+	?>
+		<table class="electionEntries"> <!-- TD1 Entries in Federal Section -->
+			<tr>
+				<td class="Cand"> <!-- Incumbant Party Candidate -->
+					<img src="placeholder.jpg"><br>
+					<?php echo $fRow['IncPartyCand']; ?>											
+				</td>
+				<td class="electText"> <!-- Election Details -->
+					<?php echo $fRow['Seat']; ?><br>
+					<?php
+						echo $fRow['State'];
+						if ($fRow['District'] > 0)
+						{
+							echo "'s " . $fRow['District'] . " District";
+						}
+					?>
+				</td>											
+				<td class="Cand"> <!-- Major Party Challenger -->
+					<img src="placeholder.jpg"><br>
+					<?php echo $fRow['ChalPartyCand']; ?>
+				</td>										
+			</tr>
+		</table> <!-- TD1 Entries in Federal Section -->
+	<?php
+	}
+	?>
+</body>
+
+</html>

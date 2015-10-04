@@ -1,4 +1,4 @@
-/* ver 15 - 12.21.2014 */
+/* ver 23 - 1.31.2015 */
 
 * {  }
 
@@ -27,6 +27,7 @@ h1 {
     border-color: #0066ff;
     text-align: center;
     padding-bottom: 12px;
+	margin-bottom: 10px;
         
 }
 
@@ -253,4 +254,51 @@ td.electText {
 .Cand {
 	text-align: center;
 }
+
+ul.navbar {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	margin-bottom: 40px;
+}
+
+li.navbar  {
+	float: left;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+input.navbar {
+	display: block; 
+	width: 160px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #0066ff;
+	text-align: center;
+	padding: 4px;
+	text-decoration: none;
+}
+
+input.navbar:hover  {
+	background-color: #CC403D;
+}
+
+/*
+a.navbar:link, a.navbar:visited {
+	display: block;
+	width: 120px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #0066ff;
+	text-align: center;
+	padding: 4px;
+	text-decoration: none;
+}
+
+a: hover, a:active {
+	background-color: #CC403D;
+}
+	*/
+
 	
