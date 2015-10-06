@@ -6,21 +6,23 @@
 
 <?php
 
-	// Receive input from elections.html
+	// Receive input from compare.html
 	$uname = $_POST["uname"];
 	$p1name = $_POST["p1name"];
 	$p2name = $_POST["p2name"];
+	$elecIdx = $_POST["elecIdx"];
 
 ?>
 
 <script>
 	console.log("uname = <?php echo $uname;?>");	
 	console.log("p1name = <?php echo $p1name;?>");
-	console.log("p2name = <?php echo $p2name;?>");	
+	console.log("p2name = <?php echo $p2name;?>");
+	console.log("elecIdx = <?php echo $elecIdx;?>");		
 </script>
 
 <script>
-	console.log("v06 - Jan 31, 2015");			
+	console.log("v08 - Oct 5 2015");			
 </script>
 
 <h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
@@ -42,7 +44,7 @@
 </ul>
 
 <!-- Election Candidates -->
-<?php 
+<?php /*
 	$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Category` LIKE \"Federal\" AND `StateCode` LIKE \"%s\" LIMIT 0, 30 ", $uState);
 	$federalQResult = mysql_query($federalQuery);
 	while($fRow = mysql_fetch_array( $federalQResult ))
@@ -72,7 +74,78 @@
 		</table> <!-- TD1 Entries in Federal Section -->
 	<?php
 	}
-	?>
+*/	?>
+	
+<!-- Election Candidates 2; copy of Table C  -->
+<?php
+	// Connect to database
+	mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+	mysql_select_db("1544017_users") or die(mysql_error());
+
+	//$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Index` LIKE \"%s\" LIMIT 0, 30 ", $elecIdx);
+	$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Index` = %d LIMIT 0, 30 ", $elecIdx);
+	$federalQResult = mysql_query($federalQuery);
+?>
+
+<script>
+	console.log("$federalQuery = <?php echo $federalQuery;?>");	
+	console.log("$federalQResult = <?php echo $federalQResult;?>");	
+</script>
+
+
+<table class="blueBarsTable"> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+	<tr><td class="sectionTitle">Federal</td></tr> <!-- TC.R1 Federal Heading -->
+		
+	<?php 
+		while($fRow = mysql_fetch_array( $federalQResult ))
+		{
+			?>
+
+			<script>
+				console.log("$fRow['IncPartyCand'] = <?php echo $fRow['IncPartyCand'];?>");	
+				console.log("$fRow['ChalPartyCand'] = <?php echo $fRow['ChalPartyCand'];?>");	
+			</script>
+
+			<tr><td> <!-- TC.R1a Entries in Federal section -->
+				<form method="post" action="compare.html" id="form1">
+					<input type="hidden" name="elecCand1" value="<?php echo $fRow['IncPartyCand']; ?>" />
+					<input type="hidden" name="elecCand2" value="<?php echo $fRow['ChalPartyCand']; ?>" />
+					<input type="hidden" name="uname" value="<?php echo $uname; ?>">
+					<!--	<input type="hidden" name="elecIdx" value="<?/*php echo $fRow['Index']; */?>" /> -->
+					<a href="compare.html" onclick="document.getElementById('form1').submit(); return false;">
+						<table class="electionEntries"> <!-- TD1 Entries in Federal Section -->
+							<tr>
+								<td class="Cand"> <!-- Incumbant Party Candidate -->
+									<img src="placeholder.jpg"><br>
+									<?php echo $fRow['IncPartyCand']; ?>											
+								</td>
+								<td class="electText"> <!-- Election Details -->
+									<?php echo $fRow['Seat']; ?><br>
+									<?php
+										echo $fRow['State'];
+										if ($fRow['District'] > 0)
+										{
+											echo "'s " . $fRow['District'] . " District";
+										}
+									?>
+								</td>											
+								<td class="Cand"> <!-- Major Party Challenger -->
+									<img src="placeholder.jpg"><br>
+									<?php echo $fRow['ChalPartyCand']; ?>
+								</td>										
+							</tr>
+						</table> <!-- TD1 Entries in Federal Section -->
+					</a>
+				</form>
+			</td></tr> <!-- TC.R1a -->
+		
+			<?php
+		}						
+	?>		
+	
+</table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+
+
 </body>
 
 </html>
