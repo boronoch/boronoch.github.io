@@ -22,7 +22,7 @@
 </script>
 
 <script>
-	console.log("v08 - Oct 5 2015");			
+	console.log("v10 - Oct 5 2015");			
 </script>
 
 <h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
@@ -42,39 +42,6 @@
 		<input type="submit" class="navbar" value="See other elections">
 		</form></li>
 </ul>
-
-<!-- Election Candidates -->
-<?php /*
-	$federalQuery = sprintf("SELECT * FROM `elections` WHERE `Category` LIKE \"Federal\" AND `StateCode` LIKE \"%s\" LIMIT 0, 30 ", $uState);
-	$federalQResult = mysql_query($federalQuery);
-	while($fRow = mysql_fetch_array( $federalQResult ))
-	{
-	?>
-		<table class="electionEntries"> <!-- TD1 Entries in Federal Section -->
-			<tr>
-				<td class="Cand"> <!-- Incumbant Party Candidate -->
-					<img src="placeholder.jpg"><br>
-					<?php echo $fRow['IncPartyCand']; ?>											
-				</td>
-				<td class="electText"> <!-- Election Details -->
-					<?php echo $fRow['Seat']; ?><br>
-					<?php
-						echo $fRow['State'];
-						if ($fRow['District'] > 0)
-						{
-							echo "'s " . $fRow['District'] . " District";
-						}
-					?>
-				</td>											
-				<td class="Cand"> <!-- Major Party Challenger -->
-					<img src="placeholder.jpg"><br>
-					<?php echo $fRow['ChalPartyCand']; ?>
-				</td>										
-			</tr>
-		</table> <!-- TD1 Entries in Federal Section -->
-	<?php
-	}
-*/	?>
 	
 <!-- Election Candidates 2; copy of Table C  -->
 <?php
@@ -92,14 +59,14 @@
 	console.log("$federalQResult = <?php echo $federalQResult;?>");	
 </script>
 
-
-<table class="blueBarsTable"> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
-	<tr><td class="sectionTitle">Federal</td></tr> <!-- TC.R1 Federal Heading -->
 		
-	<?php 
-		while($fRow = mysql_fetch_array( $federalQResult ))
-		{
-			?>
+<?php 
+	if($fRow = mysql_fetch_array( $federalQResult ))
+	{
+	?>
+		
+	<table class="blueBarsTable"> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+		<tr><td class="sectionTitle">Federal</td></tr> <!-- TC.R1 Federal Heading -->
 
 			<script>
 				console.log("$fRow['IncPartyCand'] = <?php echo $fRow['IncPartyCand'];?>");	
@@ -138,12 +105,45 @@
 					</a>
 				</form>
 			</td></tr> <!-- TC.R1a -->
-		
-			<?php
-		}						
-	?>		
+	</table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->		
 	
-</table> <!-- Table C: Contains all of the election info (All of TA.R1.C2) -->
+	<table class="totalsRow">
+		<!-- Totals Row -->
+		<tr>
+			<td>
+				<table class="resultsWin">
+					<tr><td>
+						<b>Totals</b>
+					</td>
+					<td>
+						<b>25 Statements<br>
+						18 you agree with<br>
+						3 you disagree with</b>							
+					</td></tr>
+				</table>					
+			</td>
+			<td>
+			</td>
+			<td>
+				<table class="resultsLose">
+					<tr><td>
+						<b>Totals</b>
+					</td>
+					<td>
+						<b>15 Statements<br>
+						4 you agree with<br>
+						9 you disagree with</b>							
+					</td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>	
+	
+
+	<?php
+	}						
+?>		
+	
 
 
 </body>
