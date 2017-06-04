@@ -30,11 +30,25 @@
 		public $names = 1;
 		public $databaseConnect = 1;
 		public $classes = 1;
+		public $functions = 1;
+	}
+	class category
+	{
+		public $name;
+		public $balance = 0;
+	}
+	class goal
+	{
+		public $name;
+		public $active = true;
+		public $target = 0;
+		public $balance = 0;
+		public $priority = 99;
+		public $category = "Goals";
 	}
 
 	// Version
 	$versions = new version();
 	
-	$versions->classes = 2;
-	print_r($versions);
+	$versions->classes = 5;
 ?>

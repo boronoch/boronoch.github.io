@@ -4,7 +4,7 @@
 	Initialize variables for accounts, categories, funds, and goals
 */
 
-	$versions->names = 9;
+	$versions->names = 13;
 	echo "Starting names.php version " . $versions->names . ".<br>";
 
 	// Query table
@@ -21,25 +21,27 @@
 			while($row = $result->fetch_assoc())
 			{
 				// DEBUG
-				print_r($row); 
+				/*print_r($row); 
 				echo "<br>Start echo: ";
 				echo $row["IDX"] . " ";
 				echo $row["Name"] . " ";
 				echo $row["Type"];
-				echo "<br>";
+				echo "<br>";*/
 				
 			
 				if (strcmp($row["Type"], "Account")==0)
 				{
 					$accounts_list[$accounts_idx] = $row["Name"];
-					$Accounts[$accounts_idx] = new account();
-					$Accounts[$accounts_idx]->name = $row["Name"];
+					$Accounts[$row["Name"]] = new account();
+					$Accounts[$row["Name"]]->name = $row["Name"];
 
 					$accounts_idx += 1;
 				}
 				elseif (strcmp($row["Type"], "Category")==0)
 				{
 					$categories_list[$categories_idx] = $row["Name"];
+					$Categories[$row["Name"]] = new category();
+					$Categories[$row["Name"]]->name = $row["Name"];
 					
 					$categories_idx += 1;
 				}
@@ -81,11 +83,11 @@
 				{
 					$funds_list[$funds_idx] = $row["Name"];
 					
-					$Funds[$funds_idx] = new fund();					
-					$Funds[$funds_idx]->name = $row["Name"];
-					$Funds[$funds_idx]->active = $row["Active"];
-					$Funds[$funds_idx]->category = $row["Category"];
-					$Funds[$funds_idx]->target = $row["Goal"];
+					$Funds[$row["Name"]] = new fund();					
+					$Funds[$row["Name"]]->name = $row["Name"];
+					$Funds[$row["Name"]]->active = $row["Active"];
+					$Funds[$row["Name"]]->category = $row["Category"];
+					$Funds[$row["Name"]]->target = $row["Goal"];
 					
 					$funds_idx += 1;
 					
@@ -93,6 +95,8 @@
 				elseif (strcmp($row["Type"], "Goal")==0)
 				{
 					$goals_list[$goals_idx] = $row["Name"];
+					$Goals[$row["Name"]]->name = $row["Name"];
+					$Goals[$row["Name"]]->target = $row["Goal"];
 					
 					$goals_idx += 1;
 				}
@@ -119,7 +123,7 @@
 	
 	// DEBUG
 		$allVars = get_defined_vars();
-		echo "<br><br>All Variables:<br><br><pre>";
+		echo "<br><br>All Variables at the end of names.php:<br><br><pre>";
 		print_r($allVars);
 		echo "</pre>";
 		echo "<p>Finished names.php</p>"

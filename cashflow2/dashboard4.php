@@ -18,14 +18,16 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->dashboard4 = 12;
+	$versions->dashboard4 = 15;
 	
 	// Connect to database
 	include 'databaseConnect.php';
-	print_r($versions); echo "<br>";
 	
 	// Initialize Accounts, Funds, Categories
 	include 'names.php';
+	
+	$versions = functions_ver($versions);
+	print_r($versions); echo "<br>";
 	
 	// Read last three entries from cash_balances (three with highest indices)
 	$sql = sprintf("SELECT IDX FROM `cash_balances` WHERE 1");
@@ -36,8 +38,8 @@
 		if ($result->num_rows > 0)
 		{
 			// DEBUG
-			print_r($result);
-			echo "<br><br>";
+			//print_r($result);
+			//echo "<br><br>";
 			
 			$k=0;
 			while($row = $result->fetch_assoc())
@@ -47,20 +49,20 @@
 			}
 			
 			// DEBUG
-			echo "idxs:<br>";
+			/*echo "idxs:<br>";
 			print_r($idxs);
 			echo "<br><br>";
-			echo "Size of idxs = " . sizeof($idxs) . "<br><br>";
+			echo "Size of idxs = " . sizeof($idxs) . "<br><br>"; */
 			
 			sort($idxs);
 			
 			// DEBUG
-			echo "idxs sorted:<br>";
+			/*echo "idxs sorted:<br>";
 			print_r($idxs);
 			echo "<br><br>";
 			echo "0 = " . $idxs[0] . "<br>";
 			echo "40 = " . $idxs[40] . "<br>";
-			echo "last = " . $idxs[sizeof($idxs)-1] . "<br><br>";
+			echo "last = " . $idxs[sizeof($idxs)-1] . "<br><br>"; */
 			
 			$mostRecent[0] = $idxs[sizeof($idxs)-1];
 			$mostRecent[1] = $idxs[sizeof($idxs)-2];
@@ -84,9 +86,10 @@
 	}
 	
 	// DEBUG
+	echo "<br><br>Most Recent:<br>";
 	var_dump($mostRecent);
 	
-	read_cash_balances_idx($conn, $mostRecent[0], $Funds, $Accounts, $funds_list, $accounts_list)
+	read_cash_balances_idx($conn, $mostRecent[0], $Categories, $Accounts, $categories_list, $accounts_list)
 	
 	//$sql = sprintf("SELECT * FROM `cash_balances` WHERE `IDX` LIKE %d", $mostRecent[0]);
 	//$result = $conn->query($sql);
