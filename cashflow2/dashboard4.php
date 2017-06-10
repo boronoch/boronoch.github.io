@@ -18,15 +18,15 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->dashboard4 = 15;
+	$versions->dashboard4 = 16;
+	$versions->functions = functions_ver();
 	
 	// Connect to database
 	include 'databaseConnect.php';
 	
 	// Initialize Accounts, Funds, Categories
-	include 'names.php';
+	include 'names.php';	
 	
-	$versions = functions_ver($versions);
 	print_r($versions); echo "<br>";
 	
 	// Read last three entries from cash_balances (three with highest indices)
@@ -89,10 +89,25 @@
 	echo "<br><br>Most Recent:<br>";
 	var_dump($mostRecent);
 	
-	read_cash_balances_idx($conn, $mostRecent[0], $Categories, $Accounts, $categories_list, $accounts_list)
+	// DEBUG
+	echo "<p>Categories before read_cash_balances_idx:<br>";
+	var_dump($Categories);
+	echo "</p><p>Accounts  before read_cash_balances_idx:<br>";
+	var_dump($Accounts);
+	echo "</p>";
 	
-	//$sql = sprintf("SELECT * FROM `cash_balances` WHERE `IDX` LIKE %d", $mostRecent[0]);
-	//$result = $conn->query($sql);
+	list($Categories, $Accounts) = read_cash_balances_idx($conn, $mostRecent[0], $Categories, $Accounts, $categories_list, $accounts_list);
+	
+	// DEBUG
+	echo "<p>Categories after read_cash_balances_idx:<br>";
+	var_dump($Categories);
+	echo "</p><p>Accounts  after read_cash_balances_idx:<br>";
+	var_dump($Accounts);
+	echo "</p>";
+	
+	// Process transactions that haven't been archived yet
+	
+	// Display balances including new transactions
 
 ?>
 

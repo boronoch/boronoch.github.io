@@ -2,10 +2,10 @@
 
 // Ver 3;
 
-function functions_ver($versions)
+function functions_ver()
 {
-	$versions->functions = 7;
-	return $versions;
+	$functions_ver = 9;
+	return $functions_ver;
 }
 
 function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories_list, $accounts_list)
@@ -101,7 +101,24 @@ function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories
 	print_r($allVars);
 	echo "</pre>";
 	echo "<br><br>";
+	
+	return array ($Categories, $Accounts);
 
+}
+
+function read_transaction()
+{
+	/* read_transaction	
+		Read an entry out of the transactions table and store it in an object of class "transaction"		
+	*/
+	
+}
+
+function process_transaction()
+{
+	/* process_transaction
+		Evaluate a transaction and make the appropriate adjustments to any affected accounts, categories, funds, and goals.
+	*/
 }
 
 ?>
