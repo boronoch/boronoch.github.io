@@ -4,7 +4,7 @@
 	Initialize variables for accounts, categories, funds, and goals
 */
 
-	$versions->names = 13;
+	$versions->names = 14;
 	echo "Starting names.php version " . $versions->names . ".<br>";
 
 	// Query table
@@ -122,10 +122,11 @@
 	}
 	
 	// DEBUG
+	/*
 		$allVars = get_defined_vars();
 		echo "<br><br>All Variables at the end of names.php:<br><br><pre>";
 		print_r($allVars);
-		echo "</pre>";
+		echo "</pre>"; */
 		echo "<p>Finished names.php</p>"
 	
 ?>

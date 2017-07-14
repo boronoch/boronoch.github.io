@@ -15,10 +15,32 @@
 	
 	class distribution
 	{
+		public $date;
 		public $Bank = 0;
 		public $Spending = 0;
 		public $Charity = 0;
+		public $TenPercent = 0;
+		public $Marann = 0;
+		public $Wedding = 0;
+		public $HomeImp = 0;
+		public $Living = 0;
+		public $CarExp = 0;
+		public $Roth = 0;
+		public $Gifts = 0;
+		public $Emergency = 0;
+		public $NewCar = 0;
+				
 		
+	}
+	
+	class filter
+	{
+		public $startDate;
+		public $endDate;
+		public $startSort;
+		public $endSort;
+		public $account;
+		public $category;		
 	}
 	
 	class fund
@@ -54,7 +76,7 @@
 	class version
 	{
 		public $dashboard4;
-		public $names1;
+		public $names;
 		public $databaseConnect;
 		public $classes = 6;
 		public $functions;
@@ -63,5 +85,5 @@
 	// Version
 	$versions = new version();
 	
-	$versions->classes = 7;
+	$versions->classes = 8;
 ?>

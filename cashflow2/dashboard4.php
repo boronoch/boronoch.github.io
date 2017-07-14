@@ -18,7 +18,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->dashboard4 = 16;
+	$versions->dashboard4 = 17;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -108,6 +108,9 @@
 	// Process transactions that haven't been archived yet
 	
 	// Display balances including new transactions
+	
+	// Close connection
+	$conn->close();
 
 ?>
 
