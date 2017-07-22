@@ -4,7 +4,7 @@
 	Initialize variables for accounts, categories, funds, and goals
 */
 
-	$versions->names = 14;
+	$versions->names = 16;
 	echo "Starting names.php version " . $versions->names . ".<br>";
 
 	// Query table
@@ -50,6 +50,10 @@
 					echo "Did not recognize type '" . $row["Type"] . "'<br>";
 				}
 			}
+			
+			$Accounts["list"] = $accounts_list;
+			$Categories["list"] = $categories_list;
+			
 		}
 		else
 		{
@@ -105,6 +109,10 @@
 					echo "Did not recognize type '" . $row["Type"] . "'";
 				}
 			}
+			
+			$Funds["list"] = $funds_list;
+			$Goals["list"] = $goals_list;
+			
 		}
 		else
 		{

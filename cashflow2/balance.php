@@ -18,7 +18,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->balance = 5;
+	$versions->balance = 8;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -37,13 +37,15 @@
 	$newTransactions = read_new_transactions($conn);
 	
 		// DEBUG
-		print_r($newTransactions);
-		echo "<br>";
+		/*
+			echo "New Transactions:<br>";
+			var_dump_pre($newTransactions);
+			echo "<br>"; */
 		
 	echo "<p>Next: finish and debug process_transactions</p>";
 	
 	// process unarchived transactions
-	list($Accounts, $Categories) = process_transactions($conn, $newTransactions, $Accounts, $Categories, true);
+	list($Accounts, $Categories) = process_transactions($conn, $newTransactions, $Accounts, $Categories, $Funds, true);
 	
 	
 	// display account balances

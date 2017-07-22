@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 29;
+	$functions_ver = 51;
 	return $functions_ver;
 }
 
@@ -74,6 +74,11 @@ function read_latest_cash_balances($conn, $Categories, $Accounts, $categories_li
 
 function correlate_names($conn)
 {
+	/* Read the "Other Names" field from the accounts_categories table in the database.
+	Return:
+		otherNamesList - an array with all entries found in the "Other Names" field of the table; the common names that are not standard in code.
+		otherNames - 	 an array of key-value pairs in which the key is the "Other Name" and the value is the standard name.
+	*/
 
 	$sql = sprintf("SELECT * FROM `accounts_categories` WHERE 1");
 	$result = $conn->query($sql);
@@ -179,7 +184,8 @@ function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories
 					}
 					elseif (in_array($column, $otherNamesList))
 					{
-						echo "Need to process " . $column . " as " . $otherNames[$column] . "<br>";
+						// 	DEBUG
+							//echo "Need to process " . $column . " as " . $otherNames[$column] . "<br>";
 						
 						if (in_array($otherNames[$column], $accounts_list))
 						{
@@ -290,6 +296,13 @@ function read_transaction($row)
 	
 }
 
+function var_dump_pre($mixed = null) {
+  echo '<pre>';
+  var_dump($mixed);
+  echo '</pre>';
+  return null;
+}
+
 function build_distributions($conn)
 {
 	$sql = "SELECT * FROM `distribution` ORDER BY `Date` ASC";
@@ -306,10 +319,23 @@ function build_distributions($conn)
 			while($row = $result->fetch_assoc())
 			{
 			
-				$distributions[$k] = new distribution();
+				//$distributions[$k] = new distribution();
 				
-				$distributions[$k]->date = $row['Date'];
+				$distributions[$k] = new \stdClass();
 				
+				$distributions[$k]->Date = $row['Date'];
+				
+				foreach ($row as $key => $value)
+				{
+					echo $key . " = " . $value . "<br>";
+					
+					if ( (strcmp($key,"IDX") !== 0) and (strcmp($key,"Date") !== 0 ) )					
+					{
+						$distributions[$k]->$key = $row[$key]; $sum += $distributions[$k]->$key;
+					}
+					
+				}
+				/*
 				$distributions[$k]->Bank = $row['Bank']; $sum += $distributions[$k]->Bank;
 				$distributions[$k]->Spending = $row['Spending']; $sum += $distributions[$k]->Spending;
 				$distributions[$k]->Charity = $row['Charity']; $sum += $distributions[$k]->Charity;
@@ -323,7 +349,7 @@ function build_distributions($conn)
 				$distributions[$k]->Gifts = $row['Gifts']; $sum += $distributions[$k]->Gifts;
 				$distributions[$k]->Emergency = $row['Emergency']; $sum += $distributions[$k]->Emergency;
 				$distributions[$k]->NewCar = $row['NewCar']; $sum += $distributions[$k]->NewCar;
-				
+				*/
 				$k++;
 			
 			}
@@ -331,6 +357,10 @@ function build_distributions($conn)
 		}
 		
 	}
+	
+	echo "<br>";
+	var_dump_pre($distributions);
+	echo "<br>";
 	
 	if ($sum != 1)
 	{
@@ -340,6 +370,23 @@ function build_distributions($conn)
 	return $distributions;
 }
 
+function echoCurrency($input)
+{
+	//echo gettype($input);
+	//echo "<br>";
+	
+	if ($input < 0)
+	{
+		echo sprintf('-$%8.2f',-$input);
+		return sprintf('-$%8.2f',-$input);
+	}
+	else
+	{
+		echo sprintf('$%8.2f',$input);
+		return sprintf('$%8.2f',$input);
+	}
+}
+
 function print_ledger_row($transaction, $Accounts, $Categories)
 {
 	// Prints details of a transaction, the balance of all accounts, and the balance of all categories as a row in a table. If transaction is NULL, it is skipped, and those columns are not added. Start and end of table should be handled by caller.
@@ -347,11 +394,11 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 	//echo "<tr>";
 	//echo "<td>" . $transaction->date . "</td>";
 	
-	// DEBUG
-	echo "<br>start of print_ledger_row<br>";
-	print_r($transaction); echo "<br>";
-	print_r($Accounts); echo "<br>";
-	print_r($Categories); echo "<br><br>";
+	// DEBUG 
+		echo "<br>start of print_ledger_row<br>";
+		echo "transaction: "; print_r($transaction); echo "<br>";
+		echo "Accounts: "; print_r($Accounts); echo "<br>";
+		echo "Categories: "; print_r($Categories); echo "<br><br>"; 		
 	
 	?>
 	<tr>
@@ -361,72 +408,111 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 			?>
 			<td><?php echo $transaction->date;?></td>
 			<td><?php echo $transaction->description;?></td>
-			<td><?php echo $transaction->amount;?></td>
-			<td><?php echo $account->description;?></td>
-			<td><?php echo $account->category;?></td>
+			<td><?php echoCurrency($transaction->amount);?></td>
+			<td><?php echo $transaction->account;?></td>
+			<td><?php echo $transaction->category;?></td>
 			<td></td>
-		<?php
+			
+			<?php		
+			foreach ($Accounts as $col => $val)
+			{
+				if (strcmp($col,"list") !== 0 ) 
+				{
+					?>
+					<td><?php echoCurrency($val->balance);?>
+					<script>
+						console.log("col = <?php echo $col;?>; val = <?php echo $val->name;?>");
+					</script>
+					</td>			
+					<?php
+				}
+			}
+			
+			?><td> </td><?php
+			
+			foreach ($Categories as $col => $val)
+			{
+				if (strcmp($col,"list") !== 0 ) 
+				{
+					?>
+					<td><?php echoCurrency($val->balance);?>
+					<script>
+						console.log("col = <?php echo $col;?>; val = <?php echo $val->name;?>");
+					</script>
+					</td>
+					<?php
+				}
+			}
+			
 		}
-		
-		foreach ($Accounts as $col => $val)
-		{
-			?>
-			<td><?php print_r($val);?></td>
-			<?php
-		}
-		
-		?><td></td><?php
-		
-		foreach ($Categories as $col => $val)
-		{
-			?>
-			<td><?php print_r($val);?></td>
-			<?php
-		}
-		
 	?>
 	</tr>
 	<?php
 }
 
-function process_transactions($conn, $transactions, $Accounts, $Categories, $print_ledger)
+function process_transactions($conn, $transactions, $Accounts, $Categories, $Funds, $print_ledger)
 {
 	/* process_transactions
 		Evaluate a transaction and make the appropriate adjustments to any affected accounts, categories, funds, and goals.
 	*/
 	
 	// DEBUG
-	echo "<br>Starting process_transactions.<br>";
-	print_r($transactions);
-	echo "<br><br>";
+	/*
+		echo "<br>Starting process_transactions.<br>";
+		print_r($transactions);
+		echo "<br><br>"; */
 	
 	$writeArchiveLedger = 0; //Ledger is copied from cash_functions.php, has not been tested in cash2_functions.php
+	
+	
+	list ($otherNames, $otherNamesList) = correlate_names($conn);
+	
+	
+	// DEBUG
+	echo "Accounts list: <br>";
+	print_r($Accounts["list"]);
+	echo "<br>";
+	echo "Categories list: <br>";
+	print_r($Categories["list"]);
+	echo "<br><br>";
+	
+	
+	echo "print_ledger = " . $print_ledger . "<br>";	
 	
 	// Start a table to print results in
 	if ($print_ledger)
 	{
-		echo "<table>";
+		// DEBUG
+		echo "Starting table for print_ledger. <br><br>";
+		
+		echo "<table border='1'>";
 		echo "<tr>
 				<td>Date</td>
 				<td>Description</td>
 				<td>Amount</td>
 				<td>Account</td>
 				<td>Category</td>
-				<td></td>";
+				<td> </td>";
 		foreach ($Accounts as $col => $val)
 		{
-			?>
-			<td><?php echo $col;?></td>
-			<?php
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
 		}
 
 		?><td></td><?php
 			
 		foreach ($Categories as $col => $val)
 		{
-			?>
-			<td><?php echo $col;?></td>
-			<?php
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
 		}
 	}
 	
@@ -434,16 +520,35 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $pri
 	for ($idx = 0; $idx < sizeof($transactions); $idx++)
 	{
 	
+		// seems like "in_array" doesn't work for this purpose, need to find something else.
+	
 		// Process Account
-		if (in_array($transactions[$idx]->account, $Accounts))
+		if (in_array($transactions[$idx]->account, $Accounts["list"]))
 		{
 			// If $transactions[$idx]->account is an account, add
 			$Accounts[$transactions[$idx]->account]->balance = $Accounts[$transactions[$idx]->account]->balance + $transactions[$idx]->amount;
 		}
-		elseif (in_array($transactions[$idx]->account, $Categories))
+		elseif (in_array($transactions[$idx]->account, $Categories["list"], TRUE))
 		{
 			// If $transactions[$idx]->account is a category, subtract
 			$Accounts[$transactions[$idx]->account]->balance = $Accounts[$transactions[$idx]->account]->balance - $transactions[$idx]->amount;
+		}
+		elseif (in_array($transactions[$idx]->account, $otherNamesList))
+		{
+			// Get the "standard" account name from the $otherNames key-value array, and then look that up in the Accounts list.
+			$account_standard_name = $otherNames[$transactions[$idx]->account];
+			
+			if (in_array($account_standard_name, $Accounts["list"]))
+			{						
+				// If it yields an account, add
+				$Accounts[$account_standard_name]->balance = $Accounts[$account_standard_name]->balance + $transactions[$idx]->amount;
+			}
+			else
+			{
+				?><script>
+					console.log("Message 0001: Account <?php echo $account_standard_name;?> is not recognized. (cash2_functions.php)");
+				</script><?php
+			}
 		}
 		else
 		{
@@ -454,7 +559,24 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $pri
 		}
 		
 		// Process category
-		if (strcmp($transactions[$idx]->category,"Income") == 0)						// INCOME
+		if (in_array($transactions[$idx]->category, $Categories["list"]))
+		{
+			// Standard transaction
+			$Categories[$transactions[$idx]->category]->balance += $transactions[$idx]->amount;
+			
+		}
+		elseif (in_array($transactions[$idx]->category, $Funds["list"]))
+		{
+			// It's a subcategory under one of the main categories
+			
+			// Find the main category
+			$category = $Funds[$transactions[$idx]->category]->category;
+			
+			// Execute transaction
+			$Categories[$category]->balance += $transactions[$idx]->amount;
+			
+		}		
+		elseif (strcmp($transactions[$idx]->category,"Income") == 0)						// INCOME
 		{
 			// If this is the first Income transaction, create $distributions object
 			if (!isset($distributions))
@@ -485,9 +607,18 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $pri
 			// Iterate through all fields in the distributions object and add money to the category
 			foreach($distributions[$thisDistIdx] as $thisCat => $percent)
 			{
-				echo "<br>" . $thisCat . " = " . $distributions[$thisDistIdx]->$thisCat;
+			
+				if (strcmp($thisCat,"Date") !== 0 )
+				{
+					echo "<br>" . $thisCat . " = " . $percent;
+					
+					echo "<br>" . $percent*100 . "% of " . $transactions[$idx]->amount . " is $" . ($transactions[$idx]->amount * $percent) . ". " . $thisCat . " changes from " . $Categories[$thisCat]->balance;
+					
+					$Categories[$thisCat]->balance += ($transactions[$idx]->amount * $percent);
+					
+					echo " to " . $Categories[$thisCat]->balance . " .<br>";
+				}
 				
-				echo "<br>" . $percent . " = " . $percent . "<br>";
 			}
 			
 		}
@@ -519,11 +650,30 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $pri
 			}
 			
 		}
-		elseif (in_array($transactions[$idx]->category, $Categories))		// Transfer
+		elseif (in_array($transactions[$idx]->category, $Accounts["list"]))		// Transfer
 		{
 			echo "<br> idx = " . $idx . ". TRANSFER: cat is " . $transactions[$idx]->category . " and account is " . $transactions[$idx]->account;
 			
-			$Categories[$transactions[$idx]->category] += $transactions[$idx]->amount;
+			$Categories[$transactions[$idx]->category]->balance -= $transactions[$idx]->amount;
+		}
+		elseif (in_array($transactions[$idx]->category, $otherNamesList))
+		{
+			// It's an Account, but not the "standard" syntax
+			
+			// Get the "standard" account name from the $otherNames key-value array, and then look that up in the Accounts list.
+			$account_standard_name = $otherNames[$transactions[$idx]->category];
+			
+			if (in_array($account_standard_name, $Accounts["list"]))
+			{						
+				// If it yields an account, subtract				
+				$Categories[$account_standard_name]->balance -= $transactions[$idx]->amount;
+			}
+			else
+			{
+				?><script>
+					console.log("Message 0002: Account <?php echo $account_standard_name;?> is not recognized. (cash2_functions.php)");
+				</script><?php
+			}
 		}
 		elseif (strcmp($transactions[$idx]->category,"Transfer") == 0)					// Transfer
 		{
