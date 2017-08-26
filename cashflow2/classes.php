@@ -75,11 +75,13 @@
 
 	class version
 	{
+		public $archive_select;
 		public $dashboard4;
 		public $names;
 		public $databaseConnect;
-		public $classes = 6;
+		public $classes = 7;
 		public $functions;
+		
 	}
 	
 	// Version

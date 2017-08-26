@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 51;
+	$functions_ver = 59;
 	return $functions_ver;
 }
 
@@ -394,12 +394,12 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 	//echo "<tr>";
 	//echo "<td>" . $transaction->date . "</td>";
 	
-	// DEBUG 
+	/* DEBUG 
 		echo "<br>start of print_ledger_row<br>";
 		echo "transaction: "; print_r($transaction); echo "<br>";
 		echo "Accounts: "; print_r($Accounts); echo "<br>";
 		echo "Categories: "; print_r($Categories); echo "<br><br>"; 		
-	
+	*/
 	?>
 	<tr>
 	<?php
@@ -469,12 +469,18 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	
 	
 	// DEBUG
-	echo "Accounts list: <br>";
+	echo "<pre>Accounts list: <br>";
 	print_r($Accounts["list"]);
 	echo "<br>";
 	echo "Categories list: <br>";
 	print_r($Categories["list"]);
 	echo "<br><br>";
+	echo "Categories array_keys: <br>";
+	print_r(array_keys($Categories));
+	echo "<br><br>";
+	echo "Funds list: <br>";
+	print_r($Funds["list"]);
+	echo "<br><br></pre>";
 	
 	
 	echo "print_ledger = " . $print_ledger . "<br>";	
@@ -634,19 +640,36 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			$sum = 0;
 			foreach ($Categories as $thisCat)
 			{
-				echo "<br>" . $thisCat->name . " = $" . $thisCat->balance; // DEBUG
-				$sum += $thisCat->balance;
-				echo "; sum = " . $sum;  // DEBUG
+				// DEBUG
+				echo "<br> gettype = " . gettype($thisCat);
+				
+				if (strcmp(gettype($thisCat), "array") == 0)
+				{
+					echo "<br> skipping lists variable. Need to find a better way of skipping this, or remove list from the array.";
+				}
+				else
+				{
+					echo "<br>" . $thisCat->name . " = $" . $thisCat->balance; // DEBUG
+					$sum += $thisCat->balance;
+					echo "; sum = " . $sum;  // DEBUG
+				}
 			}
 			
 			// Pay Dividends
 			foreach ($Categories as $thisCat)
 			{
-				$thisDiv = ($thisCat->balance / $sum );
-				$thisCat->balance += ($transactions[$idx]->amount * $thisDiv);
-				
-				// DEBUG
-				echo "<br> Add $" . $thisDiv . " to " . $thisCat->name . " = $" . $thisCat->balance;
+				if (strcmp(gettype($thisCat), "array") == 0)
+				{
+					echo "<br> skipping lists variable. Need to find a better way of skipping this, or remove list from the array.";
+				}
+				else
+				{
+					$thisDiv = ($thisCat->balance / $sum );
+					$thisCat->balance += ($transactions[$idx]->amount * $thisDiv);
+					
+					// DEBUG
+					echo "<br> Add $" . $thisDiv . " to " . $thisCat->name . " = $" . $thisCat->balance;
+				}
 			}
 			
 		}
@@ -654,7 +677,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 		{
 			echo "<br> idx = " . $idx . ". TRANSFER: cat is " . $transactions[$idx]->category . " and account is " . $transactions[$idx]->account;
 			
-			$Categories[$transactions[$idx]->category]->balance -= $transactions[$idx]->amount;
+			$Accounts[$transactions[$idx]->category]->balance -= $transactions[$idx]->amount;
 		}
 		elseif (in_array($transactions[$idx]->category, $otherNamesList))
 		{
@@ -663,10 +686,14 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			// Get the "standard" account name from the $otherNames key-value array, and then look that up in the Accounts list.
 			$account_standard_name = $otherNames[$transactions[$idx]->category];
 			
+			echo "<br> idx = " . $idx . ". TRANSFER: cat is " . $transactions[$idx]->category . " and account_standard_name = " . $account_standard_name;
+			
 			if (in_array($account_standard_name, $Accounts["list"]))
 			{						
 				// If it yields an account, subtract				
-				$Categories[$account_standard_name]->balance -= $transactions[$idx]->amount;
+				$Accounts[$account_standard_name]->balance -= $transactions[$idx]->amount;
+				
+				echo "<br>subtracted " . $transactions[$idx]->amount . " from " . $account_standard_name;
 			}
 			else
 			{
@@ -695,6 +722,42 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			print_ledger_row($transactions[$idx], $Accounts, $Categories);
 		}
 		
+	}
+	
+	// Print header row again at the bottom
+	if ($print_ledger)
+	{
+		// DEBUG
+		echo "Ending table for print_ledger. <br><br>";
+		
+		echo "<tr>
+				<td>Date</td>
+				<td>Description</td>
+				<td>Amount</td>
+				<td>Account</td>
+				<td>Category</td>
+				<td> </td>";
+		foreach ($Accounts as $col => $val)
+		{
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
+		}
+
+		?><td></td><?php
+			
+		foreach ($Categories as $col => $val)
+		{
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
+		}
 	}
 	
 	// Close table
