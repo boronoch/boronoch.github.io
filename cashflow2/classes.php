@@ -65,6 +65,7 @@
 	
 	class transaction
 	{
+		public $IDX;
 		public $sortOrder = 0;
 		public $date;
 		public $description;
@@ -75,6 +76,7 @@
 
 	class version
 	{
+		public $archive_confirm;
 		public $archive_select;
 		public $dashboard4;
 		public $names;
@@ -87,5 +89,5 @@
 	// Version
 	$versions = new version();
 	
-	$versions->classes = 8;
+	$versions->classes = 10;
 ?>

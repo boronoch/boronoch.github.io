@@ -22,7 +22,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_select = 15;
+	$versions->archive_confirm = 2;
 	$versions->functions = functions_ver();
 	
 	// Connect to database

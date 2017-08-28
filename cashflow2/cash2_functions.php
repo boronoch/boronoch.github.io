@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 59;
+	$functions_ver = 66;
 	return $functions_ver;
 }
 
@@ -285,6 +285,7 @@ function read_transaction($row)
 	*/
 		
 	$thisTransaction = new transaction();
+	$thisTransaction->IDX = $row['IDX'];
 	$thisTransaction->sortOrder = $row['sort_order'];	
 	$thisTransaction->date = $row['Date'];
 	$thisTransaction->description = $row['Description'];
@@ -467,7 +468,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	
 	list ($otherNames, $otherNamesList) = correlate_names($conn);
 	
-	
+	/*
 	// DEBUG
 	echo "<pre>Accounts list: <br>";
 	print_r($Accounts["list"]);
@@ -484,13 +485,13 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	
 	
 	echo "print_ledger = " . $print_ledger . "<br>";	
+	echo "sizeof transactions = " . sizeof($transactions) . "<br>";
+	*/
 	
 	// Start a table to print results in
 	if ($print_ledger)
 	{
-		// DEBUG
-		echo "Starting table for print_ledger. <br><br>";
-		
+
 		echo "<table border='1'>";
 		echo "<tr>
 				<td>Date</td>
@@ -526,7 +527,8 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	for ($idx = 0; $idx < sizeof($transactions); $idx++)
 	{
 	
-		// seems like "in_array" doesn't work for this purpose, need to find something else.
+		// Support "$transactions" as a single object or an array
+		
 	
 		// Process Account
 		if (in_array($transactions[$idx]->account, $Accounts["list"]))
@@ -552,7 +554,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			else
 			{
 				?><script>
-					console.log("Message 0001: Account <?php echo $account_standard_name;?> is not recognized. (cash2_functions.php)");
+					console.log("Message 0001: Account <?php echo $account_standard_name;?> is not recognized. Index is <?php echo $idx;?> (cash2_functions.php)");
 				</script><?php
 			}
 		}
@@ -616,13 +618,13 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			
 				if (strcmp($thisCat,"Date") !== 0 )
 				{
-					echo "<br>" . $thisCat . " = " . $percent;
+					//echo "<br>" . $thisCat . " = " . $percent;
 					
-					echo "<br>" . $percent*100 . "% of " . $transactions[$idx]->amount . " is $" . ($transactions[$idx]->amount * $percent) . ". " . $thisCat . " changes from " . $Categories[$thisCat]->balance;
+					//echo "<br>" . $percent*100 . "% of " . $transactions[$idx]->amount . " is $" . ($transactions[$idx]->amount * $percent) . ". " . $thisCat . " changes from " . $Categories[$thisCat]->balance;
 					
 					$Categories[$thisCat]->balance += ($transactions[$idx]->amount * $percent);
 					
-					echo " to " . $Categories[$thisCat]->balance . " .<br>";
+					//echo " to " . $Categories[$thisCat]->balance . " .<br>";
 				}
 				
 			}
@@ -758,10 +760,15 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 				<?php
 			}
 		}
+		
+		// Close table
+		echo "</table>";
+		
 	}
 	
-	// Close table
-	echo "</table>";
+	
+	
+	return array ($Accounts, $Categories);
 		
 }
 
