@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 66;
+	$functions_ver = 69;
 	return $functions_ver;
 }
 
@@ -328,7 +328,7 @@ function build_distributions($conn)
 				
 				foreach ($row as $key => $value)
 				{
-					echo $key . " = " . $value . "<br>";
+					//echo $key . " = " . $value . "<br>";
 					
 					if ( (strcmp($key,"IDX") !== 0) and (strcmp($key,"Date") !== 0 ) )					
 					{
@@ -358,11 +358,11 @@ function build_distributions($conn)
 		}
 		
 	}
-	
+	/*
 	echo "<br>";
 	var_dump_pre($distributions);
 	echo "<br>";
-	
+	*/
 	if ($sum != 1)
 	{
 		echo "<br>Sum of Distributions does not equal 1. It is " . $sum . "<br>";
@@ -606,7 +606,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			}
 			
 			// Debug
-			echo "<br>Using idx " . $thisDistIdx . " for Income distribution on transaction " . $idx . "<br>";
+			//echo "<br>Using idx " . $thisDistIdx . " for Income distribution on transaction " . $idx . "<br>";
 			
 			// CONTINUE EDITTING FROM HERE
 			
@@ -632,7 +632,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 		}
 		elseif (strcmp($transactions[$idx]->category,"Dividend") == 0)					// DIVIDEND
 		{
-			echo "<br> idx = " . $idx . " and cat is " . $transactions[$idx]->category;
+			// echo "<br> idx = " . $idx . " and cat is " . $transactions[$idx]->category;
 			/* 
 			Algorithm: Iterate through all categories and Funds twice. The first time, find the sum of all of them.
 			The second time, give each fund or category this ammount: dividend * (category balance / sum)
@@ -643,7 +643,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			foreach ($Categories as $thisCat)
 			{
 				// DEBUG
-				echo "<br> gettype = " . gettype($thisCat);
+				//echo "<br> gettype = " . gettype($thisCat);
 				
 				if (strcmp(gettype($thisCat), "array") == 0)
 				{
@@ -651,9 +651,9 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 				}
 				else
 				{
-					echo "<br>" . $thisCat->name . " = $" . $thisCat->balance; // DEBUG
+					//echo "<br>" . $thisCat->name . " = $" . $thisCat->balance; // DEBUG
 					$sum += $thisCat->balance;
-					echo "; sum = " . $sum;  // DEBUG
+					//echo "; sum = " . $sum;  // DEBUG
 				}
 			}
 			
@@ -670,7 +670,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 					$thisCat->balance += ($transactions[$idx]->amount * $thisDiv);
 					
 					// DEBUG
-					echo "<br> Add $" . $thisDiv . " to " . $thisCat->name . " = $" . $thisCat->balance;
+					//echo "<br> Add $" . $thisDiv . " to " . $thisCat->name . " = $" . $thisCat->balance;
 				}
 			}
 			
@@ -688,14 +688,14 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			// Get the "standard" account name from the $otherNames key-value array, and then look that up in the Accounts list.
 			$account_standard_name = $otherNames[$transactions[$idx]->category];
 			
-			echo "<br> idx = " . $idx . ". TRANSFER: cat is " . $transactions[$idx]->category . " and account_standard_name = " . $account_standard_name;
+			//echo "<br> idx = " . $idx . ". TRANSFER: cat is " . $transactions[$idx]->category . " and account_standard_name = " . $account_standard_name;
 			
 			if (in_array($account_standard_name, $Accounts["list"]))
 			{						
 				// If it yields an account, subtract				
 				$Accounts[$account_standard_name]->balance -= $transactions[$idx]->amount;
 				
-				echo "<br>subtracted " . $transactions[$idx]->amount . " from " . $account_standard_name;
+				//echo "<br>subtracted " . $transactions[$idx]->amount . " from " . $account_standard_name;
 			}
 			else
 			{

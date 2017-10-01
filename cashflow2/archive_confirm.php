@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Archive Select</title>
+<title>Archive Confirm</title>
 <!-- Placeholder for CSS
 <link rel="stylesheet" type="text/css" href="brotherStyles.css">
 -->
@@ -23,7 +23,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_confirm = 4;
+	$versions->archive_confirm = 6;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -269,7 +269,6 @@
 				<td><input type = 'checkbox'
 							 name = 'selectTrans[]'
 							 value= "<?php echo $thisTransaction->IDX;?> "
-							 <?php echo " checked"; ?>
 							>
 				</td>
 				<td><?php echo $thisTransaction->date;?></td>
@@ -341,7 +340,7 @@
 						}
 					?>
 				</td>
-				<td><input type="submit" value="Archive Selected" name="archive" formaction="archive_submit.php"></td>
+				<td><input type="submit" value="Archive Selected" name="archive" formaction="archive_confirm.php"></td>
 			</tr>
 		</table>
 	</form>
