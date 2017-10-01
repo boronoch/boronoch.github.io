@@ -22,7 +22,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_select = 15;
+	$versions->archive_select = 16;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -42,6 +42,9 @@
 	// Check to see if "Select All" was clicked.
 
 	// Display transactions in a table with check boxes
+	?>
+	<form method="get">
+	<?php
 	echo "<table border='1'>";
 	echo "<tr>
 			<td> </td>
@@ -179,7 +182,7 @@
 	
 	// Display "Select All" and "Submit" buttons
 	?>
-	<form method="get">
+	
 		<table>
 			<tr>
 				<td>
