@@ -52,8 +52,8 @@
 			<td>Description</td>
 			<td>Amount</td>
 			<td>Account</td>
-			<td>Category</td>";
-			//<td> </td>
+			<td>Category</td>
+			<td> - </td>";
 	
 	foreach ($Accounts as $col => $val)
 	{
@@ -153,7 +153,7 @@
 			<td>Amount</td>
 			<td>Account</td>
 			<td>Category</td>
-			<td> </td>";
+			<td> - </td>";
 			
 	foreach ($Accounts as $col => $val)
 	{

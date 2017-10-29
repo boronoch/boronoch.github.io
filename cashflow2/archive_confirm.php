@@ -23,7 +23,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_confirm = 6;
+	$versions->archive_confirm = 9;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -81,8 +81,19 @@
 		}
 		
 	}
+	
+	// DEBUG
+	echo "<br><br>selectTransIDX:<br><br><pre>";
+	print_r($selectTransIDX); echo "<br>";
+	echo "<br><br>stList:<br><br>";
+	print_r($stList); echo "<br>";
+	echo "<br><br>selectTransOBJ:<br><br>";
+	print_r($selectTransOBJ); echo "<br>";
+	echo "</pre>";
 			
-
+	?>
+	<form method="get">
+	<?php
 	// Display transactions in a table with checked boxes
 	echo "<table border='1'>";
 	echo "<tr>
@@ -91,8 +102,8 @@
 			<td>Description</td>
 			<td>Amount</td>
 			<td>Account</td>
-			<td>Category</td>";
-			//<td> </td>
+			<td>Category</td>
+			<td> - </td>";
 	
 	foreach ($Accounts as $col => $val)
 	{
@@ -159,7 +170,7 @@
 			<td>Amount</td>
 			<td>Account</td>
 			<td>Category</td>
-			<td> </td>";
+			<td> - </td>";
 			
 	foreach ($Accounts as $col => $val)
 	{
@@ -176,7 +187,7 @@
 	
 	// Display "Select All" and "Submit" buttons
 	?>
-	<form method="get">
+	
 		<table>
 			<tr>
 				<td>
@@ -229,7 +240,9 @@
 		}
 		
 	}
-			
+	?>
+	<form method="get">	
+	<?php
 	// Display transactions in a table with checked boxes
 	echo "<table border='1'>";
 	echo "<tr>
@@ -238,8 +251,8 @@
 			<td>Description</td>
 			<td>Amount</td>
 			<td>Account</td>
-			<td>Category</td>";
-			//<td> </td>
+			<td>Category</td>
+			<td> - </td>";
 	
 	foreach ($Accounts as $col => $val)
 	{
@@ -305,7 +318,7 @@
 			<td>Amount</td>
 			<td>Account</td>
 			<td>Category</td>
-			<td> </td>";
+			<td> - </td>";
 			
 	foreach ($Accounts as $col => $val)
 	{
@@ -322,7 +335,7 @@
 	
 	// Display "Select All" and "Submit" buttons
 	?>
-	<form method="get">
+	
 		<table>
 			<tr>
 				<td>

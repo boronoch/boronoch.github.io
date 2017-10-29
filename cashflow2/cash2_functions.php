@@ -730,7 +730,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	if ($print_ledger)
 	{
 		// DEBUG
-		echo "Ending table for print_ledger. <br><br>";
+		//echo "Ending table for print_ledger. <br><br>";
 		
 		echo "<tr>
 				<td>Date</td>

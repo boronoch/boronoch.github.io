@@ -78,10 +78,11 @@
 	{
 		public $archive_confirm;
 		public $archive_select;
+		public $archive_submit;
 		public $dashboard4;
 		public $names;
 		public $databaseConnect;
-		public $classes = 7;
+		public $classes = 8;
 		public $functions;
 		
 	}
