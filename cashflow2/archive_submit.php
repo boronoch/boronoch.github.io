@@ -15,7 +15,7 @@
 <?php
 
 	// Read inputs
-	$selectTransIDX = $_GET["selectTrans"];
+	$selectTransIDX = $_POST["selectTrans"];
 	
 	// DEBUG
 	if ($selectTransIDX)
@@ -32,7 +32,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_submit = 8;
+	$versions->archive_submit = 12;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -98,9 +98,11 @@
 		die;
 	}
 	
-	// Consider starting a table and displaying all archived transactions and the balance on each row. The table header would go here.
+	// Start a table and display all archived transactions and the balance on each row. The table header goes here.
+	echo "<table border='1'>";
+	balances_header(true, true, true, true, $Accounts, $Categories, $Goals);
 	
-	// For each transaction
+	// For each transaction	
 	foreach ($selectTransOBJ as $thisTransaction)
 	{	
 		// Start Transaction
@@ -116,7 +118,8 @@
 		
 		// Calculate new balances (add new transaction to previous balances) (do this in the transaction so that it only happens if the move goes correctly
 		$thisTransactionArray[0] = $thisTransaction;
-		list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, true);
+		list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
+		print_ledger_row($thisTransaction, $Accounts, $Categories, $Goals);
 		
 		/* DEBUG
 		echo "<br>after:<br>";
@@ -163,6 +166,11 @@
 		
 		
 	}
+	
+	// Print the header row after this as well
+	balances_header(true, true, true, true, $Accounts, $Categories, $Goals);
+	echo "</table>";
+	
 	
 	// DEBUG
 	echo "Widget:<br>";
@@ -218,7 +226,7 @@
 			$Categories['Ten Percent']->balance . "," .
 			$Categories['Emergency']->balance . "," .
 			$Categories['Gifts']->balance . "," .
-			"4.08898," .
+			"4.12109207861371," .
 			$Categories['Team']->balance . "," .
 			$Categories['Wedding']->balance . "," .
 			$Categories['Mwed']->balance . "," .
@@ -246,6 +254,9 @@
 	}
 
 ?>
+
+<br>
+<a href="archive_select.php">Select more to archive.</a>
 
 <p>End of PHP in archive_submit.php.</p>
 </body>

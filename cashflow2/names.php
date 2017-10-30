@@ -4,11 +4,14 @@
 	Initialize variables for accounts, categories, funds, and goals
 */
 
-$versions->names = 17;
+$versions->names = 20;
 
 // Query table
 $sql = sprintf("SELECT * FROM `accounts_categories` WHERE 1");
 $result = $conn->query($sql);
+
+// Debug
+$debug_names = 1;
 
 // Initialize Accounts and Categories
 if($result)
@@ -52,6 +55,13 @@ if($result)
 		
 		$Accounts["list"] = $accounts_list;
 		$Categories["list"] = $categories_list;
+		
+		if ($debug_names)
+		{
+			echo "<br>Categories: ";
+			print_r($categories_list);
+			echo "<br>";
+		}
 		
 	}
 	else
@@ -98,7 +108,12 @@ if($result)
 			elseif (strcmp($row["Type"], "Goal")==0)
 			{
 				$goals_list[$goals_idx] = $row["Name"];
+				
+				$Goals[$row["Name"]] = new goal();
 				$Goals[$row["Name"]]->name = $row["Name"];
+				$Goals[$row["Name"]]->active = $row["Active"];
+				$Goals[$row["Name"]]->category = $row["Category"];
+				$Goals[$row["Name"]]->distribution = $row["distribution"];
 				$Goals[$row["Name"]]->target = $row["Goal"];
 				
 				$goals_idx += 1;
@@ -111,6 +126,13 @@ if($result)
 		
 		$Funds["list"] = $funds_list;
 		$Goals["list"] = $goals_list;
+		
+		if ($debug_names)
+		{
+			echo "<br>Goals: ";
+			print_r($goals_list);
+			echo "<br>";
+		}
 		
 	}
 	else

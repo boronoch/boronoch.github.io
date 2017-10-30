@@ -15,15 +15,15 @@
 <?php
 
 	// Read inputs
-	$selectAll = $_GET["selectAll"];
-	$clearAll = $_GET["clearAll"];
-	$selectTransIDX = $_GET["selectTrans"];
+	$selectAll = $_POST["selectAll"];
+	$clearAll = $_POST["clearAll"];
+	$selectTransIDX = $_POST["selectTrans"];
 	
 	// Declare classes and functions
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_confirm = 9;
+	$versions->archive_confirm = 11;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -92,7 +92,7 @@
 	echo "</pre>";
 			
 	?>
-	<form method="get">
+	<form method="post">
 	<?php
 	// Display transactions in a table with checked boxes
 	echo "<table border='1'>";
@@ -126,7 +126,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, false);
+			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 						
 			?>
 			<tr>
@@ -241,7 +241,7 @@
 		
 	}
 	?>
-	<form method="get">	
+	<form method="post">	
 	<?php
 	// Display transactions in a table with checked boxes
 	echo "<table border='1'>";
@@ -275,7 +275,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, false);
+			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 						
 			?>
 			<tr>

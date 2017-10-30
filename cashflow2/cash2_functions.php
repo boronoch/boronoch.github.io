@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 69;
+	$functions_ver = 72;
 	return $functions_ver;
 }
 
@@ -333,6 +333,7 @@ function build_distributions($conn)
 					if ( (strcmp($key,"IDX") !== 0) and (strcmp($key,"Date") !== 0 ) )					
 					{
 						$distributions[$k]->$key = $row[$key]; $sum += $distributions[$k]->$key;
+												
 					}
 					
 				}
@@ -352,6 +353,11 @@ function build_distributions($conn)
 				$distributions[$k]->NewCar = $row['NewCar']; $sum += $distributions[$k]->NewCar;
 				*/
 				$k++;
+				if ($sum > 1.001 or $sum < 0.999)
+				{
+					echo "<br>Sum of Distributions does not equal 1. It is " . $sum . "<br>";
+				}
+				$sum = 0;
 			
 			}
 		
@@ -363,10 +369,7 @@ function build_distributions($conn)
 	var_dump_pre($distributions);
 	echo "<br>";
 	*/
-	if ($sum != 1)
-	{
-		echo "<br>Sum of Distributions does not equal 1. It is " . $sum . "<br>";
-	}
+	
 	
 	return $distributions;
 }
@@ -388,7 +391,7 @@ function echoCurrency($input)
 	}
 }
 
-function print_ledger_row($transaction, $Accounts, $Categories)
+function print_ledger_row($transaction, $Accounts, $Categories, $Goals)
 {
 	// Prints details of a transaction, the balance of all accounts, and the balance of all categories as a row in a table. If transaction is NULL, it is skipped, and those columns are not added. Start and end of table should be handled by caller.
 	
@@ -421,9 +424,13 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 				{
 					?>
 					<td><?php echoCurrency($val->balance);?>
-					<script>
-						console.log("col = <?php echo $col;?>; val = <?php echo $val->name;?>");
-					</script>
+					
+					
+					<!-- DEBUG
+						<script>
+							console.log("col = <?php //echo $col;?>; val = <?php //echo $val->name;?>");
+						</script>
+					-->
 					</td>			
 					<?php
 				}
@@ -437,9 +444,30 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 				{
 					?>
 					<td><?php echoCurrency($val->balance);?>
+					
+					<!-- DEBUG
 					<script>
-						console.log("col = <?php echo $col;?>; val = <?php echo $val->name;?>");
+						console.log("col = <?php //echo $col;?>; val = <?php //echo $val->name;?>");
 					</script>
+					-->
+					</td>
+					<?php
+				}
+			}
+			
+			?><td> </td><?php
+			
+			foreach ($Goals as $col => $val)
+			{
+				if (strcmp($col,"list") !== 0 ) 
+				{
+					?>
+					<td><?php echoCurrency($val->balance);?>
+					<!---
+					<script>
+						console.log("col = <?php //echo $col;?>; val = <?php //echo $val->name;?>");
+					</script>
+					-->
 					</td>
 					<?php
 				}
@@ -451,7 +479,70 @@ function print_ledger_row($transaction, $Accounts, $Categories)
 	<?php
 }
 
-function process_transactions($conn, $transactions, $Accounts, $Categories, $Funds, $print_ledger)
+function balances_header($trans, $acc, $cat, $goal, $Accounts, $Categories, $Goals)
+{
+
+	echo "<tr>";
+	
+	if ($trans)
+	{
+		echo "
+				<td>Date</td>
+				<td>Description</td>
+				<td>Amount</td>
+				<td>Account</td>
+				<td>Category</td>
+				<td> </td>";	
+	}
+	if ($acc)
+	{
+		foreach ($Accounts as $col => $val)
+		{
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
+		}
+
+		?><td></td><?php
+	}
+	
+	if ($cat)
+	{
+		foreach ($Categories as $col => $val)
+		{
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
+		}
+		
+		?><td></td><?php		
+	}
+	
+	if ($goal)
+	{
+		
+		foreach ($Goals as $col => $val)
+		{
+			if (strcmp($col,"list") !== 0 ) 
+			{
+				?>
+				<td><?php echo $col;?></td>
+				<?php
+			}
+		}
+	}
+	
+	echo "</tr>";
+}
+
+
+function process_transactions($conn, $transactions, $Accounts, $Categories, $Funds, $Goals, $print_ledger)
 {
 	/* process_transactions
 		Evaluate a transaction and make the appropriate adjustments to any affected accounts, categories, funds, and goals.
@@ -491,36 +582,8 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	// Start a table to print results in
 	if ($print_ledger)
 	{
-
 		echo "<table border='1'>";
-		echo "<tr>
-				<td>Date</td>
-				<td>Description</td>
-				<td>Amount</td>
-				<td>Account</td>
-				<td>Category</td>
-				<td> </td>";
-		foreach ($Accounts as $col => $val)
-		{
-			if (strcmp($col,"list") !== 0 ) 
-			{
-				?>
-				<td><?php echo $col;?></td>
-				<?php
-			}
-		}
-
-		?><td></td><?php
-			
-		foreach ($Categories as $col => $val)
-		{
-			if (strcmp($col,"list") !== 0 ) 
-			{
-				?>
-				<td><?php echo $col;?></td>
-				<?php
-			}
-		}
+		balances_header(true, true, true, true, $Accounts, $Categories, $Goals);
 	}
 	
 	// For each transaction
@@ -612,20 +675,56 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			
 			// -- need to iterate through each item in $distributions[$thisDistIdx] and add money to the category. Or alternatively, iterate through $Categories and check $distributions[$thisDistIdx] for each one.
 			
+			/* DEBUG
+			echo "Goals:";
+			print_r($Goals);
+			echo "<br>";
+			*/
+			
 			// Iterate through all fields in the distributions object and add money to the category
 			foreach($distributions[$thisDistIdx] as $thisCat => $percent)
 			{
 			
-				if (strcmp($thisCat,"Date") !== 0 )
+				
+				if (in_array($thisCat, $Categories["list"]))
+				{
+					$Categories[$thisCat]->balance += ($transactions[$idx]->amount * $percent);
+					
+					if (strcmp($thisCat,"Goals") == 0 )
+					{					
+						foreach ($Goals["list"] as $goal => $val)
+						{
+							$Goals[$val]->balance += ($transactions[$idx]->amount * $percent * $Goals[$val]->distribution );														
+						}
+					}
+					
+				}				
+				elseif (strcmp($thisCat,"Date") !== 0 )
 				{
 					//echo "<br>" . $thisCat . " = " . $percent;
 					
 					//echo "<br>" . $percent*100 . "% of " . $transactions[$idx]->amount . " is $" . ($transactions[$idx]->amount * $percent) . ". " . $thisCat . " changes from " . $Categories[$thisCat]->balance;
 					
+					// DEBUG
+					?><script>console.log("Used the last elseif in income for <?php echo $thisCat; ?>");</script><?php
+					
 					$Categories[$thisCat]->balance += ($transactions[$idx]->amount * $percent);
 					
 					//echo " to " . $Categories[$thisCat]->balance . " .<br>";
+					
+					if (strcmp($thisCat,"Goals") == 0 )
+					{					
+						?><script>
+							console.log("I'm in 1");
+						</script><?php	
+						
+						foreach ($Goals["list"] as $goal => $val)
+						{
+							$Goals[$val]->balance += ($transactions[$idx]->amount * $percent * ($Goals[$val]->distribution / 100.0));														
+						}
+					}
 				}
+				
 				
 			}
 			
@@ -721,7 +820,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 		
 		if ($print_ledger)
 		{
-			print_ledger_row($transactions[$idx], $Accounts, $Categories);
+			print_ledger_row($transactions[$idx], $Accounts, $Categories, $Goals);
 		}
 		
 	}
@@ -729,38 +828,9 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	// Print header row again at the bottom
 	if ($print_ledger)
 	{
-		// DEBUG
-		//echo "Ending table for print_ledger. <br><br>";
 		
-		echo "<tr>
-				<td>Date</td>
-				<td>Description</td>
-				<td>Amount</td>
-				<td>Account</td>
-				<td>Category</td>
-				<td> </td>";
-		foreach ($Accounts as $col => $val)
-		{
-			if (strcmp($col,"list") !== 0 ) 
-			{
-				?>
-				<td><?php echo $col;?></td>
-				<?php
-			}
-		}
-
-		?><td></td><?php
-			
-		foreach ($Categories as $col => $val)
-		{
-			if (strcmp($col,"list") !== 0 ) 
-			{
-				?>
-				<td><?php echo $col;?></td>
-				<?php
-			}
-		}
-		
+		balances_header(true, true, true, true, $Accounts, $Categories, $Goals);
+				
 		// Close table
 		echo "</table>";
 		

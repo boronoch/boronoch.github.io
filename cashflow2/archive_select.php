@@ -15,14 +15,14 @@
 <?php
 
 	// Read inputs
-	$selectAll = $_GET["selectAll"];
-	$clearAll = $_GET["clearAll"];
+	$selectAll = $_POST["selectAll"];
+	$clearAll = $_POST["clearAll"];
 	
 	// Declare classes and functions
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_select = 16;
+	$versions->archive_select = 18;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -43,7 +43,7 @@
 
 	// Display transactions in a table with check boxes
 	?>
-	<form method="get">
+	<form method="post">
 	<?php
 	echo "<table border='1'>";
 	echo "<tr>
@@ -86,7 +86,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, false);
+			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 			
 			//$Accounts = $Accounts_result;
 			//$Categories = $Categories_result;

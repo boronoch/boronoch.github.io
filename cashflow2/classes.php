@@ -57,8 +57,9 @@
 	{
 		public $name;
 		public $active = true;
-		public $target = 0;
 		public $balance = 0;
+		public $distribution = 0;
+		public $target = 0;
 		public $priority = 99;
 		public $category = "Goals";
 	}
