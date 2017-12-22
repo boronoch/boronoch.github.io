@@ -4,11 +4,11 @@
 
 function functions_ver()
 {
-	$functions_ver = 72;
+	$functions_ver = 74;
 	return $functions_ver;
 }
 
-function read_latest_cash_balances($conn, $Categories, $Accounts, $categories_list, $accounts_list)
+function read_latest_cash_balances($conn, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list)
 {
 	$sql = sprintf("SELECT IDX FROM `cash_balances` WHERE 1");
 	$result = $conn->query($sql);
@@ -17,9 +17,6 @@ function read_latest_cash_balances($conn, $Categories, $Accounts, $categories_li
 	{		
 		if ($result->num_rows > 0)
 		{
-			// DEBUG
-			//print_r($result);
-			//echo "<br><br>";
 			
 			$k=0;
 			while($row = $result->fetch_assoc())
@@ -28,21 +25,8 @@ function read_latest_cash_balances($conn, $Categories, $Accounts, $categories_li
 				$k++;
 			}
 			
-			// DEBUG
-			/*echo "idxs:<br>";
-			print_r($idxs);
-			echo "<br><br>";
-			echo "Size of idxs = " . sizeof($idxs) . "<br><br>"; */
 			
 			sort($idxs);
-			
-			// DEBUG
-			/*echo "idxs sorted:<br>";
-			print_r($idxs);
-			echo "<br><br>";
-			echo "0 = " . $idxs[0] . "<br>";
-			echo "40 = " . $idxs[40] . "<br>";
-			echo "last = " . $idxs[sizeof($idxs)-1] . "<br><br>"; */
 			
 			$mostRecent = $idxs[sizeof($idxs)-1];
 			
@@ -66,9 +50,9 @@ function read_latest_cash_balances($conn, $Categories, $Accounts, $categories_li
 		echo "</pre>";
 	}
 	
-	list($Categories, $Accounts) = read_cash_balances_idx($conn, $mostRecent, $Categories, $Accounts, $categories_list, $accounts_list);
+	list($Categories, $Accounts, $Goals) = read_cash_balances_idx($conn, $mostRecent, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list);
 	
-	return array ($Accounts, $Categories); 
+	return array ($Accounts, $Categories, $Goals); 
 
 }
 
@@ -105,7 +89,7 @@ function correlate_names($conn)
 	return array ($otherNames, $otherNamesList);
 }
 
-function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories_list, $accounts_list)
+function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list)
 {
 
 	// Check connection
@@ -116,21 +100,16 @@ function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories
 	}
 	
 	// DEBUG
-	echo "Called read_cash_balances_idx for IDX = ", $idx, PHP_EOL;
 	$debug = 0;
+	if ($debug)
+	{
+		echo "Called read_cash_balances_idx for IDX = ", $idx, PHP_EOL;
+	}
 	
 	$sql = sprintf("SELECT * FROM `cash_balances` WHERE `IDX` LIKE %d", $idx);
 	$result = $conn->query($sql);
 	
 	list ($otherNames, $otherNamesList) = correlate_names($conn);
-	
-	// DEBUG
-	echo "<br>OtherNames:<br>";
-	print_r($otherNames);
-	echo "<br>";
-	echo "in_array(GE Checking, otherNames) = " . in_array('GE Checking', $otherNames) . "<br>";
-
-	
 
 	if($result)
 	{
@@ -184,8 +163,6 @@ function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories
 					}
 					elseif (in_array($column, $otherNamesList))
 					{
-						// 	DEBUG
-							//echo "Need to process " . $column . " as " . $otherNames[$column] . "<br>";
 						
 						if (in_array($otherNames[$column], $accounts_list))
 						{
@@ -244,7 +221,51 @@ function read_cash_balances_idx($conn, $idx, $Categories, $Accounts, $categories
 		echo "<br><br>";
 	}
 	
-	return array ($Categories, $Accounts);
+	// Read goals
+	$sql = sprintf("SELECT * FROM `goal_balances` WHERE `cashBalancesIDX` LIKE %d", $idx);
+	$result = $conn->query($sql);
+	
+	
+	if($result)
+	{
+		
+		if ($result->num_rows > 0)
+		{
+			
+			// store data of each row
+			while($row = $result->fetch_assoc())
+			{				
+				if (in_array($row['goal'], $goals_list))
+				{
+					$Goals[$row['goal']]->balance = $row['balance'];
+					
+					if ($debug)
+					{
+						echo sprintf("Set Goals[%s]->balance = %f<br>", $row['goal'], $row['balance']);
+					}					
+				}
+				else
+				{
+					?><script>console.log("Goal <?php echo $row['goal']; ?> is not declared in database");</script><?php
+				}				
+			}
+		}
+		else
+		{
+			echo "0 results<br>";
+		}
+	}
+	else
+	{
+		echo "Query failed. Result = " . $result . "<br>";
+		
+		$allVars = get_defined_vars();
+		echo "<br><br>All Variables:<br><br><pre>";
+		print_r($allVars);
+		echo "</pre>";
+	}
+	
+	return array ($Categories, $Accounts, $Goals);
 
 }
 
@@ -572,6 +593,9 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	echo "<br><br>";
 	echo "Funds list: <br>";
 	print_r($Funds["list"]);
+	echo "<br><br>";
+	echo "Goals list: <br>";
+	print_r($Goals['list']);
 	echo "<br><br></pre>";
 	
 	
@@ -592,7 +616,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	
 		// Support "$transactions" as a single object or an array
 		
-	
+ 
 		// Process Account
 		if (in_array($transactions[$idx]->account, $Accounts["list"]))
 		{
@@ -602,7 +626,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 		elseif (in_array($transactions[$idx]->account, $Categories["list"], TRUE))
 		{
 			// If $transactions[$idx]->account is a category, subtract
-			$Accounts[$transactions[$idx]->account]->balance = $Accounts[$transactions[$idx]->account]->balance - $transactions[$idx]->amount;
+			$Categories[$transactions[$idx]->account]->balance = $Categories[$transactions[$idx]->account]->balance - $transactions[$idx]->amount;
 		}
 		elseif (in_array($transactions[$idx]->account, $otherNamesList))
 		{
@@ -684,7 +708,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			// Iterate through all fields in the distributions object and add money to the category
 			foreach($distributions[$thisDistIdx] as $thisCat => $percent)
 			{
-			
+   
 				
 				if (in_array($thisCat, $Categories["list"]))
 				{
@@ -838,7 +862,7 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	
 	
 	
-	return array ($Accounts, $Categories);
+	return array ($Accounts, $Categories, $Goals);
 		
 }
 

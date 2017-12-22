@@ -18,7 +18,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->balance = 9;
+	$versions->balance = 10;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -29,10 +29,26 @@
 	
 	print_r($versions); echo "<br>";
 	
+	/* DEBUG
+	echo "<pre>Goals list in balance before read_latest_cash_balances: <br>";
+	print_r($Goals['list']);
+	echo "<br>";
+	print_r($goals_list);
+	echo "<br><br></pre>";
+	*/
+	
 	// read most recent archive	
-	list($Accounts, $Categories) = read_latest_cash_balances($conn, $Categories, $Accounts, $categories_list, $accounts_list);
+	list($Accounts, $Categories, $Goals) = read_latest_cash_balances($conn, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list);
 			
-		
+	/* DEBUG
+	echo "<pre>Goals list in balance after read_latest_cash_balances: <br>";
+	print_r($Goals['list']);
+	echo "<br>";
+	print_r($goals_list);
+	echo "<br><br></pre>";
+	*/
+
+	
 	// read all unarchived transactions
 	$newTransactions = read_new_transactions($conn);
 	
@@ -44,8 +60,16 @@
 		
 	echo "<p>Next: finish and debug process_transactions</p>";
 	
+	/* DEBUG
+	echo "<pre>Goals list in balance before process_transactions: <br>";
+	print_r($Goals["list"]);
+	echo "<br>";
+	print_r($goals_list);
+	echo "<br><br></pre>";
+	*/
+	
 	// process unarchived transactions
-	list($Accounts, $Categories) = process_transactions($conn, $newTransactions, $Accounts, $Categories, $Funds, $Goals, true);
+	list($Accounts, $Categories, $Goals) = process_transactions($conn, $newTransactions, $Accounts, $Categories, $Funds, $Goals, true);
 	
 	
 	// display account balances

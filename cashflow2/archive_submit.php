@@ -32,7 +32,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_submit = 12;
+	$versions->archive_submit = 13;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -44,7 +44,7 @@
 	print_r($versions); echo "<br>";
 	
 	// read most recent archive	
-	list($Accounts, $Categories) = read_latest_cash_balances($conn, $Categories, $Accounts, $categories_list, $accounts_list);
+	list($Accounts, $Categories, $Goals) = read_latest_cash_balances($conn, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list);
 	
 	// Create list from array
 	$stSize = sizeof($selectTransIDX);
@@ -118,7 +118,7 @@
 		
 		// Calculate new balances (add new transaction to previous balances) (do this in the transaction so that it only happens if the move goes correctly
 		$thisTransactionArray[0] = $thisTransaction;
-		list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
+		list($Accounts, $Categories, $Goals) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 		print_ledger_row($thisTransaction, $Accounts, $Categories, $Goals);
 		
 		/* DEBUG
@@ -206,7 +206,8 @@
 			`Work Exp`, 
 			`Home Imp`, 
 			`Car Exp`, 
-			`New Car`, 
+			`New Car`,
+			`Goals`,
 			`next_is_pay`) 
 			VALUES 
 			(NULL,'" .
@@ -236,14 +237,34 @@
 			$Categories['Home Imp']->balance . "," .
 			$Categories['Car Exp']->balance . "," .
 			$Categories['New Car']->balance . "," .
+			$Categories['Goals']->balance . "," .
 			"0)";
 			
-			
-	// $result = mysql_query($sql);
 	$result = $conn->query($sql);
 	if ($result)
 	{
 		echo "wrote to cash_balances";
+		$cashBalancesIDX = $conn->insert_id;
+		
+		// NOTE: This is hardcoded to write HVAC. If a second goal is added, need to update the code.
+		$sql = "INSERT INTO `goal_balances` (`cashBalancesIDX`, `goal`, `balance`) 
+				VALUES ('" . $cashBalancesIDX . "', 
+						'HVAC', 
+						'" . $Goals['HVAC']->balance . "')";
+						
+		$result = $conn->query($sql);
+		if ($result)
+		{
+			echo "wrote to goal_balances";
+		}
+		else
+		{
+			echo "failed to write to goal_balances<br>";
+			echo $sql;
+			echo "<br>";
+			echo $result;
+		}
+		
 	}
 	else
 	{
@@ -252,6 +273,8 @@
 		echo "<br>";
 		echo $result;
 	}
+	
+	
 
 ?>
 

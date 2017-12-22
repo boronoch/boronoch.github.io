@@ -23,7 +23,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->archive_confirm = 11;
+	$versions->archive_confirm = 12;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -35,7 +35,7 @@
 	print_r($versions); echo "<br>";
 	
 	// read most recent archive	
-	list($Accounts, $Categories) = read_latest_cash_balances($conn, $Categories, $Accounts, $categories_list, $accounts_list);
+	list($Accounts, $Categories, $Goals) = read_latest_cash_balances($conn, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list);
 	
 	// Create list from array
 	$stSize = sizeof($selectTransIDX);
@@ -126,7 +126,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
+			list($Accounts, $Categories, $Goals) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 						
 			?>
 			<tr>
@@ -275,7 +275,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
+			list($Accounts, $Categories, $Goals) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 						
 			?>
 			<tr>
@@ -364,7 +364,7 @@
 
 ?>
 
-<p>End of PHP in archive_select.php.</p>
+<p>End of PHP in archive_confirm.php.</p>
 </body>
 
 </html>

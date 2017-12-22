@@ -34,7 +34,7 @@
 	print_r($versions); echo "<br>";
 	
 	// read most recent archive	
-	list($Accounts, $Categories) = read_latest_cash_balances($conn, $Categories, $Accounts, $categories_list, $accounts_list);
+	list($Accounts, $Categories, $Goals) = read_latest_cash_balances($conn, $Categories, $Accounts, $Goals, $categories_list, $accounts_list, $goals_list);
 			
 	// read all unarchived transactions
 	$newTransactions = read_new_transactions($conn);
@@ -86,7 +86,7 @@
 			//print_r($Categories["list"]);
 			
 			$thisTransactionArray[0] = $thisTransaction;
-			list($Accounts, $Categories) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
+			list($Accounts, $Categories, $Goals) = process_transactions($conn, $thisTransactionArray, $Accounts, $Categories, $Funds, $Goals, false);
 			
 			//$Accounts = $Accounts_result;
 			//$Categories = $Categories_result;
