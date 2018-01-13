@@ -77,13 +77,16 @@
 
 	class version
 	{
+		public $addTransaction;
 		public $archive_confirm;
 		public $archive_select;
 		public $archive_submit;
-		public $dashboard4;
-		public $names;
-		public $databaseConnect;
 		public $classes = 8;
+		public $dashboard4;
+		public $databaseConnect;
+		public $display_transactions;
+		public $names;
+		public $submit_transaction;
 		public $functions;
 		
 	}
