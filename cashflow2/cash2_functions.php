@@ -782,15 +782,24 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 			
 			// Pay Dividends
 			foreach ($Categories as $thisCat)
-			{
+			{			
 				if (strcmp(gettype($thisCat), "array") == 0)
 				{
 					echo "<br> skipping lists variable. Need to find a better way of skipping this, or remove list from the array.";
-				}
+				}								
 				else
 				{
 					$thisDiv = ($thisCat->balance / $sum );
 					$thisCat->balance += ($transactions[$idx]->amount * $thisDiv);
+					
+					if (strcmp($thisCat->name,"Goals") == 0 )
+					{					
+						foreach ($Goals["list"] as $goal => $val)
+						{
+							$thisDiv = ($Goals[$val]->balance / $sum );
+							$Goals[$val]->balance += ($transactions[$idx]->amount * $thisDiv);														
+						}
+					}
 					
 					// DEBUG
 					//echo "<br> Add $" . $thisDiv . " to " . $thisCat->name . " = $" . $thisCat->balance;
