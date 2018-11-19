@@ -11,7 +11,7 @@ $sql = sprintf("SELECT * FROM `accounts_categories` WHERE 1");
 $result = $conn->query($sql);
 
 // Debug
-$debug_names = 1;
+$debug_names = 0;
 
 // Initialize Accounts and Categories
 if($result)

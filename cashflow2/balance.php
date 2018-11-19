@@ -18,7 +18,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->balance = 10;
+	$versions->balance = 11;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -73,6 +73,26 @@
 	
 	
 	// display account balances
+	$total_M = $Categories["Marann"]->balance + 
+			   $Categories["Card"]->balance +
+			   $Categories["Mwed"]->balance;
+			   
+	$total_E = $Categories["Bank"]->balance + 
+			   $Categories["Emergency"]->balance + 
+			   $Categories["Goals"]->balance + 
+			   $Categories["Wedding"]->balance +
+			   $Categories["Roth"]->balance +
+			   $total_M;
+	?>
+	<div>
+		<p>Total Emergency = $<?php echo $total_E; ?><br>
+		(Bank+Emergency+Goals+Wedding+Roth+Card)<br>
+		Goal: $10,765 (six months)</p>
+		
+		<p>Total Card = $<?php echo $total_M; ?><br>
+		(Marann+Card+Mwed)</p>
+	</div>
+	<?php
 	
 	// display form for adding a transaction
 	

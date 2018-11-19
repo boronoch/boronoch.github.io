@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<body>
+<!-- Rev Hist 
+
+
+-->
+
+
+<!-- code version -->
+<?php
+	$ver = 12;
+?>
+<script>
+	console.log("Version: <?php echo $ver; ?>");
+</script>
+
+Select an Account: 
+<form action="balance.html" method="post">
+	<select name="account">
+		<option value="Cash">Cash</option>
+		<option value="Chase">Chase</option>
+		<option value="GE Checking">GE Checking</option>
+		<option value="Chase Check">Chase Check</option>
+		<option value="AmEx">AmEx</option>
+		<option value="Southwest">Southwest</option>
+		<option value="GE Savings">GE Savings</option>
+	</select>
+	<input type="submit" value="Submit">
+</form>
+
+<?php
+
+	// Read inputs
+	$acct = $_POST["account"];
+	
+	if (isset($acct))
+	{
+	
+		// Connect to database
+		//include 'databaseConnect.php';
+		//mysql_connect($servername, $username, $password) or die(//mysql_error());
+		//mysql_select_db($dbname) or die(mysql_error());
+		//mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+		//mysql_select_db("1544017_users") or die(mysql_error());
+		mysql_connect("127.0.0.1", "u344052086_user", "db101586") or die(mysql_error());
+		mysql_select_db("u344052086_db") or die(mysql_error());
+		
+		// Get data from Archive
+		//$sql = "SELECT * FROM `trans_archive` WHERE `Account` LIKE '" . $acct . "'";
+		$sql = "SELECT * FROM `trans_archive` WHERE `Account` LIKE '" . $acct . "' OR `Category` LIKE '" . $acct . "'";
+		$result = mysql_query($sql) or die(mysql_error());
+		
+		?>
+		<script>
+			console.log("$sql = <?php echo $sql;?>");
+			console.log("$result = <?php echo $result;?>");
+			console.log("");
+		</script>
+	
+		<!-- Display the transactions in the database -->
+		<br>Archive: <br>		
+		<table>
+			<tr>
+				<th>Date</th>
+				<th>Description</th>
+				<th>Amount ($)</th>
+				<th>Account</th>
+				<th>Category</th>				
+			</tr>
+			
+			<?php 
+				while ($row = mysql_fetch_array( $result ))
+				{ 
+				?>
+					<tr>
+						<td><?php echo $row['Date']; ?></td>
+						<td><?php echo $row['Description']; ?></td>
+						<td><?php echo $row['Amount']; ?></td>
+						<td><?php echo $row['Account']; ?></td>
+						<td><?php echo $row['Category']; ?></td>
+						
+					</tr>
+				
+				<?php
+				}
+			
+			
+			 ?>
+					
+		</table>	
+		<br>Add: <br>
+		
+		<?php
+		
+		// Get data from Add
+		// SELECT * FROM `trans_archive` WHERE `Account` LIKE 'Chase'
+		$sql = "SELECT * FROM `transactions` WHERE `Account` LIKE '" . $acct . "' OR `Category` LIKE '" . $acct . "' ORDER BY `sort_order` ASC";
+		$result = mysql_query($sql) or die(mysql_error());
+		
+		?>
+	
+	<script>
+		console.log("$sql = <?php echo $sql;?>");
+		console.log("$result = <?php echo $result;?>");
+		console.log("");
+	</script>	
+	
+	<!-- Display the transactions in the database -->
+	<form action="add.php" method="post">
+	<table>
+		<tr>
+			<td>Date</td>
+			<td>Description</td>
+			<td>Amount ($)</td>
+			<td>Account</td>
+			<td>Category</td>				
+		</tr>
+		
+		<?php 
+			while ($row = mysql_fetch_array( $result ))
+			{ 
+			?>
+				<tr>
+					<td><?php echo $row['Date']; ?></td>
+					<td><?php echo $row['Description']; ?></td>
+					<td><?php echo $row['Amount']; ?></td>
+					<td><?php echo $row['Account']; ?></td>
+					<td><?php echo $row['Category']; ?></td>
+					<!-- Create checkbox. When the box is checked, the value IDX is included in the moveTrans[] array that is posted -->
+					<td><input type='checkbox' name='moveTrans[]' value="<?php echo $row['IDX']; ?>"></td>
+				</tr>
+			
+			<?php
+			}
+			
+		?>
+		<tr>
+			<td><input type="submit" value="Move multiple" name="moveMult" formaction="sort.php"></td>
+			<td><input type="submit" value="Move 2nd above 1st" name="move2a1" formaction="sort.php"></td>
+			<td><input type="submit" value="Switch places" name="swap" formaction="sort.php"></td>
+			<td><input type="submit" value="Archive Selected" name="archive"></td>
+			<td><input type="submit" value="Delete Selected" name="delete"></td>
+			<td></td>
+		</tr>
+		
+	</table>	
+	</form>
+	
+	<?php
+	
+	}
+	
+	
+?>
+
+</body>
+</html>
+
+<form action="add.php" method="post">
+	<input type="date" name="transDate" value="<?php date();?>">
+	<input type="text" name="transDesc">
+	<input type="number" name="transAmnt" step=".01">
+	<select name="transAcct">
+		<option value="Cash">Cash</option>
+		<option value="Chase">Chase</option>
+		<option value="GE Checking">GE Checking</option>
+		<option value="Chase Check">Chase Check</option>
+		<option value="AmEx">AmEx</option>
+		<option value="Southwest">Southwest</option>
+		<option value="GE Savings">GE Savings</option>		
+		<option value="Income">Income</option>
+		<option value="Dividend">Dividend</option>
+	</select>
+	<select name="transCat">
+		<option value="Marann">Marann</option>
+		<option value="Spending Other">Spending Other</option>
+		<option value="Living">Living</option>
+		<option value="Grocery">Grocery</option>
+		<option value="Gasoline">Gasoline</option>
+		<option value="Home Imp">Home Imp</option>
+		<option value="Charity">Charity</option>
+		<option value="Bills">Bills</option>
+		<option value="Loans">Loans</option>
+		<option value="Bank Other">Bank Other</option>
+		<option value="Dining">Dining</option>
+		<option value="Ten Percent">Ten Percent</option>
+		<option value="Emergency">Emergency</option>
+		<option value="Gifts">Gifts</option>
+		<option value="eMV">eMV</option>
+		<option value="NYC">NYC</option>
+		<option value="TEAM">TEAM</option>
+		<option value="Wedding">Wedding</option>
+		<option value="Mwed">Mwed</option>
+		<option value="Roth">Roth</option>
+		<option value="Card">Card</option>
+		<option value="Work Exp">Work Exp</option>
+		<option value="Income">Income</option>
+		<option value="Dividend">Dividend</option>
+	</select>
+	<input type="submit" value="Submit">
+</form>
