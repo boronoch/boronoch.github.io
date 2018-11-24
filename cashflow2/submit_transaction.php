@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+<head>
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="cash2styles.css">
+
+<title>Submit</title>
+
+</head>
 <body>
 
 <?php
@@ -7,7 +14,7 @@
 	include 'classes.php';
 	include 'databaseConnect.php';	
 	include 'cash2_functions.php';
-	$versions->submit_transaction = 4;
+	$versions->submit_transaction = 7;
 	
 	// Read inputs from addTransaction.php
 	$sortOrder = $_POST["sortOrder"];
@@ -46,8 +53,10 @@
 	
 <!-- Links back to other pages -->
 
-<a href="display_transactions.php">Display Transactions</a><br>
-<a href="addTransaction.php">Add Transaction</a><br>
+<a class="button" href="display_transactions.php">Display Transactions</a>
+<a class="button" href="addTransaction.php">Add Transaction</a>
+<a class="button" href="balance.php">Display Balances</a>
+<br>
 
 
 </body>

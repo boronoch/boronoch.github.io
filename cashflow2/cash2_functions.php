@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 74;
+	$functions_ver = 84;
 	return $functions_ver;
 }
 
@@ -431,6 +431,7 @@ function print_ledger_row($transaction, $Accounts, $Categories, $Goals)
 		if (!is_null($transaction))
 		{
 			?>
+			<td><?php echo $transaction->sortOrder;?></td>
 			<td><?php echo $transaction->date;?></td>
 			<td><?php echo $transaction->description;?></td>
 			<td><?php echoCurrency($transaction->amount);?></td>
@@ -508,6 +509,7 @@ function balances_header($trans, $acc, $cat, $goal, $Accounts, $Categories, $Goa
 	if ($trans)
 	{
 		echo "
+				<td>Sort</td>
 				<td>Date</td>
 				<td>Description</td>
 				<td>Amount</td>
@@ -563,10 +565,22 @@ function balances_header($trans, $acc, $cat, $goal, $Accounts, $Categories, $Goa
 }
 
 
-function process_transactions($conn, $transactions, $Accounts, $Categories, $Funds, $Goals, $print_ledger)
+function process_transactions($conn, $transactions, $Accounts, $Categories, $Funds, $Goals, $print_command = true)
 {
 	/* process_transactions
 		Evaluate a transaction and make the appropriate adjustments to any affected accounts, categories, funds, and goals.
+		
+		INPUTS:
+		 - $print_ledger may be any of the following:
+			- "all"
+			- "none"
+			- true (same as "all")
+			- false (same as "none")
+			- ommitted (default to "all")
+			- any category: only print transactions of that category
+			- any account: only print transactions of that account
+			- an array of categories and/or accounts: only print transactions with an account or category in the list
+			(no columns are excluded when printing, just rows. consider highlighting columns.)
 	*/
 	
 	// DEBUG
@@ -602,6 +616,44 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 	echo "print_ledger = " . $print_ledger . "<br>";	
 	echo "sizeof transactions = " . sizeof($transactions) . "<br>";
 	*/
+	
+	// Interpret $print_ledger variable
+	if (is_bool($print_command))
+	{
+		$print_ledger = $print_command;
+		$print_list = "all";
+	} 
+	elseif (is_string($print_command))
+	{
+		if (strcmp($print_command,"none") == 0)
+		{
+			$print_ledger = false;
+			$print_list = "none"; // not used when print_ledger is false
+		}		
+		else
+		{
+			$print_ledger = true;
+			$print_list = $print_command;
+			?><script>
+				console.log("cash2_functions 0003: Print Command is <?php echo $print_command;?>. Printing Ledger.");
+			</script><?php
+		}
+	}
+	elseif (is_array($print_command))
+	{
+		$print_ledger = true;
+		$print_list = $print_command;
+	}
+	else 
+	{
+		?><script>
+			console.log("Message 0004: Error: Print Command Data Type is <?php echo gettype($print_command);?>.");
+		</script><?php
+	}
+	
+	?><script>
+		console.log("cash2_functions 0005: print_ledger is <?php echo $print_ledger;?> and print_list is <?php echo $print_list;?>.");
+	</script><?php
 	
 	// Start a table to print results in
 	if ($print_ledger)
@@ -853,7 +905,14 @@ function process_transactions($conn, $transactions, $Accounts, $Categories, $Fun
 		
 		if ($print_ledger)
 		{
-			print_ledger_row($transactions[$idx], $Accounts, $Categories, $Goals);
+			?><script>
+				console.log("cash2_functions 0006: Category is <?php echo $transactions[$idx]->category;?>, Account is <?php echo $transactions[$idx]->account;?>, print_list is <?php echo $print_list;?>, InCategoryArray = <?php echo in_array($transactions[$idx]->category, $print_list);?> and InAccountArray = <?php echo in_array($transactions[$idx]->account, $print_list);?>.");
+			</script><?php
+			
+			if ((strcmp($print_list,"all") == 0) or (strcmp($print_list,$transactions[$idx]->category) == 0) or (strcmp($print_list,$transactions[$idx]->account) == 0) or in_array($transactions[$idx]->category, $print_list) or in_array($transactions[$idx]->account, $print_list))
+			{
+				print_ledger_row($transactions[$idx], $Accounts, $Categories, $Goals);
+			}
 		}
 		
 	}

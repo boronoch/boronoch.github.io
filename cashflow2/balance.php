@@ -18,7 +18,7 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
-	$versions->balance = 11;
+	$versions->balance = 12;
 	$versions->functions = functions_ver();
 	
 	// Connect to database
@@ -104,6 +104,10 @@
 	
 	// Close connection
 	$conn->close();
+	
+	// Print buttons at the bottom
+	include 'buttons.php';
+	
 	
 	
 ?>

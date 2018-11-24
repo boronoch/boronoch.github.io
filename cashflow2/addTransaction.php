@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+<head>
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="cash2styles.css">
+
+<title>Submit</title>
+
+</head>
 <body>
 
 <?php
@@ -8,7 +15,7 @@
 	include 'databaseConnect.php';	
 	include 'cash2_functions.php';
 	include 'names.php'; // Initialize Accounts, Funds, Categories
-	$versions->addTransaction = 9;
+	$versions->addTransaction = 10;
 	
 	$sortOrder = $_GET["insertBefore"];
 	echo $sortOrder;
@@ -129,11 +136,11 @@
 		</div>
 		<div>
 			<label for="cleared">Cleared:</label>
-			<input type='checkbox' name="cleared" checked>
+			<input type='checkbox' name="cleared">
 		</div>
 		<div>
 			<label for="check_amount">Check Amount:</label>
-			<input name="check_amount" type='checkbox'>
+			<input name="check_amount" type='checkbox' checked>
 		</div>
 		<div>
 			<input type="submit" value="Submit">
