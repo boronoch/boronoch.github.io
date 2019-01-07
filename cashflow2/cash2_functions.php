@@ -4,7 +4,7 @@
 
 function functions_ver()
 {
-	$functions_ver = 84;
+	$functions_ver = 85;
 	return $functions_ver;
 }
 
@@ -495,6 +495,11 @@ function print_ledger_row($transaction, $Accounts, $Categories, $Goals)
 				}
 			}
 			
+			?>
+			<td>Modify</td>
+			<td>Delete</td>			
+			<?php	
+			
 		}
 	?>
 	</tr>
@@ -560,6 +565,10 @@ function balances_header($trans, $acc, $cat, $goal, $Accounts, $Categories, $Goa
 			}
 		}
 	}
+	
+	echo "
+				<td>Modify</td>
+				<td>Delete</td>";	
 	
 	echo "</tr>";
 }

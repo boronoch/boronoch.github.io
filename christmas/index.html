@@ -1,0 +1,143 @@
+<html>
+<head>
+<title>Hermsen Christmas 2018</title>
+<link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="christmasStyles.css">
+</head>
+<body>
+ 
+<h1>Hermsen Christmas 2018</h1>
+
+<div class="navButtons header" id="myHeader">
+	<table class="navButtons">
+		<tr>
+			<td class="navButtons"><a href="#WhereWhen" class="navbuttons">Where and When</a></td>
+			<td class="navButtons"><a href="#WhatToBring" class="navbuttons">What to Bring</a></td>
+			<td class="navButtons"><a href="#RSVP" class="navbuttons">RSVP</a></td>
+			<td class="navButtons"><a href="#Hotels" class="navbuttons">Hotels</a></td>
+		</tr>
+	</table>
+</div>
+
+<div class="content">
+
+<a class="anchor" id="WhereWhen"></a>
+<h2>Where and When</h2>
+
+<div>
+<p class="block"><b>Where:</b> 1716 Erin Lane<br>Waukesha, WI 53188</p>
+<p class="block"><b>When:</b> December 22 at 2:00</p>
+<br>
+<p class="block"><b>Gift Exchange:</b> We'll be doing our traditional gift exchange again. If you want to participate, bring a $25-$30 gift.</p>
+</div>
+
+<h3>Brunch</h3>
+<div>
+<p class="block"><b>Brunch: </b>For those staying at my house or in the area Saturday night, we'll have brunch Sunday morning around 9:30.</p>
+</div>
+
+<h3>Road Closed</h3>
+<div>
+<p class="block"><b>Please note: </b>There is an intersection closed in my subdivision, and Google Maps will likely try to route you through it.</p>
+<p class="block">From highways 41 or 43, you will end up entering my neighborhood on Madison Street. Google will tell you to turn left on Joellen, but that intersection is closed. You need to turn left one block sooner on Moreland Blvd. See picture below.</p>
+<img src="road_closed.png">
+</div>
+
+<a class="anchor" id="WhatToBring"></a>
+
+<h2>What to Bring</h2>
+
+<div class="gsheet">
+
+<iframe class="gsheet" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRIdN9V58wD_AsGUB76Xq7DBRnstkv45Vw_SHL09-o5hdYKdAqdaZAS1uzwuw1YUzTae5waom-EYPni/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+
+</div>
+
+<a class="anchor" id="RSVP"></a>
+
+<h2>RSVP</h2>
+
+<div class="centered_list">
+<h3>Yes</h3>
+<ul>
+<li>Tom and Sue</li>
+<li>Dan and Abbie and family (6)</li>
+<li>Adam, Liz and family (4)</li>
+<li>Mike, Kellie, and Xavier</li>
+<li>Steve and Kathy, Mikayla, Dom, and Kaitlyn</li>
+<li>Ron and Lori</li>
+<li>Jon, Alex, and Bentley</li>
+<li>Pat, Mary, Bryan, and Erinn</li>
+<li>Brandon and Liz</li>
+<li>Joe and Kayla</li>
+<li>Ellie and Carly</li>
+<li>Rick and Lisa</li>
+</ul>
+<h3>Total: 37</h3>
+
+<!--
+<br>
+<br>
+<h3>No</h3>
+<ul>
+<li>Gary</li>
+<li>Anne</li>
+<li>Eric and Christina</li>
+<li>Jessie</li>
+</ul>
+
+-->
+
+</div>
+
+<a class="anchor" id="Hotels"></a>
+
+<h2>Hotels</h2>
+
+<div>
+<ul>
+<li>
+<p>Milwaukee Marriott West<br>
+W231N1600 Corporate Ct<br>
+Waukesha, WI 53186</p>
+<p>(262) 574-0888</p>
+<p><a href="https://www.marriott.com/hotels/travel/mkemw-milwaukee-marriott-west/?scid=bb1a189a-fec3-4d19-a255-54ba596febe2">marriott.com</a></p>
+</li>
+<br>
+<li>
+<p>Baymount<br>
+2111 E Moreland Blvd<br>
+Waukesha, WI 53186</p>
+<p>(262) 547-7770</p>
+<p><a href="https://www.wyndhamhotels.com/baymont/waukesha-wisconsin/baymont-inn-and-suites-waukesha/overview?CID=LC:BU::GGL:RIO:National:13606&iata=00065402">wyndhamhotels.com</a></p>
+</div>
+</li>
+
+</ul>
+
+</div> <!-- end .content -->
+
+<script>
+// When the user scrolls the page, execute myFunction 
+window.onscroll = function() {myFunction()};
+
+// Get the header
+var header = document.getElementById("myHeader");
+
+// Get the offset position of the navbar
+var sticky = header.offsetTop;
+
+// Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function myFunction() {
+	if (window.pageYOffset > sticky) {
+		header.classList.add("sticky");
+	} else {
+		header.classList.remove("sticky");
+	}
+}
+
+</script>
+
+</body>
+
+</html>

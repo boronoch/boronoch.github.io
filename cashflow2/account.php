@@ -19,8 +19,10 @@
 	include 'classes.php';
 	include 'cash2_functions.php';
 	
+	date_default_timezone_set('America/Chicago');
+	
 	// Version (must be after including cash2_functions.php
-	$versions->account = 6;
+	$versions->account = 7;
 	$versions->functions = functions_ver();
 	
 	// Inputs
