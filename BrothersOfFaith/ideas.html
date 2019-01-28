@@ -1,0 +1,249 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="brotherStyles.css">
+<!-- Version: 100 -->
+</head>
+<body>
+
+<h1>Ideas for future topics</h1>
+<div class="rowNavBar">
+
+
+<ul>
+	<!-- <li><a class="nav"><style="color: #ffae1a;">Past Topics</style></a></li> -->
+	<li><a href="index.html" class="nav">Return Home</a>
+	<li><a href="index.html#WhatWeDo" class="nav">What We're Doing</a>
+	<li><a href="pastTopics.html" class="nav">Past Topics</a>
+	
+</ul>
+
+</div>
+
+<div>
+
+<?php 
+/*
+// Connect to database
+mysql_connect("fdb6.awardspace.net", "1544017_users", "townHall1") or die(mysql_error());
+mysql_select_db("1544017_users") or die(mysql_error());
+
+// Get Past Topics from the database
+$sql = "SELECT * FROM `pasttopics`";
+$result = mysql_query($sql) or die(mysql_error());
+*/
+?>
+
+<!-- Link to Google Form to add ideas -->
+<br><br>
+<div class="gform">
+	<form action="addIdeas.html" target="_blank" align="center">
+		<input type="submit" value="Submit an idea through Google Forms">
+	</form>
+</div>
+
+<!-- Embed Ideas from Google Form -->
+<!-- height is controlled by iframe.ideasForm in brotherStyles.css -->
+<div class="gsheet">
+<iframe class="ideasForm" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSBRPrymZTlOkWYM3rV-5MGPyaJcCX1GLlqF3H3jn--Y3Ga4AWtFcYcI3a4N2n5QBI62LIxDq_6FTvc/pubhtml?widget=true&amp;headers=false"></iframe>
+</div>
+<br><br>
+
+<!-- Link to edit Ideas in Google Drive -->
+<!--
+<br><br>
+<div>
+	<form action="https://docs.google.com/spreadsheets/d/1k1KrbpsHNdcRQpw4MC4k6m1jJlKTFXzv-BRSnS5qs28/edit?usp=sharing" target="_blank" align="center">
+		<input type="submit" value="Edit Ideas sheet in Google Sheets">
+	</form>
+</div>
+<br>
+
+<!-- Embed Ideas from Google Drive -->
+<!--
+<div class="gsheet">
+<iframe class="gsheet" src="https://docs.google.com/spreadsheets/d/1k1KrbpsHNdcRQpw4MC4k6m1jJlKTFXzv-BRSnS5qs28/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+</div>
+<br><br>
+
+
+<!-- Old HTML table with ideas. Some are duplicated in the Goole sheet above.-->
+<!--
+	<table class="pastTopics">
+		<tr>
+			<th>Date</td>
+			<th>Category</td>
+			<th>Topic</td>
+			<th>Documents</td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category"></td>
+			<td class="topic">Symbolism in the Mass</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category"></td>
+			<td class="topic">Tradition</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Series</td>
+			<td class="topic"><p>Ten Commandments</p>
+				<p class="tab">Scripture: Exodus or Deuteronomy</p>
+				<p class="tab">Catechism: lots of content</p>
+				<p class="tab">Culturally</p>
+				<p class="tab"> - how we live them, what society accepts and doesn't accept</p>
+				<p class="tab"> - Modern interpretations, religious and secular</p>
+				<p class="tab"> - Within the Church, "The Ten Commandments Today" - what is taugh and how they're interpreted</p>
+				
+			</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Scripture</td>
+			<td class="topic">1 Corinthians 15</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Scripture</td>
+			<td class="topic">Isaiah 53</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Scripture</td>
+			<td class="topic">Revelation 7</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Scripture</td>
+			<td class="topic">Acts 15 (Council of Jerusalem)</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Current Events</td>
+			<td class="topic">The Political Landscape: 4 approaches to Politics (Kevin)</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Catechism</td>
+			<td class="topic">Sacramentals and Relics: Scapulars, Holy Water, Rosary</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Scripture</td>
+			<td class="topic">Job</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Other</td>
+			<td class="topic">Forgiveness</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Other</td>
+			<td class="topic">Freedom (political, religious, philosophical)</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Catechism</td>
+			<td class="topic">Holy Spirit</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Service</td>
+			<td class="topic">Volunteer at Hunger Task Force</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Other</td>
+			<td class="topic">How the Church has historically adapted to culture</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Catechism</td>
+			<td class="topic">Divine Inspiration<br>
+			Discuss what Divine Inspiration is.<br>
+			Compare inspired texts to non-inspired texts</td>
+			<td class="documents"></td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category">Catechism</td>
+			<td class="topic">The Filioque Controversy in the Byzantine Schism</td>
+			<td class="documents"><a href="http://www.newworldencyclopedia.org/entry/Filioque_clause">http://www.newworldencyclopedia.org/entry/Filioque_clause</a><br>
+								  There is also a CSYSK podcast about the Byzantine/Orthodox Schism</td>
+		</tr>
+		<tr>
+			<td class="date"></td>
+			<td class="category"></td>
+			<td class="topic"></td>
+			<td class="documents"></td>
+		</tr>
+		<?php
+		
+		/*
+		Create database with the following fields. The same structure should be used for Ideas, Past Topics, and Current topics
+		 - IDX
+		 - date
+		 - category
+		 - topic
+		 - description
+		 - leader(s)
+		 
+		There should also be 3 additional databases that link to the main one using the IDX as the primary key:
+		- documents
+		- links
+		- comments
+		
+		while ($row = mysql_fetch_array( $result ))
+		{
+		
+		?><tr>
+			<td><?php echo $row['date'];?></td>
+			<td><?php echo $row['category'];?></td>
+			<td><?php echo $row['topic'];?></td>
+			<td>
+				<?php
+					// Get Documents from the database
+					$sql = sprintf("SELECT * FROM `documents` WHERE 'date' is %s",$row['date']);
+					$docs = mysql_query($sql) or die(mysql_error());
+					
+					while ($doc = mysql_fetch_array( $docs ))
+					{
+						?>
+							
+						<?php
+					}
+			
+			
+				?>
+			</td>
+			
+		</tr><?php
+		
+		} */
+		?>
+		
+	</table>
+
+	-->
+
+</div>
+ 
+</body>
+</html>

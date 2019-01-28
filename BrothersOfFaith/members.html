@@ -1,0 +1,182 @@
+<html>
+<head>
+<title>Brothers of Faith</title>
+<link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="brotherStyles.css">
+</head>
+<body>
+ 
+<div class="logo" id="top">
+
+	<img src="BoF_LOGO-H_v01.png" onclick="changeBackground()" class="logo" alt="Brothers of Faith Logo"> 
+	
+	<script>
+	function changeImage() {
+		var image = document.getElementById('myImage');
+		if (image.src.match("bulbon")) {
+			image.src = "pic_bulboff.gif";
+		} else {
+			image.src = "pic_bulbon.gif";
+		}
+	}
+	</script>
+	
+	<script>
+	// see http://www.w3schools.com/js/tryit.asp?filename=tryjs_intro_lightbulb
+	function changeBackground() {
+		var topDiv = document.getElementById('top');
+		if (topDiv.style.background-color("black")) {
+			topDiv.style.background-color = "white";
+		} else {
+			topDiv.style.background-color = "black";
+		}
+	}
+	</script>
+
+</div>
+
+
+<div class="navButtons">
+
+	<table class="navButtons">
+		<tr>
+			<td class="navButtons"><a href="#WhoWeAre" class="orange navbuttons">Who We Are</a></td>
+			<td class="navButtons"><a href="#WhatWeDo" class="orange navbuttons">What We're Doing</a></td>
+			<td class="navButtons"><a href="pastTopics.html" class="orange navbuttons">Past Topics</a></td>
+			<td class="navButtons"><a href="ideas.html" class="orange navbuttons">Ideas</a></td>
+		</tr>
+	</table>
+
+</div>
+
+<div class="groupPhoto">
+
+<!---	<img src="groupPhoto.jpg"> -->
+	
+</div>
+
+<div class="WhoWeAre" id="WhoWeAre">
+	
+	<h1>Who We Are</h1>
+	
+	<table class="infoTable">
+		<tr>
+			<td><a href="charter.pdf"><img class="fill" src="charter.JPG" alt="Brothers of Faith Charter"></a></td>
+			<td class="largeTextBlock">
+				<p>Brothers of Faith is a Small Faith Group for Young Adult Men in the Milwaukee area. </p>
+				<p>The group meets weekly on Wednesdays at 7:30 pm at the home of one of the members. </p>
+				<p>The group’s discussion rotates through Scripture reading, Catechism study, and discussion of current events or cultural issues. </p>
+				<p>Each discussion is led by one or two members of the group, and new topics for the coming month are chosen in the third week of every month.</p>
+			</td>
+		</tr>
+	</table>
+
+</div>
+
+
+<div class="WhatWeDo" id="WhatWeDo">
+
+	<h1>What We're Doing</h1>
+	
+	<table class="infoTable">
+		<tr>
+			<td class="smallTextBlock">
+				<p>Brothers of Faith meets Wednesday evenings from 7:30 – 9:30 PM.</p>
+				<p>Contact BrothersOfFaith.wi@gmail.com for location or with any questions.</p>
+			</td>
+			<!--
+			<td>			
+				<table class="nestedTable">
+					<tr>
+						<th>Date</td>
+						<th>Topic</td>
+						<th>Leader</td>
+						<th>Documents</td>
+						<th>Beer</td>
+					</tr>
+					<tr>
+						<td class="date">February 3, 2016</td>
+						<td class="topic">John Milton’s Paradise Lost and the Genesis account</td>
+						<td class="topic"><b>Bryan and Michael R</b></td>
+						<td class="documents"></td>
+						<td class="topic">Michael R<b>
+					</tr>
+					<tr>
+						<td class="date">February 10, 2016</td>
+						<td class="topic">Addiction</td>
+						<td class="topic"><b>Kevin</b></td>
+						<td class="documents"></td>
+						<td class="topic">Andrew<b>
+					</tr>
+					<tr>
+						<td class="date">February 17, 2016</td>
+						<td class="topic"></td>
+						<td class="topic"><b></b></td>
+						<td class="documents"></td>
+						<td class="topic">(none)<b>
+					</tr>
+					<tr>
+						<td class="date">February 24, 2016</td>
+						<td class="topic"></td>
+						<td class="topic"><b></b></td>
+						<td class="documents"></td>
+						<td class="topic">Chris<b>
+					</tr>
+					<tr>
+						<td class="date"></td>
+						<td class="topic"></td>
+						<td class="topic"><b></b></td>
+						<td class="documents"></td>
+						<td class="topic"><b>
+					</tr>
+					<tr>
+						<td class="date">Idea</td>
+						<td class="topic">Luke 4 (Jesus Tempted by Satan)</td>
+						<td class="topic"><b></b></td>
+						<td class="documents"></td>
+						<td class="topic"><b>
+					</tr>
+					<tr>
+						<td class="date">Idea</td>
+						<td class="topic">Podcast about Marijuana</td>
+						<td class="topic"><b></b></td>
+						<td class="documents"></td>
+						<td class="topic"><b>
+					</tr>
+					
+				</table>
+			</td>
+							
+		</tr>
+		<tr>
+			<td></td> 
+			-->
+			<td class="largeTextBlock">
+				<p><b>Ongoing Series</b></p>
+				<p>- Things Most Catholics Get Wrong</p>
+				<p>- The Creed in the Catechism: I Believe in One God</p>
+			</td>
+		</tr>
+		
+	</table>
+	
+</div>
+
+<div class="twoNavButtons">
+	
+	<table class="twoNavButtons">
+		<tr>
+			<td class="twoNavButtons"><a href="pastTopics.html" class="navbuttons">Past Topics</a></td>
+			<td class="twoNavButtons"><a href="ideas.html" class="navbuttons">Ideas</a></td>
+		</tr>
+	</table>
+	
+</div>	
+
+<div class="endOfPage">
+	<a href="#top" class="orange"><u>Return to Top</u><a>
+</div>
+
+</body>
+
+</html>

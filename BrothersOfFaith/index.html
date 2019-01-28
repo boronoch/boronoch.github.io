@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>Brothers of Faith</title>
+<link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="brotherStyles.css">
+</head>
+<body>
+ 
+<div class="logo" id="top">
+
+	<img src="BoF_LOGO-H_v01.png" onclick="changeBackground()" class="logo" alt="Brothers of Faith Logo"> 
+	
+	<script>
+	function changeImage() {
+		var image = document.getElementById('myImage');
+		if (image.src.match("bulbon")) {
+			image.src = "pic_bulboff.gif";
+		} else {
+			image.src = "pic_bulbon.gif";
+		}
+	}
+	</script>
+	
+	<script>
+	// see http://www.w3schools.com/js/tryit.asp?filename=tryjs_intro_lightbulb
+	function changeBackground() {
+		var topDiv = document.getElementById('top');
+		if (topDiv.style.background-color("black")) {
+			topDiv.style.background-color = "white";
+		} else {
+			topDiv.style.background-color = "black";
+		}
+	}
+	</script>
+
+</div>
+
+
+<div class="WhoWeAre" id="WhoWeAre">
+	
+	<table class="infoTable">
+		<tr>
+			<td><a href="charter.pdf"><img class="fill" src="charter.JPG" alt="Brothers of Faith Charter"></a></td>
+			<td class="largeTextBlock">
+				<p>Brothers of Faith is a Small Faith Group for Young Adult Men in the Milwaukee area. </p>
+				<p>The group meets weekly on Wednesdays at 7:30 pm at the home of one of the members. </p>
+				<p>The group’s discussion rotates through Scripture reading, Catechism study, and discussion of current events or cultural issues. </p>
+				<p>Each discussion is led by one or two members of the group, and new topics for the coming month are chosen in the third week of every month.</p>
+			</td>
+		</tr>
+	</table>
+
+</div>
+
+
+<div class="WhatWeDo" id="WhatWeDo">
+	
+	<table class="infoTable">
+		<tr>
+			<td class="smallTextBlock">
+				<p>Brothers of Faith meets Wednesday evenings from 7:30 – 9:30 PM.</p>
+				<p>Contact BrothersOfFaith.wi@gmail.com for location or with any questions.</p>
+			</td>
+		</tr>
+		
+	</table>
+	
+</div>
+
+<div class="twoNavButtons">
+	
+	<table class="twoNavButtons">
+		<tr>
+			<td class="twoNavButtons"><a href="members.html" class="navbuttons">Members</a></td>
+		</tr>
+	</table>
+	
+</div>	
+
+<div class="endOfPage">
+	<a href="#top" class="orange"><u>Return to Top</u><a>
+</div>
+
+</body>
+
+</html>
