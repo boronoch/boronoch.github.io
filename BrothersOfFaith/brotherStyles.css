@@ -19,7 +19,8 @@ div.navButtons {
 }
 
 div.groupPhoto{
-	width: 820px;
+	/*width: 820px; */
+	max-width:600px;
 	margin: auto;
 }
 
@@ -135,6 +136,7 @@ table.infoTable{
 	width: 75%;
 	margin: auto;
 	border-spacing: 25px;
+	max-width: 700px;
 }
 
 table.twoNavButtons {
@@ -251,6 +253,7 @@ p.tab {
 
 img.fill {
 	width:100%;
+
 }
 
 img.logo {
