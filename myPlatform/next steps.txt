@@ -1,0 +1,4 @@
+1) Finish creating insertPlatform.php
+2) Need to create a form for a user's representatives. Does this already exist in townHall?
+3) Create method for user to submit the names of their representatives
+4) Create method for user to indicate a platform held by their representative

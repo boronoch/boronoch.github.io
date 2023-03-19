@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Town Hall</title>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+
+<body>
+ver 02 - August 31, 2014
+
+<h1>my<sub><img src="hallRed.jpg" class="headHall"></sub>townhall</h1>
+
+<p id="button"><button onclick="showLogin()">Login</button>
+<p id="button2"><button onclick="showCreateProfile()">Sign up</button>
+
+<p id="login"></p>
+<p id="createProfile"></p>
+
+<script>
+function showLogin() {
+	document.getElementById("button").innerHTML = 
+	'<form action="profile.html" method="post"><fieldset><dl><dt><label for="user">User Name: </label></dt><dd><input type="text" name="user" /></dd></dl><dl><dt><label for="pass">Password: </label></dt><dd><input type="text" name="pass" /></dd></dl></fieldset><input type="submit" value="Submit"></form>';
+}
+
+function showCreateProfile() {
+	document.getElementById("createProfile").innerHTML = 
+	'<form action="newProfile.html" method="post"><fieldset><dl><dt><label for="user">User Name: </label></dt><dd><input type="text" name="user" /></dd></dl><dl><dt><label for="pass">Password: </label></dt><dd><input type="text" name="pass" /></dd></dl></fieldset><input type="submit" value="Submit"></form>';
+}
+
+</script>
+	
+			
+
+</body>
+
+</html>
