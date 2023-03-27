@@ -1,0 +1,272 @@
+/* ver 1 - 1.9.2016 */
+
+div.logo {
+	width: 350px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 24px;
+	margin-bottom: 12px;
+	background-color: white;
+	
+}
+
+div.navButtons {
+	/*background-color: orange; */
+	background-color: rgb(248,153,56);
+	margin: auto;
+	height: 230px;
+
+}
+
+div.groupPhoto{
+	width: 820px;
+	margin: auto;
+}
+
+div.twoNavButtons {
+	
+
+
+}
+
+div.endOfPage {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 50px;
+
+}
+
+div.center {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+div.rowNavBar{
+	/*  background-color: #ffae1a;  */
+	background-color: rgb(248,153,56);
+}
+
+ul {
+	list-style-type: none;
+	/*margin: auto;*/
+	padding: 0;
+	overflow: hidden;
+	/*  background-color: #ffae1a;  */
+	background-color: rgb(248,153,56);
+	margin-left: 20%;
+}
+
+li {
+	float: left;
+	border-right: 1px solid white;
+	border-left: 1px solid white;
+	width: 25%;
+	text-align: center;
+
+}
+/*
+li a {
+	text-align: center;
+	text-decoration: none;
+	
+}
+*/
+li a:hover {
+	/*  background-color: orange;  */
+	background-color: rgb(248,153,56);
+}
+
+a.nav {
+	color: black;
+	display: block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	/*  background-color: #ffae1a;  */
+	background-color: rgb(248,153,56);
+	text-decoration: initial;
+	/*color: initial; */
+	font-size: 18px;
+	
+	
+}
+
+a.navbuttons {
+
+	text-decoration: initial;
+	/*color: initial; */
+	font-size: 24px;
+	
+}
+
+
+td.navButtons {
+	color: #ffae1a;
+	text-align: center;
+	vertical-align: middle;
+	/*border-style: solid; */
+	border-width: 1px;
+	border-radius: 8px;
+	box-shadow: 10px 10px 5px #888888;
+	border-collapse: separate;
+	background-color: white;
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 130px;
+	height: 130px;
+	
+}
+
+table.navButtons {
+	vertical-align: middle;
+	width: 80%;
+	margin: auto;
+	border-spacing: 50px;
+	max-width: 920px;
+}
+
+table.infoTable{
+	vertical-align: middle;
+	width: 75%;
+	margin: auto;
+	border-spacing: 25px;
+}
+
+table.twoNavButtons {
+	width: 60%;
+	margin: auto;
+	border-spacing: 50px;
+	max-width: 460px;
+
+}
+
+table.pastTopics {
+	width: 75%;
+	margin: auto;
+	border-bottom: 1px solid #ffae1a;
+	
+	
+}
+
+table.nestedTable {
+	width: 100%;
+	border-bottom: 1px solid #ffae1a;
+	
+}
+
+table.pastTopics tr {
+	border: 1px solid #ffaela;
+}
+
+th {
+	background-color: #ffae1a;
+}
+
+td.smallTextBlock {
+	width: 30%;
+}
+
+td.twoNavButtons {
+	text-align: center;
+	vertical-align: middle;
+	border-style: solid;
+	border-color: orange;
+	border-width: 1px;
+	border-radius: 8px;
+	box-shadow: 10px 10px 5px #888888;
+	border-collapse: separate;
+	background-color: orange;
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 130px;
+	height: 130px;
+
+}
+
+h1 {
+	text-align: center;
+	color: orange;
+	/*font-family: "Georgia", Times, serif;*/
+	font-family: 'Hammersmith One', sans-serif;
+	font-size: 50px;
+}
+
+h2 {
+	text-align: center;
+	color: orange;
+	/*font-familty: "Georgia", times, serif;*/
+	font-family: 'Hammersmith One', sans-serif;
+	font-size: 30px;
+}
+
+body {
+
+	font-family: 'Ariel', sans-serif;
+
+}
+	
+td.largeTextBlock {
+	text-align: left;
+	width: 70%;
+	
+	border-style: solid;
+	border-color: orange;
+	border-width: 1px;
+	border-radius: 8px;
+	/* box-shadow: 10px 10px 5px #888888; */
+	padding: 10px;
+	font-size: large;
+	
+}
+
+td.smallTextBlock {
+	text-align: center;
+	width: 30%;
+	
+	border-style: solid;
+	border-color: orange;
+	border-width: 1px;
+	border-radius: 8px;
+	/* box-shadow: 10px 10px 5px #888888; */
+	padding: 10px;
+	font-size: large;
+	
+}
+
+td.date, td.category, td.topic, td.documents {
+	border-bottom: 1px solid #ffae1a;
+}
+
+p.tab {
+	text-indent: 50px;
+	/* line-height: 70%; */
+	margin-top: -10px;
+}
+
+img.fill {
+	width:100%;
+}
+
+img.logo {
+	width: 350px;
+}
+
+.orange {
+	color: darkorange;
+	
+}
+
+iframe.gsheet {
+	height: 800;
+	width: 950;
+}
+
+div.gsheet {
+	text-align:center;
+}
