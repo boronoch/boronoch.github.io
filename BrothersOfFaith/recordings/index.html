@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<!-- Chat GPT Queries
+1) Can you write the code for a website that has links to all the files in a directory called "recordings"?
+2) Thanks! Can you add an upload button that only accepts .m4a files?
+3) How do I display those files in reverse alphabetical order?
+-->
+<head>
+  <title>Recordings</title>
+</head>
+<body>
+  <h1>Recordings</h1>
+
+  <!-- Upload form -->
+  <form action="upload.php" method="post" enctype="multipart/form-data">
+    <input type="file" name="fileToUpload" accept=".m4a">
+    <input type="submit" value="Upload">
+  </form>
+
+  <br>
+
+  <!-- File list -->
+  <ul>
+    <?php
+      $directory = 'files/';
+
+      // Get all files in the directory
+      $files = scandir($directory);
+
+      // Remove "." and ".." from the file list
+      $files = array_diff($files, array('.', '..'));
+	  
+	  // Sort files in reverse alphabetical order
+      rsort($files);
+
+      // Loop through the files and create links
+      foreach ($files as $file) {
+        echo '<li><a href="' . $directory . $file . '" target="_blank">' . $file . '</a></li>';
+      }
+    ?>
+  </ul>
+</body>
+</html>

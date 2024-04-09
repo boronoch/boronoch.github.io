@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Input Form</title>
+</head>
+<body>
+
+<h2>User Input Form</h2>
+
+<form method="post" action="submit_form.php">
+    <label for="candidate">Candidate:</label><br>
+    <input type="text" id="candidate" name="candidate" required><br><br>
+
+    <label for="for_against">For/Against/Neutral:</label><br>
+    <select id="for_against" name="for_against" required>
+        <option value="for">For</option>
+        <option value="against">Against</option>
+        <option value="neutral">Neutral</option>
+    </select><br><br>
+
+    <label for="statement">Statement:</label><br>
+    <textarea id="statement" name="statement" required></textarea><br><br>
+
+    <label for="reference">Reference:</label><br>
+    <input type="text" id="reference" name="reference"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
