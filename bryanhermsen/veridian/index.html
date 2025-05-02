@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veridian PVR 53</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+      /*  video {
+            max-width: 100%;
+            height: auto;
+        }
+*/
+        /* Container to hold the videos */
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 95%;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Styling for individual videos */
+        .video-container video {
+            flex: 1 1 48%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .video-container video {
+                flex: 1 1 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video src="http://brothersoffaith.org/veridian/circle_of_progress.mov" controls autoplay loop muted></video>
+        <video src="http://brothersoffaith.org/veridian/inside_51st_street.mov" controls autoplay loop muted></video>
+    </div>
+</body>
+</html>
