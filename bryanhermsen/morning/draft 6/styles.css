@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.column-selector {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.radio-option {
+  text-align: center;
+  width: 33%;
+}
+
+.task-list {
+  margin-top: 20px;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.task label {
+  margin-left: 10px;
+}
+
+.task span {
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.pending {
+  color: gray;
+}
+
+.active {
+  color: black;
+  font-weight: bold;
+}
+
+.completed {
+  color: green;
+  text-decoration: line-through;
+}

@@ -1,0 +1,12 @@
+[
+  { "time": "05:30", "description": "Alarm" },
+  { "time": "05:35", "description": "Duolingo, stretch" },
+  { "time": "05:45", "description": "Shower" },
+  { "time": "06:00", "description": "Shave" },
+  { "time": "06:05", "description": "Make eggs and toast" },
+  { "time": "06:15", "description": "Eat breakfast" },
+  { "time": "06:30", "description": "Clean up bible study" },
+  { "time": "06:35", "description": "Brush Teeth" },
+  { "time": "06:40", "description": "Pack up" },
+  { "time": "06:50", "description": "Leave" }
+]

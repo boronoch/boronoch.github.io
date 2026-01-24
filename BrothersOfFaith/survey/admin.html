@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Select Topics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .topic-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .topic-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        .actions button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .actions button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Page</h1>
+    <p>Select the topics you want to include in the next survey:</p>
+    <form method="POST">
+        <ul class="topic-list">
+            {% for topic in topics %}
+                <li class="topic-item">
+                    <label>
+                        <input type="checkbox" name="topics" value="{{ topic[0] }}" {% if topic[5] == 1 %}checked{% endif %}>
+                        <strong>{{ topic[3] }}</strong> - {{ topic[4] }}
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="actions">
+            <button type="submit">Save Selection</button>
+        </div>
+    </form>
+</body>
+</html>

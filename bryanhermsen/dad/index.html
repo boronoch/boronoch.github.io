@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dad's Birthday</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Happy Birthday, Dad!</h1>
+            <h2>Choose Your Own Adventure</h2>
+        </header>
+        <div class="gallery">
+            <div class="item">
+                <h3>E-Bike Rental</h3>
+                <img src="performance_ebike.JPEG" alt="E-Bike Rental" onclick="openLightbox('performance_ebike.JPEG')">
+                <a href="https://tours.lamoillevalleybiketours.com/rentals">Lamoille Valley Bike Tours, E-Bike Rentals</a>
+            </div>
+            <div class="item">
+                <h3>Arbortrek zipline tour</h3>
+                <img src="arbortrek-zip-one.jpg" alt="Arbortrek Canopy Tour" onclick="openLightbox('arbortrek-zip-one.jpg')">
+                <a href="https://arbortrek.com/vermont/zip-line-canopy-tour/">Arbortrek.com, Zip Line Canopy Tour</a>
+            </div>
+            <div class="item">
+                <h3>Stowe Mountain Zipline</h3>
+                <img src="stowe_mountain.png" alt="Stowe Mountain zipline" onclick="openLightbox('stowe_mountain.png')">
+                <a href="https://ziprider.com/rides/stowe/">Ziprider.com, Stowe Mountain Resort</a>
+            </div>
+            <div class="item">
+                <h3>Okemo Zipline</h3>
+                <img src="G_AdventureZone4.jpg" alt="OKEMO zipline" onclick="openLightbox('G_AdventureZone4.jpg')">
+                <a href="https://www.okemo.com">okemo.com</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close">&times;</span>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    </div>
+
+    <script src="lightbox.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .task {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .task label {
+            flex: 1;
+            padding-left: 8px;
+        }
+        .gray {
+            color: gray;
+        }
+        .black-bold {
+            color: black;
+            font-weight: bold;
+        }
+        .completed {
+            color: green;
+            font-weight: bold;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <h1>Morning Schedule</h1>
+    <div id="schedule"></div>
+
+    <script>
+        const tasks = [
+            { time: "05:05", description: "sleep, stretch, or make coffee" },
+            { time: "05:05", description: "alarm" },
+            { time: "05:10", description: "flex room, read a reading, say short prayer to the Holy Spirit" },
+            { time: "05:20", description: "Duolingo, stretch" },
+            { time: "", description: "Crunches and sit-ups" },
+            { time: "", description: "Make coffee" },
+            { time: "05:30", description: "shower" },
+            { time: "05:40", description: "shave, brush teeth" },
+            { time: "05:55", description: "make oatmeal" },
+            { time: "06:05", description: "eat" },
+            { time: "06:15", description: "Pack lunch(es)" },
+            { time: "06:20", description: "pack bag" },
+            { time: "06:30", description: "leave" },
+        ];
+
+        function renderSchedule() {
+            const now = new Date();
+            const options = { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit' };
+            const currentTime = now.toLocaleTimeString('en-US', options);
+
+            document.getElementById("schedule").innerHTML = tasks.map(task => {
+                let taskClass = "gray";
+                if (task.time <= currentTime || task.time === "") {
+                    taskClass = "black-bold";
+                }
+                return `
+                    <div class="task ${taskClass}" data-time="${task.time}">
+                        <input type="checkbox" onclick="markCompleted(this)" />
+                        <label>${task.time ? `${task.time} - ` : ""}${task.description}</label>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function markCompleted(checkbox) {
+            const taskElement = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                taskElement.classList.remove("gray", "black-bold");
+                taskElement.classList.add("completed");
+            } else {
+                renderSchedule();
+            }
+        }
+
+        setInterval(renderSchedule, 1000 * 60); // Refresh schedule every minute
+        renderSchedule(); // Initial render
+    </script>
+</body>
+</html>

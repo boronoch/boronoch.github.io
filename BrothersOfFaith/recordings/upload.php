@@ -9,6 +9,21 @@
   $uploadOk = 1;
   $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
+    // Upload file debugging -->
+    if (file_exists($targetFile)) {
+        echo "upload.php: <br>";
+        echo "targetDirectory:" . $targetDirectory . "<br>";
+        echo "basename:" . basename($_FILES["fileToUpload"]["name"]) . "<br>";
+        echo "basename single quote:" . basename($_FILES['fileToUpload']['name']) . "<br>";
+        echo "targetFile:" . $targetFile . "<br>";
+        echo "fileType: " . $fileType . "<br>";
+    }
+    
+    echo 'File info:';
+    print_r($_FILES);
+    echo "<br><br>";
+
+
   // Check if file already exists
   if (file_exists($targetFile)) {
     echo $targetFile;
@@ -34,4 +49,10 @@
       echo "Sorry, there was an error uploading your file.";
     }
   }
+
+
+// Link back to previous page
+echo "<br>";
+echo '<a href="http://brothersoffaith.org/recordings">Back to Recordings</a>';
+
 ?>

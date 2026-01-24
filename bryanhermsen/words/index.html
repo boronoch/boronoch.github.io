@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle history and visualizer</title>
+</head>
+<body>
+    <h1>Enter Your Guesses</h1>
+    <form id="guessForm">
+        <div id="guessContainer">
+            <!-- Initial guess fields -->
+            <div class="guess">
+                <input type="text" name="word[]" placeholder="Guess word" required>
+                <input type="text" name="color[]" placeholder="Color code" required>
+            </div>
+        </div>
+        <button type="button" onclick="addGuess()">Add Another Guess</button>
+        <button type="submit">Submit</button>
+    </form>
+
+	<h2>Your Guesses</h2>
+	<pre id="yourguesses"</pre>
+
+    <h2>Results</h2>
+    <pre id="results"></pre>
+    
+    <script>
+        function addGuess() {
+            const container = document.getElementById('guessContainer');
+            const newGuess = document.createElement('div');
+            newGuess.classList.add('guess');
+            newGuess.innerHTML = `
+                <input type="text" name="word[]" placeholder="Guess word" required>
+                <input type="text" name="color[]" placeholder="Color code" required>
+            `;
+            container.appendChild(newGuess);
+        }
+
+        document.getElementById('guessForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const words = formData.getAll('word[]');
+            const colors = formData.getAll('color[]');
+
+            // Convert form data to JavaScript array
+            const guesses = words.map((word, index) => [word, colors[index]]);
+            
+            // Initialize letters
+            let letters = Array.from({ length: 5 }, () => Array.from({ length: 26 }, (_, i) => i + 97));
+
+            let avoidDuplicates = 0;
+            let mustinclude = '';
+            let N = 0;
+            let lastGuess = '';
+
+            // Process guesses
+            guesses.forEach((guess, index) => {
+                if (guess[0] !== '') {
+                    N = index + 1;
+                    if (guess[1]) {
+                        lastGuess = guess[1];
+                        guess[1] = Array.from(guess[1]).map(Number);
+                    }
+                }
+            });
+
+            let recommendation = '';
+            if (N === 1 && guesses[0][0] === 'arise') {
+                switch (lastGuess) {
+                    case '00000': recommendation = 'youth'; break;
+                    case '00001': recommendation = 'depot'; break;
+                    case '00002': recommendation = 'quote'; break;
+                }
+            }
+
+            // Greens
+            guesses.slice(0, N).forEach((guess) => {
+                guess[1].forEach((color, L) => {
+                    if (color === 2) {
+                        letters[L] = [guess[0].charCodeAt(L)];
+                    }
+                });
+            });
+
+            // Yellows
+            let singleYellows = [];
+            let doubleYellows = [];
+            let onlyOneYellows = [];
+
+            guesses.slice(0, N).forEach((guess) => {
+                guess[1].forEach((color, L) => {
+                    if (color === 1) {
+                        let thischar = Array.from(guess[0]).filter((char, i) => char === guess[0][L]);
+                        if (thischar.length === 1) {
+                            singleYellows.push(guess[0][L].charCodeAt(0));
+                        } else if (thischar.length === 2) {
+                            doubleYellows.push(guess[0][L].charCodeAt(0));
+                        } else if (thischar.length === 3) {
+                            doubleYellows.push(guess[0][L].charCodeAt(0));
+                        } else {
+                            console.warn('More than 2 occurrences of character.');
+                        }
+                    }
+                });
+            });
+
+            // Grays
+            guesses.slice(0, N).forEach((guess) => {
+                guess[1].forEach((color, L) => {
+                    if (color === 0) {
+                        let thisLetterIdx = Array.from(guess[0]).filter((char, i) => char === guess[0][L]);
+                        if (thisLetterIdx.length === 1) {
+                            letters.forEach((letterList, k) => {
+                                letterList = letterList.filter(l => l !== guess[0][L].charCodeAt(0));
+                            });
+                        } else if (thisLetterIdx.length > 1) {
+                            // Handle multiple occurrences
+                        }
+                    }
+                });
+            });
+            
+            // Display guesses
+            const guessElement = document.getElementById('yourguesses');
+            guessElement.textContent = guess;
+
+            // Output results
+            const resultsElement = document.getElementById('results');
+            resultsElement.textContent = `Recommendation: ${recommendation}`;
+        });
+    </script>
+</body>
+</html>

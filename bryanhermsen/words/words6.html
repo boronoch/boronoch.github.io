@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATLAB Script Converter</title>
+</head>
+<body>
+    <script>
+        const guesses = [
+            ['arise', '00101'],
+            ['inlet', '10010'],
+            ['', '20201'],
+            ['', '20210'],
+            ['', '02202'],
+            ['', '22002'],
+            ['', '00100'],
+            ['', '00000']
+        ];
+
+        let avoidDuplicates = 0;
+        let mustinclude = '';
+
+        // Initialize letters
+        let letters = Array.from({ length: 5 }, () => Array.from({ length: 26 }, (_, i) => i + 97));
+
+        // Process guesses
+        let N = 0;
+        let lastGuess = '';
+
+        guesses.forEach((guess, index) => {
+            if (guess[0] !== '') {
+                N = index + 1;
+                if (guess[1]) {
+                    lastGuess = guess[1];
+                    guess[1] = Array.from(guess[1]).map(Number);
+                }
+            } else {
+                return;
+            }
+        });
+
+        let recommendation = '';
+        if (N === 1 && guesses[0][0] === 'arise') {
+            switch (lastGuess) {
+                case '00000': recommendation = 'youth'; break;
+                case '00001': recommendation = 'depot'; break;
+                case '00002': recommendation = 'quote'; break;
+            }
+        }
+
+        // Greens
+        guesses.slice(0, N).forEach((guess) => {
+            guess[1].forEach((color, L) => {
+                if (color === 2) {
+                    letters[L] = [guess[0].charCodeAt(L)];
+                }
+            });
+        });
+
+        // Yellows
+        let singleYellows = [];
+        let doubleYellows = [];
+        let onlyOneYellows = [];
+
+        guesses.slice(0, N).forEach((guess) => {
+            guess[1].forEach((color, L) => {
+                if (color === 1) {
+                    let thischar = Array.from(guess[0]).filter((char, i) => char === guess[0][L]);
+                    if (thischar.length === 1) {
+                        singleYellows.push(guess[0][L].charCodeAt(0));
+                    } else if (thischar.length === 2) {
+                        doubleYellows.push(guess[0][L].charCodeAt(0));
+                    } else if (thischar.length === 3) {
+                        doubleYellows.push(guess[0][L].charCodeAt(0));
+                    } else {
+                        console.warn('More than 2 occurrences of character.');
+                    }
+                }
+            });
+        });
+
+        // Grays
+        guesses.slice(0, N).forEach((guess) => {
+            guess[1].forEach((color, L) => {
+                if (color === 0) {
+                    let thisLetterIdx = Array.from(guess[0]).filter((char, i) => char === guess[0][L]);
+                    if (thisLetterIdx.length === 1) {
+                        letters.forEach((letterList, k) => {
+                            letterList = letterList.filter(l => l !== guess[0][L].charCodeAt(0));
+                        });
+                    } else if (thisLetterIdx.length > 1) {
+                        // Handle multiple occurrences
+                    }
+                }
+            });
+        });
+
+        // Further processing, including word list, recommendation, etc.
+
+        console.log('Recommendation:', recommendation);
+    </script>
+</body>
+</html>

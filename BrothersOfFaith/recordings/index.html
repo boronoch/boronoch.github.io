@@ -13,11 +13,13 @@
 
   <!-- Upload form -->
   <form action="upload.php" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="MAX_FILE_SIZE" value = "199580373" />
     <input type="file" name="fileToUpload" accept=".m4a">
     <input type="submit" value="Upload">
   </form>
 
   <br>
+            
 
   <!-- File list -->
   <ul>

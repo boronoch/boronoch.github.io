@@ -1,0 +1,51 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.column-selector {
+  margin-bottom: 20px;
+}
+
+.schedule-container {
+  display: flex;
+  gap: 20px;
+}
+
+.task-list {
+  width: 50%;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.task label {
+  margin-left: 10px;
+}
+
+.task span {
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.pending {
+  color: gray;
+}
+
+.active {
+  color: black;
+  font-weight: bold;
+}
+
+.completed {
+  color: green;
+  text-decoration: line-through;
+}
+
+.hidden-checkbox {
+  display: none;
+}
