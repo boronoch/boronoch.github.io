@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Cycle Plan Override - Week {{ week_number }}</h2>
+  <div class="week-tabs">
+    {% for w in [1,2,3,4] %}
+      <a href="{{ url_for('week_plan_view', cycle_id=cycle_id, week_number=w) }}"
+         class="{{ 'active' if w == week_number else '' }}">Week {{ w }}</a>
+    {% endfor %}
+  </div>
+  <p style="font-size:13px;color:#666;">Overriding a cell here only changes this specific week -
+  other weeks and your live Weekly Plan are untouched.</p>
+  <div style="overflow-x:auto;">
+  <table>
+    <tr><th>Time</th>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
+    {% for i in range(n_slots) %}
+    <tr>
+      <td style="white-space:nowrap;font-size:12px;">{{ slot_labels[i] }}</td>
+      {% for day in range(7) %}
+      <td>
+        <select data-day="{{ day }}" data-slot="{{ i }}" class="plan-cell" onchange="saveCell(this)">
+          <option value="">-</option>
+          {% for it in items %}
+          <option value="{{ it.id }}" {{ 'selected' if grid.get((day, i)) == it.id else '' }}>{{ it.description }}</option>
+          {% endfor %}
+        </select>
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+<script>
+function saveCell(sel) {
+  const day = sel.dataset.day, slot = sel.dataset.slot, itemId = sel.value;
+  fetch(window.location.pathname, {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: `day_of_week=${day}&slot_index=${slot}&cycle_item_id=${itemId}`
+  });
+}
+</script>
+{% endblock %}

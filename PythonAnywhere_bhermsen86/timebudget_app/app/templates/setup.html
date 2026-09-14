@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Create your account</h2>
+  <p>This is a one-time setup step - only one account is needed for this app.</p>
+  <form method="post">
+    <label>Username</label>
+    <input name="username" required autofocus>
+    <label>Password</label>
+    <input name="password" type="password" required>
+    <p><button type="submit">Create account</button></p>
+  </form>
+</div>
+{% endblock %}

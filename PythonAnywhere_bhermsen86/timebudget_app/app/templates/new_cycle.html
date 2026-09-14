@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Start a New 4-Week Cycle</h2>
+  <p style="font-size:13px;color:#666;">This freezes a snapshot of your current Items and Weekly
+  Plan into a new cycle. Later edits to Items or the Weekly Plan will never retroactively change
+  this cycle's history.</p>
+  <form method="post">
+    <label>Label</label>
+    <input name="label" placeholder="e.g. OCT 2026" required>
+    <label>Start date (optional)</label>
+    <input name="start_date" type="date">
+    <p><button type="submit">Create cycle</button></p>
+  </form>
+</div>
+{% endblock %}

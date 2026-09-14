@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>{{ cycle['label'] }}</h2>
+  <div class="week-tabs">
+    {% for w in [1,2,3,4] %}
+      <a href="{{ url_for('dashboard', week=w) }}" class="{{ 'active' if w == week else '' }}">Week {{ w }}</a>
+    {% endfor %}
+  </div>
+  <p><a href="{{ url_for('log_actual', week=week) }}"><button>Log time for this week</button></a></p>
+
+  <h3>Week {{ week }}: Plan vs Actual</h3>
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    {% for row in summary %}
+    <tr>
+      <td>{{ row.description }}</td>
+      <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.planned }}</td>
+      <td>{{ row.actual }}</td>
+      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
+        {{ row.variance }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h3>Total - 4 Weeks</h3>
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Target</th><th>Actual</th><th>Variance</th></tr>
+    {% for row in totals %}
+    <tr>
+      <td>{{ row.description }}</td>
+      <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.planned }}</td>
+      <td>{{ row.actual }}</td>
+      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
+        {{ row.variance }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Log Actual Time</h2>
+  <form method="get" style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
+    <div>
+      <label>Week</label>
+      <select name="week" onchange="this.form.submit()">
+        {% for w in [1,2,3,4] %}
+        <option value="{{ w }}" {{ 'selected' if w == week_number else '' }}>Week {{ w }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Day</label>
+      <select name="day" onchange="this.form.submit()">
+        {% for i in range(days|length) %}
+        <option value="{{ i }}" {{ 'selected' if i == day_of_week else '' }}>{{ days[i] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="slot-grid">
+    {% for slot in slots %}
+    <div class="slot-row">
+      <div class="slot-time">{{ slot.label }}</div>
+      <form method="post" style="display:flex; gap:6px;">
+        <input type="hidden" name="week_number" value="{{ week_number }}">
+        <input type="hidden" name="day_of_week" value="{{ day_of_week }}">
+        <input type="hidden" name="slot_index" value="{{ slot.index }}">
+        <select name="cycle_item_id" class="slot-select" onchange="this.form.submit()">
+          <option value="">-- (nothing logged) --</option>
+          {% for it in items %}
+          <option value="{{ it.id }}" {{ 'selected' if slot.actual_item_id == it.id else '' }}>
+            {{ it.description }}{% if slot.planned_desc == it.description %} (planned){% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
