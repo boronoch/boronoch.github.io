@@ -53,6 +53,23 @@
                  color: #333; font-size: 13px; }
   .week-tabs a.active { background: var(--navy); color: white; }
   .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; }
+
+  .combo { position: relative; }
+  .combo-input { width: 100%; }
+  .combo-list {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+    background: white; border: 1px solid var(--border); border-radius: 6px;
+    max-height: 220px; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .combo-item { padding: 8px 10px; font-size: 14px; cursor: pointer; }
+  .combo-item:hover, .combo-item.combo-active { background: #eef3f8; }
+  .combo-clear { color: #999; font-style: italic; }
+  .slot-actions { display: flex; gap: 4px; }
+  .mini-btn {
+    background: #eee; color: #333; font-size: 12px; padding: 6px 8px;
+    border-radius: 6px; border: none; cursor: pointer; white-space: nowrap;
+  }
+  .mini-btn:hover { background: #ddd; }
 </style>
 </head>
 <body>
@@ -75,5 +92,46 @@
   {% endwith %}
   {% block content %}{% endblock %}
 </main>
+<script>
+// Reusable searchable combobox. `items` is [{id, description}, ...].
+// `onSelect(comboEl, id, description)` is called whenever a selection is made.
+function setupCombos(root, items, onSelect) {
+  root.querySelectorAll('.combo').forEach(combo => {
+    const input = combo.querySelector('.combo-input');
+    const list = combo.querySelector('.combo-list');
+    const plannedId = combo.dataset.plannedId || '';
+
+    function render(filterText) {
+      const f = (filterText || '').toLowerCase();
+      const matches = items.filter(it => it.description.toLowerCase().includes(f));
+      list.innerHTML = '';
+      const clearOpt = document.createElement('div');
+      clearOpt.className = 'combo-item combo-clear';
+      clearOpt.textContent = '-- clear --';
+      clearOpt.addEventListener('mousedown', (e) => { e.preventDefault(); select('', ''); });
+      list.appendChild(clearOpt);
+      matches.forEach(it => {
+        const opt = document.createElement('div');
+        opt.className = 'combo-item';
+        opt.textContent = it.description + (String(it.id) === String(plannedId) ? ' (planned)' : '');
+        opt.addEventListener('mousedown', (e) => { e.preventDefault(); select(it.id, it.description); });
+        list.appendChild(opt);
+      });
+      list.hidden = false;
+    }
+    function select(id, desc) {
+      input.value = desc;
+      input.dataset.selectedId = id;
+      list.hidden = true;
+      onSelect(combo, id, desc);
+    }
+    input.addEventListener('focus', () => render(''));
+    input.addEventListener('input', () => render(input.value));
+    input.addEventListener('blur', () => { list.hidden = true; });
+    combo._comboSelect = select; // exposed so Fill Down / Fill Planned buttons can reuse it
+  });
+}
+</script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

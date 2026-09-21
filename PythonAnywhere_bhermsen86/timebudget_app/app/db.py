@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from datetime import date, timedelta
 from flask import g, current_app
 
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -48,3 +49,27 @@ def slot_time_label(slot_index, plan_start_hour=5.0):
 
 def register_db(app):
     app.teardown_appcontext(close_db)
+
+
+def cycle_date(cycle_row, week_number, day_of_week):
+    """Real calendar date for a given week/day within a cycle, or None if
+    the cycle has no start_date set."""
+    if not cycle_row["start_date"]:
+        return None
+    start = date.fromisoformat(cycle_row["start_date"])
+    return start + timedelta(days=(week_number - 1) * 7 + day_of_week)
+
+
+def today_week_day(cycle_row, today=None):
+    """Given a cycle, return (week_number, day_of_week) that today falls
+    into, or None if the cycle has no start_date or today is outside its
+    4-week range."""
+    if not cycle_row["start_date"]:
+        return None
+    today = today or date.today()
+    start = date.fromisoformat(cycle_row["start_date"])
+    delta = (today - start).days
+    if delta < 0 or delta >= 28:
+        return None
+    return (delta // 7 + 1, delta % 7)
+

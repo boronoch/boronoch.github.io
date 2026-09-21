@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db as dbmod
-from .db import DAYS, slot_time_label
+from .db import DAYS, slot_time_label, cycle_date, today_week_day
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -139,9 +139,14 @@ def create_app():
             "SELECT id, description FROM cycle_item WHERE cycle_id=? ORDER BY description",
             (cycle["id"],),
         ).fetchall()
+        week_ranges = {}
+        for w in [1, 2, 3, 4]:
+            d0 = cycle_date(cycle, w, 0)
+            d6 = cycle_date(cycle, w, 6)
+            week_ranges[w] = f"{d0.strftime('%-m/%-d')}-{d6.strftime('%-m/%-d')}" if d0 else None
         return render_template(
             "dashboard.html", cycle=cycle, week=current_week, summary=summary,
-            totals=totals, items=items,
+            totals=totals, items=items, week_ranges=week_ranges,
         )
 
     # ---------------- quick log ----------------
@@ -175,10 +180,16 @@ def create_app():
             flash("Logged.")
             return redirect(url_for("log_actual", week=week_number, day=day_of_week))
 
-        week_number = request.args.get("week", type=int) or 1
+        week_number = request.args.get("week", type=int)
         day_of_week = request.args.get("day", type=int)
-        if day_of_week is None:
-            day_of_week = datetime.now().weekday()
+        if week_number is None or day_of_week is None:
+            guess = today_week_day(cycle)
+            if guess:
+                week_number = week_number or guess[0]
+                day_of_week = day_of_week if day_of_week is not None else guess[1]
+            else:
+                week_number = week_number or 1
+                day_of_week = day_of_week if day_of_week is not None else datetime.now().weekday()
 
         n_slots = settings["slots_per_day"]
         slots = []
@@ -190,7 +201,7 @@ def create_app():
                 (cycle["id"], week_number, day_of_week, i),
             ).fetchone()
             planned = db.execute(
-                "SELECT ci.description FROM cycle_plan_slot cps "
+                "SELECT cps.cycle_item_id, ci.description FROM cycle_plan_slot cps "
                 "LEFT JOIN cycle_item ci ON ci.id = cps.cycle_item_id "
                 "WHERE cps.cycle_id=? AND cps.week_number=? AND cps.day_of_week=? AND cps.slot_index=?",
                 (cycle["id"], week_number, day_of_week, i),
@@ -200,12 +211,20 @@ def create_app():
                 "label": slot_time_label(i, settings["plan_start_hour"]),
                 "actual_item_id": existing["cycle_item_id"] if existing else None,
                 "actual_desc": existing["description"] if existing else None,
+                "planned_item_id": planned["cycle_item_id"] if planned else None,
                 "planned_desc": planned["description"] if planned else None,
             })
+
+        day_dates = [cycle_date(cycle, week_number, d) for d in range(7)]
+        day_labels = [
+            f"{DAYS[d]} ({day_dates[d].strftime('%-m/%-d')})" if day_dates[d] else DAYS[d]
+            for d in range(7)
+        ]
 
         return render_template(
             "log.html", cycle=cycle, items=items, slots=slots,
             week_number=week_number, day_of_week=day_of_week, days=DAYS,
+            day_labels=day_labels,
         )
 
     # ---------------- cycles ----------------
@@ -214,7 +233,13 @@ def create_app():
     def cycles():
         db = dbmod.get_db()
         all_cycles = db.execute("SELECT * FROM cycle ORDER BY id DESC").fetchall()
-        return render_template("cycles.html", cycles=all_cycles)
+        ranges = {}
+        for c in all_cycles:
+            if c["start_date"]:
+                d0 = cycle_date(c, 1, 0)
+                d3 = cycle_date(c, 4, 6)
+                ranges[c["id"]] = f"{d0.strftime('%-m/%-d')} - {d3.strftime('%-m/%-d')}"
+        return render_template("cycles.html", cycles=all_cycles, ranges=ranges)
 
     @app.route("/cycles/new", methods=["GET", "POST"])
     @login_required
@@ -260,7 +285,7 @@ def create_app():
             db.commit()
             flash(f"Cycle '{label}' created from your current plan.")
             return redirect(url_for("dashboard"))
-        return render_template("new_cycle.html")
+        return render_template("new_cycle.html", today=date.today().isoformat())
 
     @app.route("/cycles/<int:cycle_id>/activate", methods=["POST"])
     @login_required
@@ -270,6 +295,18 @@ def create_app():
         db.execute("UPDATE cycle SET is_active=1 WHERE id=?", (cycle_id,))
         db.commit()
         return redirect(url_for("dashboard"))
+
+    @app.route("/cycles/<int:cycle_id>/set_start_date", methods=["POST"])
+    @login_required
+    def set_start_date(cycle_id):
+        db = dbmod.get_db()
+        db.execute(
+            "UPDATE cycle SET start_date=? WHERE id=?",
+            (request.form.get("start_date") or None, cycle_id),
+        )
+        db.commit()
+        flash("Start date updated.")
+        return redirect(url_for("cycles"))
 
     # ---------------- items (Section 1 equivalent) ----------------
     @app.route("/items", methods=["GET", "POST"])

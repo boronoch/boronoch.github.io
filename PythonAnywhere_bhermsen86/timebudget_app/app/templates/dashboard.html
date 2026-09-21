@@ -4,10 +4,15 @@
   <h2>{{ cycle['label'] }}</h2>
   <div class="week-tabs">
     {% for w in [1,2,3,4] %}
-      <a href="{{ url_for('dashboard', week=w) }}" class="{{ 'active' if w == week else '' }}">Week {{ w }}</a>
+      <a href="{{ url_for('dashboard', week=w) }}" class="{{ 'active' if w == week else '' }}">
+        Week {{ w }}{% if week_ranges[w] %} ({{ week_ranges[w] }}){% endif %}
+      </a>
     {% endfor %}
   </div>
-  <p><a href="{{ url_for('log_actual', week=week) }}"><button>Log time for this week</button></a></p>
+  <p>
+    <a href="{{ url_for('log_actual', week=week) }}"><button>Log time for this week</button></a>
+    <a href="{{ url_for('week_plan_view', cycle_id=cycle['id'], week_number=week) }}"><button>Edit Week {{ week }} Plan</button></a>
+  </p>
 
   <h3>Week {{ week }}: Plan vs Actual</h3>
   <table>

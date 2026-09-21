@@ -15,11 +15,14 @@
       <label>Day</label>
       <select name="day" onchange="this.form.submit()">
         {% for i in range(days|length) %}
-        <option value="{{ i }}" {{ 'selected' if i == day_of_week else '' }}>{{ days[i] }}</option>
+        <option value="{{ i }}" {{ 'selected' if i == day_of_week else '' }}>{{ day_labels[i] }}</option>
         {% endfor %}
       </select>
     </div>
   </form>
+  <p style="font-size:12px;color:#666;">
+    Type to search. <strong>Fill &darr;</strong> copies the row above. <strong>Plan</strong> fills in what was planned for that slot.
+  </p>
 </div>
 
 <div class="card">
@@ -27,21 +30,61 @@
     {% for slot in slots %}
     <div class="slot-row">
       <div class="slot-time">{{ slot.label }}</div>
-      <form method="post" style="display:flex; gap:6px;">
-        <input type="hidden" name="week_number" value="{{ week_number }}">
-        <input type="hidden" name="day_of_week" value="{{ day_of_week }}">
-        <input type="hidden" name="slot_index" value="{{ slot.index }}">
-        <select name="cycle_item_id" class="slot-select" onchange="this.form.submit()">
-          <option value="">-- (nothing logged) --</option>
-          {% for it in items %}
-          <option value="{{ it.id }}" {{ 'selected' if slot.actual_item_id == it.id else '' }}>
-            {{ it.description }}{% if slot.planned_desc == it.description %} (planned){% endif %}
-          </option>
-          {% endfor %}
-        </select>
-      </form>
+      <div class="slot-actions">
+        <div class="combo" data-day="{{ day_of_week }}" data-slot="{{ slot.index }}"
+             data-planned-id="{{ slot.planned_item_id or '' }}">
+          <input type="text" class="combo-input" autocomplete="off" placeholder="-"
+                 value="{{ slot.actual_desc or '' }}" data-selected-id="{{ slot.actual_item_id or '' }}">
+          <div class="combo-list" hidden></div>
+        </div>
+        <button type="button" class="mini-btn" onclick="fillDown({{ loop.index0 }})">Fill &darr;</button>
+        {% if slot.planned_item_id %}
+        <button type="button" class="mini-btn" onclick="fillPlanned({{ loop.index0 }})">Plan</button>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const ITEMS = [
+  {% for it in items %}{id: {{ it.id }}, description: {{ it.description|tojson }}},{% endfor %}
+];
+
+function saveSlot(day, slot, itemId) {
+  const body = `week_number={{ week_number }}&day_of_week=${day}&slot_index=${slot}&cycle_item_id=${itemId || ''}`;
+  fetch("{{ url_for('log_actual') }}", {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: body
+  });
+}
+
+const combos = document.querySelectorAll('.combo');
+setupCombos(document, ITEMS, (combo, id, desc) => {
+  saveSlot(combo.dataset.day, combo.dataset.slot, id);
+});
+
+function fillDown(rowIndex) {
+  if (rowIndex === 0) return;
+  const prev = combos[rowIndex - 1];
+  const cur = combos[rowIndex];
+  const prevId = prev.querySelector('.combo-input').dataset.selectedId;
+  const prevDesc = prev.querySelector('.combo-input').value;
+  if (!prevId) return;
+  cur._comboSelect(prevId, prevDesc);
+}
+
+function fillPlanned(rowIndex) {
+  const cur = combos[rowIndex];
+  const plannedId = cur.dataset.plannedId;
+  if (!plannedId) return;
+  const plannedItem = ITEMS.find(it => String(it.id) === String(plannedId));
+  if (!plannedItem) return;
+  cur._comboSelect(plannedItem.id, plannedItem.description);
+}
+</script>
 {% endblock %}
