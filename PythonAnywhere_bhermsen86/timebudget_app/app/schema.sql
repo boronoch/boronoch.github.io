@@ -87,3 +87,15 @@ CREATE TABLE IF NOT EXISTS settings (
     plan_end_hour REAL NOT NULL DEFAULT 21.0,    -- 9:00 PM
     slots_per_day INTEGER NOT NULL DEFAULT 32
 );
+
+-- Morning Routine checklist state (single row - today's state only).
+-- checks_json holds, per column, which task indices are checked:
+--   {"Monday": [0,2,5], "TuesdayAMSwim": [1]}
+-- Cleared automatically whenever "date" no longer matches today.
+CREATE TABLE IF NOT EXISTS routine_state (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    date TEXT NOT NULL,
+    selected_column TEXT NOT NULL DEFAULT 'Monday',
+    checks_json TEXT NOT NULL DEFAULT '{}'
+);
+

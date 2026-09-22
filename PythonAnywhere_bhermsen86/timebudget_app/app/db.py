@@ -31,6 +31,10 @@ def init_db(app):
         "INSERT OR IGNORE INTO settings (id, plan_start_hour, plan_end_hour, slots_per_day) "
         "VALUES (1, 5.0, 21.0, 32)"
     )
+    conn.execute(
+        "INSERT OR IGNORE INTO routine_state (id, date, selected_column, checks_json) "
+        "VALUES (1, '1970-01-01', 'Monday', '{}')"
+    )
     conn.commit()
     conn.close()
     return is_new

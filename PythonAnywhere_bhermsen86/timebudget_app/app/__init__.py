@@ -1,5 +1,7 @@
 import os
+import json
 from datetime import datetime, timezone, date, timedelta
+from zoneinfo import ZoneInfo
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +10,10 @@ from . import db as dbmod
 from .db import DAYS, slot_time_label, cycle_date, today_week_day
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def central_today_iso():
+    return datetime.now(ZoneInfo("America/Chicago")).date().isoformat()
 
 
 def create_app():
@@ -419,6 +425,67 @@ def create_app():
             "week_plan.html", items=items, days=DAYS, n_slots=n_slots,
             slot_labels=slot_labels, grid=grid, cycle_id=cycle_id, week_number=week_number,
         )
+
+    # ---------------- morning routine checklist ----------------
+    def get_routine_state():
+        """Load today's routine state, auto-resetting checks if the stored
+        date has rolled over to a new day (Central Time)."""
+        db = dbmod.get_db()
+        today = central_today_iso()
+        row = db.execute("SELECT * FROM routine_state WHERE id=1").fetchone()
+        if row["date"] != today:
+            db.execute(
+                "UPDATE routine_state SET date=?, checks_json='{}' WHERE id=1",
+                (today,),
+            )
+            db.commit()
+            row = db.execute("SELECT * FROM routine_state WHERE id=1").fetchone()
+        return row
+
+    @app.route("/routine")
+    @login_required
+    def routine_view():
+        return render_template("routine.html")
+
+    @app.route("/api/routine/state")
+    @login_required
+    def routine_state_api():
+        row = get_routine_state()
+        return jsonify({
+            "date": row["date"],
+            "selected_column": row["selected_column"],
+            "checks": json.loads(row["checks_json"]),
+        })
+
+    @app.route("/api/routine/check", methods=["POST"])
+    @login_required
+    def routine_check_api():
+        row = get_routine_state()
+        data = request.get_json(force=True)
+        column = data["column"]
+        index = int(data["index"])
+        checked = bool(data["checked"])
+        checks = json.loads(row["checks_json"])
+        col_list = set(checks.get(column, []))
+        if checked:
+            col_list.add(index)
+        else:
+            col_list.discard(index)
+        checks[column] = sorted(col_list)
+        db = dbmod.get_db()
+        db.execute("UPDATE routine_state SET checks_json=? WHERE id=1", (json.dumps(checks),))
+        db.commit()
+        return jsonify({"ok": True})
+
+    @app.route("/api/routine/column", methods=["POST"])
+    @login_required
+    def routine_column_api():
+        get_routine_state()  # ensure reset-if-stale happens first
+        data = request.get_json(force=True)
+        db = dbmod.get_db()
+        db.execute("UPDATE routine_state SET selected_column=? WHERE id=1", (data["column"],))
+        db.commit()
+        return jsonify({"ok": True})
 
     return app
 

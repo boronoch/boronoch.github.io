@@ -118,3 +118,26 @@ and password) - only needs to be done once. After that, log in normally at
 
 If you (or I) make further code changes, re-upload the changed files and
 click **Reload** on the Web tab again - no need to redo steps 1-6.
+
+## Morning Routine page
+
+The "Morning Routine" tab stores today's checklist state in the same
+database (table `routine_state`) and clears itself automatically the next
+time the page loads after midnight Central Time (your selected schedule
+column is remembered across days; only the checkmarks reset).
+
+Two things from your original prototype weren't included in the upload and
+were substituted:
+- **styles.css** wasn't provided, so the page uses this app's existing
+  styling instead of your original design.
+- **tasksColumn4.json** (used by the "Waukesha" option) wasn't provided
+  either. A placeholder empty file is included at
+  `app/static/tasksColumn4.json` so the page doesn't error out - replace
+  it with your real task list (same `[{"time": "...", "description":
+  "..."}, ...]` format as the other columns) whenever you're ready, by
+  uploading over that file on PythonAnywhere and reloading.
+
+If `python3 -c "from zoneinfo import ZoneInfo"` errors on PythonAnywhere,
+run `pip install --user tzdata` in a Bash console (it's already listed in
+`requirements.txt`, but only takes effect if you `pip install -r
+requirements.txt` there too).
