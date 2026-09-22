@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block bodyclass %}wide{% endblock %}
 {% block content %}
 <div class="card">
   <h2>Cycle Plan Override - Week {{ week_number }}</h2>
@@ -9,36 +10,69 @@
     {% endfor %}
   </div>
   <p style="font-size:13px;color:#666;">Overriding a cell here only changes this specific week -
-  other weeks and your live Weekly Plan are untouched.</p>
-  <div style="overflow-x:auto;">
-  <table>
+  other weeks and your live Weekly Plan are untouched. Type to search. The
+  &darr; button fills down from the row above in that same day's column.</p>
+  <table id="week-plan-table">
     <tr><th>Time</th>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
     {% for i in range(n_slots) %}
     <tr>
       <td style="white-space:nowrap;font-size:12px;">{{ slot_labels[i] }}</td>
       {% for day in range(7) %}
+      {% set cell = grid.get((day, i)) %}
       <td>
-        <select data-day="{{ day }}" data-slot="{{ i }}" class="plan-cell" onchange="saveCell(this)">
-          <option value="">-</option>
-          {% for it in items %}
-          <option value="{{ it.id }}" {{ 'selected' if grid.get((day, i)) == it.id else '' }}>{{ it.description }}</option>
-          {% endfor %}
-        </select>
+        <div class="grid-cell">
+          <div class="combo" data-day="{{ day }}" data-slot="{{ i }}">
+            <input type="text" class="combo-input" autocomplete="off" placeholder="-"
+                   value="{{ cell.desc if cell else '' }}" data-selected-id="{{ cell.id if cell else '' }}">
+            <div class="combo-list" hidden></div>
+          </div>
+          <button type="button" class="mini-btn fill-btn" title="Fill down from row above"
+                  onclick="fillDown({{ day }},{{ i }})">&darr;</button>
+        </div>
       </td>
       {% endfor %}
     </tr>
     {% endfor %}
   </table>
-  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
 <script>
-function saveCell(sel) {
-  const day = sel.dataset.day, slot = sel.dataset.slot, itemId = sel.value;
+const ITEMS = [
+  {% for it in items %}{id: {{ it.id }}, description: {{ it.description|tojson }}},{% endfor %}
+];
+
+function saveCell(day, slot, itemId) {
   fetch(window.location.pathname, {
     method: "POST",
     headers: {"Content-Type": "application/x-www-form-urlencoded"},
-    body: `day_of_week=${day}&slot_index=${slot}&cycle_item_id=${itemId}`
+    body: `day_of_week=${day}&slot_index=${slot}&cycle_item_id=${itemId || ''}`
   });
+}
+
+setupCombos(document, ITEMS, (combo, id, desc) => {
+  saveCell(combo.dataset.day, combo.dataset.slot, id);
+});
+
+// Index combos by [day][slot] so Fill Down can find the cell above in the same day column
+const comboMap = {};
+document.querySelectorAll('.combo').forEach(combo => {
+  const day = combo.dataset.day, slot = combo.dataset.slot;
+  comboMap[day] = comboMap[day] || {};
+  comboMap[day][slot] = combo;
+});
+
+function fillDown(day, slot) {
+  if (slot === 0) return;
+  const prev = comboMap[day][slot - 1];
+  const cur = comboMap[day][slot];
+  if (!prev || !cur) return;
+  const prevInput = prev.querySelector('.combo-input');
+  const prevId = prevInput.dataset.selectedId;
+  const prevDesc = prevInput.value;
+  if (!prevId) return;
+  cur._comboSelect(prevId, prevDesc);
 }
 </script>
 {% endblock %}

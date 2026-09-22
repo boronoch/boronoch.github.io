@@ -405,11 +405,15 @@ def create_app():
 
         n_slots = settings["slots_per_day"]
         grid = {}
+        item_desc = {it["id"]: it["description"] for it in items}
         for row in db.execute(
             "SELECT * FROM cycle_plan_slot WHERE cycle_id=? AND week_number=?",
             (cycle_id, week_number),
         ):
-            grid[(row["day_of_week"], row["slot_index"])] = row["cycle_item_id"]
+            grid[(row["day_of_week"], row["slot_index"])] = {
+                "id": row["cycle_item_id"],
+                "desc": item_desc.get(row["cycle_item_id"], ""),
+            }
         slot_labels = [slot_time_label(i, settings["plan_start_hour"]) for i in range(n_slots)]
         return render_template(
             "week_plan.html", items=items, days=DAYS, n_slots=n_slots,

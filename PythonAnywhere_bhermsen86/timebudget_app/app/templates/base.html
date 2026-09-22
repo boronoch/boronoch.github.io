@@ -27,6 +27,7 @@
   nav a { color: var(--navy); text-decoration: none; font-weight: 600; }
   nav a.active { text-decoration: underline; }
   main { padding: 16px; max-width: 900px; margin: 0 auto; }
+  body.wide main { max-width: 1500px; }
   .card { background: white; border-radius: 8px; padding: 14px; margin-bottom: 14px;
           box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -70,9 +71,17 @@
     border-radius: 6px; border: none; cursor: pointer; white-space: nowrap;
   }
   .mini-btn:hover { background: #ddd; }
+
+  .grid-cell { display: flex; gap: 3px; align-items: center; }
+  .grid-cell .combo { flex: 1; min-width: 0; }
+  .grid-cell .combo-input { width: 100%; font-size: 12px; padding: 5px 6px; }
+  .grid-cell .fill-btn { padding: 5px 6px; flex-shrink: 0; }
+  #week-plan-table th, #week-plan-table td { padding: 3px 4px; }
+  #week-plan-table { table-layout: fixed; width: 100%; }
+  #week-plan-table th:first-child, #week-plan-table td:first-child { width: 64px; }
 </style>
 </head>
-<body>
+<body class="{% block bodyclass %}{% endblock %}">
 <header>
   <a href="{{ url_for('dashboard') }}">Time Budget</a>
   {% if session.get('user_id') %}<a href="{{ url_for('logout') }}">Log out</a>{% endif %}
