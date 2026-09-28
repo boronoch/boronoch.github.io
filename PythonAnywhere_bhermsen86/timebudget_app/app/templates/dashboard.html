@@ -31,11 +31,14 @@
   </table>
 </div>
 
+{% if so_far is not none %}
 <div class="card">
-  <h3>Total - 4 Weeks</h3>
+  <h3>Plan vs Actual So Far</h3>
+  <p style="font-size:12px;color:#666;">{{ so_far_label }}</p>
+  {% if so_far %}
   <table>
-    <tr><th>Item</th><th>Category</th><th>Target</th><th>Actual</th><th>Variance</th></tr>
-    {% for row in totals %}
+    <tr><th>Item</th><th>Category</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    {% for row in so_far %}
     <tr>
       <td>{{ row.description }}</td>
       <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
@@ -47,5 +50,91 @@
     </tr>
     {% endfor %}
   </table>
+  {% else %}
+  <p style="font-size:13px;color:#999;">Nothing planned or logged yet for this point in the week.</p>
+  {% endif %}
 </div>
+{% endif %}
+
+<div class="card">
+  <h3>Total - 4 Weeks</h3>
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Target</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    {% for row in totals %}
+    <tr>
+      <td>{{ row.description }}</td>
+      <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.target }}</td>
+      <td>{{ row.planned }}</td>
+      <td>{{ row.actual }}</td>
+      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
+        {{ row.variance }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h3>Actual Hours by Category, by Week</h3>
+  <canvas id="weekBarChart" height="110"></canvas>
+</div>
+
+<div class="card">
+  <h3>Actual Hours by Category, per Week</h3>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
+    {% for w in [1,2,3,4] %}
+    <div>
+      <p style="text-align:center;font-weight:600;font-size:13px;">Week {{ w }}</p>
+      <canvas id="pieChart{{ w }}"></canvas>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+const CHART_DATA = {{ chart_data|tojson }};
+const CATS = CHART_DATA.categories;
+const CAT_LABELS = CATS.map(c => c.name);
+const CAT_COLORS = CATS.map(c => '#' + c.color);
+
+const barDatasets = CATS.map((c, i) => ({
+  label: c.name,
+  backgroundColor: CAT_COLORS[i],
+  data: [1,2,3,4].map(w => (CHART_DATA.by_week[w] && CHART_DATA.by_week[w][c.name]) || 0),
+}));
+
+new Chart(document.getElementById('weekBarChart'), {
+  type: 'bar',
+  data: { labels: ['Week 1','Week 2','Week 3','Week 4'], datasets: barDatasets },
+  options: {
+    responsive: true,
+    scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: 'Hours' } } },
+    plugins: { legend: { position: 'bottom' } },
+  }
+});
+
+[1,2,3,4].forEach(w => {
+  const weekData = CHART_DATA.by_week[w] || {};
+  const labels = Object.keys(weekData).filter(k => weekData[k] > 0);
+  const data = labels.map(k => weekData[k]);
+  const colors = labels.map(l => {
+    const idx = CAT_LABELS.indexOf(l);
+    return idx >= 0 ? CAT_COLORS[idx] : '#cccccc';
+  });
+  const el = document.getElementById('pieChart' + w);
+  if (labels.length === 0) {
+    el.parentElement.innerHTML += '<p style="text-align:center;font-size:12px;color:#999;">No data yet</p>';
+    return;
+  }
+  new Chart(el, {
+    type: 'pie',
+    data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
+    options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+  });
+});
+</script>
 {% endblock %}

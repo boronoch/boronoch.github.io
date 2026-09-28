@@ -1,5 +1,6 @@
 import os
 import json
+import secrets
 from datetime import datetime, timezone, date, timedelta
 from zoneinfo import ZoneInfo
 
@@ -16,12 +17,32 @@ def central_today_iso():
     return datetime.now(ZoneInfo("America/Chicago")).date().isoformat()
 
 
+def _load_or_create_secret_key():
+    """Use TIMEBUDGET_SECRET if set; otherwise persist a generated key to a
+    file so sessions survive app restarts/reloads (needed for long-lived
+    'stay logged in' sessions to actually stay valid)."""
+    env_key = os.environ.get("TIMEBUDGET_SECRET")
+    if env_key:
+        return env_key
+    path = os.path.join(BASE_DIR, "secret_key.txt")
+    if os.path.exists(path):
+        with open(path) as f:
+            return f.read().strip()
+    key = secrets.token_hex(32)
+    with open(path, "w") as f:
+        f.write(key)
+    return key
+
+
 def create_app():
     app = Flask(__name__)
     app.config["DATABASE"] = os.environ.get(
         "TIMEBUDGET_DB", os.path.join(BASE_DIR, "timebudget.db")
     )
-    app.config["SECRET_KEY"] = os.environ.get("TIMEBUDGET_SECRET", "dev-secret-change-me")
+    app.config["SECRET_KEY"] = _load_or_create_secret_key()
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=90)
+    app.config["SESSION_COOKIE_SECURE"] = os.environ.get("TIMEBUDGET_INSECURE_COOKIE") != "1"
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
     dbmod.register_db(app)
     with app.app_context():
@@ -42,9 +63,36 @@ def create_app():
         db = dbmod.get_db()
         return db.execute("SELECT * FROM settings WHERE id=1").fetchone()
 
+    def sync_new_items_into_cycle(cycle_id):
+        """Any live item that doesn't yet have a cycle_item row in this
+        cycle gets added (using its current live values). This never
+        touches items already frozen into the cycle - only adds ones
+        that are missing, so items added mid-cycle become loggable
+        without disturbing anything already recorded."""
+        db = dbmod.get_db()
+        missing = db.execute(
+            "SELECT i.*, c.name as category_name, c.color_hex as category_color "
+            "FROM item i LEFT JOIN category c ON c.id = i.category_id "
+            "WHERE i.active=1 AND i.id NOT IN "
+            "(SELECT source_item_id FROM cycle_item WHERE cycle_id=? AND source_item_id IS NOT NULL)",
+            (cycle_id,),
+        ).fetchall()
+        for it in missing:
+            db.execute(
+                "INSERT INTO cycle_item (cycle_id, source_item_id, description, category_name, "
+                "category_color, priority, target_hours_per_week) VALUES (?,?,?,?,?,?,?)",
+                (cycle_id, it["id"], it["description"], it["category_name"],
+                 it["category_color"], it["priority"], it["weekly_target_hours"]),
+            )
+        if missing:
+            db.commit()
+
     def get_active_cycle():
         db = dbmod.get_db()
-        return db.execute("SELECT * FROM cycle WHERE is_active=1 ORDER BY id DESC LIMIT 1").fetchone()
+        cycle = db.execute("SELECT * FROM cycle WHERE is_active=1 ORDER BY id DESC LIMIT 1").fetchone()
+        if cycle:
+            sync_new_items_into_cycle(cycle["id"])
+        return cycle
 
     def cycle_items(cycle_id):
         db = dbmod.get_db()
@@ -82,11 +130,58 @@ def create_app():
                 "SELECT COUNT(*) FROM actual_entry WHERE cycle_id=? AND cycle_item_id=?",
                 (cycle_id, it["id"]),
             ).fetchone()[0] * 0.5
+            planned = db.execute(
+                "SELECT COUNT(*) FROM cycle_plan_slot WHERE cycle_id=? AND cycle_item_id=?",
+                (cycle_id, it["id"]),
+            ).fetchone()[0] * 0.5
             target4 = it["target_hours_per_week"] * 4
             rows.append({
                 "id": it["id"], "description": it["description"],
                 "category": it["category_name"], "color": it["category_color"],
-                "planned": target4, "actual": actual, "variance": round(target4 - actual, 2),
+                "target": target4, "planned": planned, "actual": actual,
+                "variance": round(target4 - actual, 2),
+            })
+        return rows
+
+    def slots_elapsed_today(settings):
+        """How many half-hour slots of the plan day have fully elapsed, as of
+        right now (Central Time). 0 before the plan day starts, full
+        slots_per_day after it ends."""
+        now = datetime.now(ZoneInfo("America/Chicago"))
+        start_hour = settings["plan_start_hour"]
+        start_dt = now.replace(
+            hour=int(start_hour), minute=int(round((start_hour % 1) * 60)),
+            second=0, microsecond=0,
+        )
+        elapsed_minutes = (now - start_dt).total_seconds() / 60
+        if elapsed_minutes <= 0:
+            return 0
+        return min(settings["slots_per_day"], int(elapsed_minutes // 30))
+
+    def so_far_summary(cycle_id, week_number, today_dow, elapsed_slots):
+        """Plan vs Actual from the start of the current week through right
+        now: full days before today count entirely, today counts only its
+        elapsed slots, and later days in the week don't count yet."""
+        db = dbmod.get_db()
+        items = cycle_items(cycle_id)
+        rows = []
+        for it in items:
+            planned = db.execute(
+                "SELECT COUNT(*) FROM cycle_plan_slot WHERE cycle_id=? AND week_number=? "
+                "AND cycle_item_id=? AND (day_of_week < ? OR (day_of_week = ? AND slot_index < ?))",
+                (cycle_id, week_number, it["id"], today_dow, today_dow, elapsed_slots),
+            ).fetchone()[0] * 0.5
+            actual = db.execute(
+                "SELECT COUNT(*) FROM actual_entry WHERE cycle_id=? AND week_number=? "
+                "AND cycle_item_id=? AND (day_of_week < ? OR (day_of_week = ? AND slot_index < ?))",
+                (cycle_id, week_number, it["id"], today_dow, today_dow, elapsed_slots),
+            ).fetchone()[0] * 0.5
+            if planned == 0 and actual == 0:
+                continue
+            rows.append({
+                "id": it["id"], "description": it["description"],
+                "category": it["category_name"], "color": it["category_color"],
+                "planned": planned, "actual": actual, "variance": round(planned - actual, 2),
             })
         return rows
 
@@ -119,6 +214,7 @@ def create_app():
             password = request.form["password"]
             user = db.execute("SELECT * FROM user WHERE username=?", (username,)).fetchone()
             if user and check_password_hash(user["password_hash"], password):
+                session.permanent = True
                 session["user_id"] = user["id"]
                 return redirect(request.args.get("next") or url_for("dashboard"))
             flash("Invalid username or password.")
@@ -130,6 +226,23 @@ def create_app():
         return redirect(url_for("login"))
 
     # ---------------- dashboard ----------------
+    def category_chart_data(cycle_id):
+        db = dbmod.get_db()
+        categories = db.execute("SELECT name, color_hex FROM category ORDER BY sort_order").fetchall()
+        by_week = {}
+        for w in [1, 2, 3, 4]:
+            rows = db.execute(
+                "SELECT ci.category_name as name, COUNT(*) as cnt "
+                "FROM actual_entry ae JOIN cycle_item ci ON ci.id = ae.cycle_item_id "
+                "WHERE ae.cycle_id=? AND ae.week_number=? GROUP BY ci.category_name",
+                (cycle_id, w),
+            ).fetchall()
+            by_week[w] = {r["name"]: r["cnt"] * 0.5 for r in rows}
+        return {
+            "categories": [{"name": c["name"], "color": c["color_hex"]} for c in categories],
+            "by_week": by_week,
+        }
+
     @app.route("/")
     @login_required
     def dashboard():
@@ -150,9 +263,24 @@ def create_app():
             d0 = cycle_date(cycle, w, 0)
             d6 = cycle_date(cycle, w, 6)
             week_ranges[w] = f"{d0.strftime('%-m/%-d')}-{d6.strftime('%-m/%-d')}" if d0 else None
+
+        settings = get_settings()
+        guess = today_week_day(cycle)
+        so_far = None
+        so_far_label = None
+        if guess:
+            sf_week, sf_day = guess
+            elapsed = slots_elapsed_today(settings)
+            so_far = so_far_summary(cycle["id"], sf_week, sf_day, elapsed)
+            today_date = cycle_date(cycle, sf_week, sf_day)
+            so_far_label = f"Week {sf_week}, through {today_date.strftime('%A %-m/%-d')} {slot_time_label(elapsed, settings['plan_start_hour'])}"
+
+        chart_data = category_chart_data(cycle["id"])
+
         return render_template(
             "dashboard.html", cycle=cycle, week=current_week, summary=summary,
             totals=totals, items=items, week_ranges=week_ranges,
+            so_far=so_far, so_far_label=so_far_label, chart_data=chart_data,
         )
 
     # ---------------- quick log ----------------
@@ -421,8 +549,16 @@ def create_app():
                 "desc": item_desc.get(row["cycle_item_id"], ""),
             }
         slot_labels = [slot_time_label(i, settings["plan_start_hour"]) for i in range(n_slots)]
+
+        cycle = db.execute("SELECT * FROM cycle WHERE id=?", (cycle_id,)).fetchone()
+        day_dates = [cycle_date(cycle, week_number, d) if cycle else None for d in range(7)]
+        day_labels = [
+            f"{DAYS[d]} ({day_dates[d].strftime('%-m/%-d')})" if day_dates[d] else DAYS[d]
+            for d in range(7)
+        ]
+
         return render_template(
-            "week_plan.html", items=items, days=DAYS, n_slots=n_slots,
+            "week_plan.html", items=items, days=day_labels, n_slots=n_slots,
             slot_labels=slot_labels, grid=grid, cycle_id=cycle_id, week_number=week_number,
         )
 

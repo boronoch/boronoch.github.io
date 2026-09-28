@@ -36,8 +36,24 @@ def init_db(app):
         "VALUES (1, '1970-01-01', 'Monday', '{}')"
     )
     conn.commit()
+    run_data_migrations(conn)
     conn.close()
     return is_new
+
+
+def run_data_migrations(conn):
+    """Small, idempotent one-off data fixes. Safe to run on every startup -
+    each one only acts if its old state still exists."""
+    category_renames = [
+        ("Errands", "Errands, Appts"),
+    ]
+    for old_name, new_name in category_renames:
+        conn.execute("UPDATE category SET name=? WHERE name=?", (new_name, old_name))
+        conn.execute(
+            "UPDATE cycle_item SET category_name=? WHERE category_name=?",
+            (new_name, old_name),
+        )
+    conn.commit()
 
 
 def slot_time_label(slot_index, plan_start_hour=5.0):
