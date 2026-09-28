@@ -459,13 +459,51 @@ def create_app():
             )
             db.commit()
             return redirect(url_for("items_view"))
+
         items = db.execute(
             "SELECT i.*, c.name as category_name, c.color_hex as category_color "
             "FROM item i LEFT JOIN category c ON c.id = i.category_id "
-            "WHERE i.active=1 ORDER BY i.sort_order, i.description"
+            "WHERE i.active=1"
         ).fetchall()
+        items = [dict(it) for it in items]
+
+        sort = request.args.get("sort", "default")
+        direction = request.args.get("dir", "asc")
+        priority_rank = {"High": 0, "Medium": 1, "Low": 2}
+        sort_keys = {
+            "description": lambda it: (it["description"] or "").lower(),
+            "category": lambda it: (it["category_name"] or "").lower(),
+            "priority": lambda it: priority_rank.get(it["priority"], 99),
+            "hours": lambda it: it["weekly_target_hours"] or 0,
+        }
+        if sort in sort_keys:
+            items.sort(key=sort_keys[sort], reverse=(direction == "desc"))
+        else:
+            items.sort(key=lambda it: (it["sort_order"], (it["description"] or "").lower()))
+
+        def next_dir(col):
+            return "desc" if (sort == col and direction == "asc") else "asc"
+
+        def arrow(col):
+            if sort != col:
+                return ""
+            return " \u2191" if direction == "asc" else " \u2193"
+
         categories = db.execute("SELECT * FROM category ORDER BY sort_order").fetchall()
-        return render_template("items.html", items=items, categories=categories)
+        return render_template(
+            "items.html", items=items, categories=categories,
+            sort=sort, direction=direction, next_dir=next_dir, arrow=arrow,
+        )
+
+    @app.route("/items/<int:item_id>/update_target", methods=["POST"])
+    @login_required
+    def update_item_target(item_id):
+        db = dbmod.get_db()
+        data = request.get_json(force=True)
+        target = float(data["weekly_target_hours"])
+        db.execute("UPDATE item SET weekly_target_hours=? WHERE id=?", (target, item_id))
+        db.commit()
+        return jsonify({"ok": True})
 
     @app.route("/items/<int:item_id>/delete", methods=["POST"])
     @login_required

@@ -76,12 +76,12 @@
 </div>
 
 <div class="card">
-  <h3>Actual Hours by Category, by Week</h3>
+  <h3>Actual Hours by Category &mdash; All 4 Weeks (stacked)</h3>
   <canvas id="weekBarChart" height="110"></canvas>
 </div>
 
 <div class="card">
-  <h3>Actual Hours by Category, per Week</h3>
+  <h3>Actual Hours by Category &mdash; Breakdown per Week (pie)</h3>
   <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
     {% for w in [1,2,3,4] %}
     <div>
@@ -94,7 +94,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
 <script>
 const CHART_DATA = {{ chart_data|tojson }};
 const CATS = CHART_DATA.categories;
