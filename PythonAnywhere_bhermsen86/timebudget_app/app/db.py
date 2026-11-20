@@ -53,6 +53,13 @@ def run_data_migrations(conn):
             "UPDATE cycle_item SET category_name=? WHERE category_name=?",
             (new_name, old_name),
         )
+    # Cycle items migrated from Excel have no priority; fill from the live item list.
+    conn.execute(
+        "UPDATE cycle_item SET priority = COALESCE("
+        "(SELECT i.priority FROM item i WHERE i.id = cycle_item.source_item_id), "
+        "(SELECT i.priority FROM item i WHERE i.description = cycle_item.description LIMIT 1)) "
+        "WHERE priority IS NULL OR priority = ''"
+    )
     conn.commit()
 
 

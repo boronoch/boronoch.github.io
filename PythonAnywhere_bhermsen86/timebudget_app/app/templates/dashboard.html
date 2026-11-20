@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+{% macro th(table, col, label) -%}
+<th><a href="{{ sort_link(table, col) }}" style="color:white;">{{ label }}{{ arrow(table, col) }}</a></th>
+{%- endmacro %}
+{% macro var_td(v) -%}
+<td class="{{ 'variance-0' if v == 0 else ('variance-pos' if v > 0 else 'variance-neg') }}">{{ v }}</td>
+{%- endmacro %}
 <div class="card">
   <h2>{{ cycle['label'] }}</h2>
   <div class="week-tabs">
@@ -16,42 +22,80 @@
 
   <h3>Week {{ week }}: Plan vs Actual</h3>
   <table>
-    <tr><th>Item</th><th>Category</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    <tr>
+      {{ th('w','description','Item') }}{{ th('w','category','Category') }}{{ th('w','priority','Priority') }}
+      {{ th('w','planned','Planned') }}{{ th('w','actual','Actual') }}{{ th('w','variance','Variance') }}
+    </tr>
     {% for row in summary %}
     <tr>
       <td>{{ row.description }}</td>
       <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.priority }}</td>
       <td>{{ row.planned }}</td>
       <td>{{ row.actual }}</td>
-      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
-        {{ row.variance }}
-      </td>
+      {{ var_td(row.variance) }}
     </tr>
     {% endfor %}
   </table>
 </div>
 
+<div class="card">
+  <h3>Week {{ week }} Notes</h3>
+  <textarea id="weekNote" rows="8" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;"
+            placeholder="Notes for this week...">{{ week_note }}</textarea>
+  <p id="noteStatus" style="font-size:12px;color:#666;min-height:1em;"></p>
+</div>
+
 {% if so_far is not none %}
 <div class="card">
-  <h3>Plan vs Actual So Far</h3>
-  <p style="font-size:12px;color:#666;">{{ so_far_label }}</p>
+  <h3>Plan vs Actual So Far &mdash; Week</h3>
+  <p style="font-size:12px;color:#666;">{{ so_far_label }}. Variance = Week Plan &minus; Actual &minus; Remaining Planned.</p>
   {% if so_far %}
   <table>
-    <tr><th>Item</th><th>Category</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    <tr>
+      {{ th('f','description','Item') }}{{ th('f','category','Category') }}{{ th('f','priority','Priority') }}
+      {{ th('f','target','Week Plan') }}{{ th('f','actual','Actual So Far') }}{{ th('f','remaining','Remaining Planned') }}{{ th('f','variance','Variance') }}
+    </tr>
     {% for row in so_far %}
     <tr>
       <td>{{ row.description }}</td>
       <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
-      <td>{{ row.planned }}</td>
+      <td>{{ row.priority }}</td>
+      <td>{{ row.target }}</td>
       <td>{{ row.actual }}</td>
-      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
-        {{ row.variance }}
-      </td>
+      <td>{{ row.remaining }}</td>
+      {{ var_td(row.variance) }}
     </tr>
     {% endfor %}
   </table>
   {% else %}
-  <p style="font-size:13px;color:#999;">Nothing planned or logged yet for this point in the week.</p>
+  <p style="font-size:13px;color:#999;">Nothing planned or logged for this week.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Plan vs Actual So Far &mdash; Full 4-Week Cycle</h3>
+  <p style="font-size:12px;color:#666;">{{ so_far_cycle_label }}. Variance = 4-Week Target &minus; Actual &minus; Remaining Planned.</p>
+  {% if so_far_cycle %}
+  <table>
+    <tr>
+      {{ th('c','description','Item') }}{{ th('c','category','Category') }}{{ th('c','priority','Priority') }}
+      {{ th('c','target','4-Week Target') }}{{ th('c','actual','Actual So Far') }}{{ th('c','remaining','Remaining Planned') }}{{ th('c','variance','Variance') }}
+    </tr>
+    {% for row in so_far_cycle %}
+    <tr>
+      <td>{{ row.description }}</td>
+      <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.priority }}</td>
+      <td>{{ row.target }}</td>
+      <td>{{ row.actual }}</td>
+      <td>{{ row.remaining }}</td>
+      {{ var_td(row.variance) }}
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p style="font-size:13px;color:#999;">Nothing planned or logged for this cycle.</p>
   {% endif %}
 </div>
 {% endif %}
@@ -59,17 +103,19 @@
 <div class="card">
   <h3>Total - 4 Weeks</h3>
   <table>
-    <tr><th>Item</th><th>Category</th><th>Target</th><th>Planned</th><th>Actual</th><th>Variance</th></tr>
+    <tr>
+      {{ th('t','description','Item') }}{{ th('t','category','Category') }}{{ th('t','priority','Priority') }}
+      {{ th('t','target','Target') }}{{ th('t','planned','Planned') }}{{ th('t','actual','Actual') }}{{ th('t','variance','Variance') }}
+    </tr>
     {% for row in totals %}
     <tr>
       <td>{{ row.description }}</td>
       <td><span class="swatch" style="background:#{{ row.color }}"></span>{{ row.category }}</td>
+      <td>{{ row.priority }}</td>
       <td>{{ row.target }}</td>
       <td>{{ row.planned }}</td>
       <td>{{ row.actual }}</td>
-      <td class="{{ 'variance-0' if row.variance == 0 else ('variance-pos' if row.variance > 0 else 'variance-neg') }}">
-        {{ row.variance }}
-      </td>
+      {{ var_td(row.variance) }}
     </tr>
     {% endfor %}
   </table>
@@ -96,6 +142,24 @@
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
 <script>
+(function () {
+  const ta = document.getElementById('weekNote');
+  const status = document.getElementById('noteStatus');
+  let last = ta.value;
+  function save() {
+    if (ta.value === last) return;
+    const text = ta.value;
+    status.textContent = 'Saving...';
+    fetch({{ url_for('save_week_note', cycle_id=cycle['id'], week_number=week)|tojson }}, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({note: text})
+    }).then(r => r.json()).then(() => { last = text; status.textContent = 'Saved.'; })
+      .catch(() => { status.textContent = 'Save failed - will retry.'; });
+  }
+  ta.addEventListener('blur', save);
+  let t; ta.addEventListener('input', () => { status.textContent = ''; clearTimeout(t); t = setTimeout(save, 1500); });
+  window.addEventListener('pagehide', save);
+})();
 const CHART_DATA = {{ chart_data|tojson }};
 const CATS = CHART_DATA.categories;
 const CAT_LABELS = CATS.map(c => c.name);

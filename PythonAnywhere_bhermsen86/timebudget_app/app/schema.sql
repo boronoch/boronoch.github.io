@@ -99,3 +99,10 @@ CREATE TABLE IF NOT EXISTS routine_state (
     checks_json TEXT NOT NULL DEFAULT '{}'
 );
 
+
+CREATE TABLE IF NOT EXISTS week_note (
+    cycle_id INTEGER NOT NULL REFERENCES cycle(id),
+    week_number INTEGER NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (cycle_id, week_number)
+);

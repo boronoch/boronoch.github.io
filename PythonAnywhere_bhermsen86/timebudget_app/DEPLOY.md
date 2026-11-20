@@ -141,3 +141,9 @@ If `python3 -c "from zoneinfo import ZoneInfo"` errors on PythonAnywhere,
 run `pip install --user tzdata` in a Bash console (it's already listed in
 `requirements.txt`, but only takes effect if you `pip install -r
 requirements.txt` there too).
+
+
+## Upgrading to v7
+Replace only the code files (the `app/` folder, wsgi.py, requirements.txt) - do NOT overwrite your live `timebudget.db`.
+Then click Reload on the PythonAnywhere Web tab. The new `week_note` table is created automatically on startup,
+and any cycle items missing a Priority are filled in from your Items list.
